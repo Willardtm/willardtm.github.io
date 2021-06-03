@@ -5,20 +5,42 @@
   
 
   
-  <title>从零实现基于医疗知识图谱的问答系统目录及总结 | Klaus&#39;s Blog</title>
+  <title>Basic Understanding of Optimization | Klaus&#39;s Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="整个系统花了差不多两个星期的时间终于复现出来了，撒花庆祝！">
-<meta name="keywords" content="NLP,知识图谱">
+  <meta name="description" content="course link: https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html THEORY 2: OPTIMIZATION">
+<meta name="keywords" content="ML">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从零实现基于医疗知识图谱的问答系统目录及总结">
-<meta property="og:url" content="http://yoursite.com/2019/11/05/从零实现基于医疗知识图谱的问答系统目录及总结/index.html">
+<meta property="og:title" content="Basic Understanding of Optimization">
+<meta property="og:url" content="http://yoursite.com/2021/06/03/Basic-Understanding-of-Optimization/index.html">
 <meta property="og:site_name" content="Klaus&#39;s Blog">
-<meta property="og:description" content="整个系统花了差不多两个星期的时间终于复现出来了，撒花庆祝！">
+<meta property="og:description" content="course link: https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html THEORY 2: OPTIMIZATION">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-24T09:50:45.673Z">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/W2tA9lLQ4RhvHfO.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/geWrTBGAY5qfF3j.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/ERDjwbMtQ6ax1SL.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/2KaglO3LPSnkADJ.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/ZND6qv9VlneEki5.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/7XUnFLhCH3E6b4Y.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/bC8my7qv3KhnU4Y.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/IjNmBxqyUEvKCRF.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/F9dXjqDtCyfh8kz.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/tZA1KPMGrJjwzsn.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/J3sqlAbjX29B6Df.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/LhoFkCn2KgeQGDc.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/TCHo5lweDfORAuE.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/aWRvuZhO1eGfktT.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/v4fB89udTY6CRqr.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/HBzQumvkhEP69lV.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/gZO9fRTL6hHKJqx.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/fStl65YFpIuhEom.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/kEs7GixKAZV2ho8.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/ncLPYQEWJZFOB76.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/03/5eDImhqPgHSEjzC.png">
+<meta property="og:updated_time" content="2021-06-03T14:43:17.850Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="从零实现基于医疗知识图谱的问答系统目录及总结">
-<meta name="twitter:description" content="整个系统花了差不多两个星期的时间终于复现出来了，撒花庆祝！">
+<meta name="twitter:title" content="Basic Understanding of Optimization">
+<meta name="twitter:description" content="course link: https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html THEORY 2: OPTIMIZATION">
+<meta name="twitter:image" content="https://i.loli.net/2021/06/03/W2tA9lLQ4RhvHfO.png">
   
     <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
   
@@ -69,16 +91,12 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-从零实现基于医疗知识图谱的问答系统目录及总结" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Basic-Understanding-of-Optimization" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/05/从零实现基于医疗知识图谱的问答系统目录及总结/" class="article-date">
-  <time datetime="2019-11-05T15:32:39.000Z" itemprop="datePublished">2019-11-05</time>
+    <a href="/2021/06/03/Basic-Understanding-of-Optimization/" class="article-date">
+  <time datetime="2021-06-03T14:41:39.000Z" itemprop="datePublished">2021-06-03</time>
 </a>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/NLP/">NLP</a>
-  </div>
-
   </div>
   <div class="article-inner">
     
@@ -87,7 +105,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      从零实现基于医疗知识图谱的问答系统目录及总结
+      Basic Understanding of Optimization
     </h1>
   
 
@@ -97,31 +115,83 @@
       
 	  <!-- Table of Contents -->
 		
-		  <div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目录"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">2.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#项目改进建议"><span class="toc-number">3.</span> <span class="toc-text">项目改进建议</span></a></li></ol>
-		  </div>
-		
-        <p>整个系统花了差不多两个星期的时间终于复现出来了，撒花庆祝！<br><a id="more"></a><br>之前看刘老师说这个系统自己两天就写完的时候我还预计自己应该一个星期能写完，事实证明我还是太年轻了，和大佬比差距还很远很远，还要继续学习鸭！<br>再次感谢刘老师分享的代码！！！感激不尽！！！<br>全部代码及数据链接：<a href="https://github.com/Klaus925/MedicalKG_QA" target="_blank" rel="noopener">https://github.com/Klaus925/MedicalKG_QA</a></p>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p>系统搭建环境：<br>Windows 10<br>Python 3.6<br>Visual Studio Installer</p>
-<p>[1]<a href="http://klausvon.cn/2019/10/23/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E%E5%8C%BB%E7%96%97%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F-%E4%B8%80/" target="_blank" rel="noopener">从零实现基于医疗知识图谱的问答系统(一)-数据收集</a><br>[2]<a href="http://klausvon.cn/2019/10/29/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E%E5%8C%BB%E7%96%97%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F-%E4%BA%8C/" target="_blank" rel="noopener">从零实现基于医疗知识图谱的问答系统(二)-Neo4j构建知识图谱</a><br>[3]<a href="http://klausvon.cn/2019/11/01/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E%E5%8C%BB%E7%96%97%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F-%E4%B8%89/" target="_blank" rel="noopener">从零实现基于医疗知识图谱的问答系统(三)-问题解析处理</a><br>[4]<a href="http://klausvon.cn/2019/11/04/%E4%BB%8E%E9%9B%B6%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E%E5%8C%BB%E7%96%97%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E9%97%AE%E7%AD%94%E7%B3%BB%E7%BB%9F-%E5%9B%9B/" target="_blank" rel="noopener">从零实现基于医疗知识图谱的问答系统(四)-构建回答</a></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>首先，整个QA系统是基于KG的，要建立一个完整的图谱毫无疑问需要完整的数据，对于KG来说，数据有结构化数据和非结构化数据，为了方便这里使用结构化数据。而获取结构化数据的方式分两种：<br>(1)寻找现成的语料库；<br>(2)使用爬虫来收集想要构建的领域的数据。</p>
-<font color="##0099ff"><b>注意：使用爬虫也就意味存在着ip被封的风险。</b></font>
-
-<p>我在看cs224n中Richard老师给过一个建议，最好使用现成语料库，因为曾经存在学生花了半年的时间去搜集数据一无所获最终无法完成作业。<br>获取完数据存入MongoDB后可以命令导出为json文件，然后通过加载json文件来生成相应的知识图谱。</p>
-<p>接着，在我们有了知识图谱之后工作其实已经完成了大半，后续构建问答系统主要是基于知识图谱的查询语句来构建，因此，KG的查询语句编写需要认真xio习。<br>除此之外，问题解析中将问题提问的方式整理为一个list这点也同样重要，这就需要人工来进行建立。<br>其次，我发现准备数据的过程中，有一个build_data.py文件感觉没有用上，不知用意何在，所以这个文件我仍然保留着。</p>
-<h2 id="项目改进建议"><a href="#项目改进建议" class="headerlink" title="项目改进建议"></a>项目改进建议</h2><p>[1]使用Django或者Flask构建问答器的界面使其更美观；<br>[2]增加数据可视化功能，在Web后台查看某类问题的提问次数等；<br>[3]使用神经网络训练语料库来生成问答对。</p>
-<font color="##0099ff"><b>注意：假如使用神经网络的话，对于没有人训练过类似问答领域的语料库可能需要自己构建并标注数据。</b></font>
-
-<p>Over.</p>
+        <p>course link: <a href="https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html" target="_blank" rel="noopener">https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html</a></p>
+<p>THEORY 2: OPTIMIZATION</p>
+<a id="more"></a>
+<h2 id="0-引言"><a href="#0-引言" class="headerlink" title="0. 引言"></a>0. 引言</h2><p>一句话概述Optimization: 基于凸优化方法，找到<code>$L(\theta)$</code>最小的值对应的参数.</p>
+<p><img src="https://i.loli.net/2021/06/03/W2tA9lLQ4RhvHfO.png" style="width:400px;"></p>
+<p>注意: Optimization≠Learning</p>
+<h2 id="1-Hessian-Matrix-When-gradient-is-0"><a href="#1-Hessian-Matrix-When-gradient-is-0" class="headerlink" title="1. Hessian Matrix: When gradient is 0"></a>1. Hessian Matrix: When gradient is 0</h2><p>当gradient=0的时候，通常包含两种情况：</p>
+<ul>
+<li>local minima</li>
+<li>saddle point</li>
+</ul>
+<p><img src="https://i.loli.net/2021/06/03/geWrTBGAY5qfF3j.png" style="width:400px;"></p>
+<p>但是如何判断当前的位置是local minina还是saddle point?</p>
+<p>Hessian Matrix.</p>
+<p>当gradient=0时，假设存在下图所示中的式子: <code>$f(\theta)$</code>,其中, gradient是梯度, <code>$Hessian H$</code>是一个矩阵, <code>$H$</code>是一个对称矩阵.</p>
+<p><img src="https://i.loli.net/2021/06/03/ERDjwbMtQ6ax1SL.png" style="width:400px;"></p>
+<p>其中, <code>$H$</code>参数用于决定曲率(curvature)，<code>$H$</code>不存在则<code>$f(\theta)$</code>是一条直线.</p>
+<p><img src="https://i.loli.net/2021/06/03/2KaglO3LPSnkADJ.png" style="width:350px;"></p>
+<p><code>$g$</code>和<code>$H$</code>的作用就是把图中绿色的直线转换为红色的曲线来实现更好的拟合.</p>
+<p><img src="https://i.loli.net/2021/06/03/ZND6qv9VlneEki5.png" style="width:350px;"></p>
+<p>通过牛顿法可以找到使得<code>$\delta f(\theta)=0$</code>的<code>$g$</code>和<code>$H$</code>.</p>
+<p><img src="https://i.loli.net/2021/06/03/7XUnFLhCH3E6b4Y.png" style="width:400px;"></p>
+<p>通过计算可以得到:</p>
+<p><img src="https://i.loli.net/2021/06/03/bC8my7qv3KhnU4Y.png" style="width:400px;"></p>
+<p>每次计算之后找到曲线所在的最低点的<code>$x$</code>值进行更新.</p>
+<p><img src="https://i.loli.net/2021/06/03/IjNmBxqyUEvKCRF.png" style="width:400px;"></p>
+<p>然而, 如果gradient的重合度重合在起始位置, 就会出现上图中左半部分曲线的情况, loss反而会增加.</p>
+<p>当g=0且到达critical point的时，会出现 local min, local max 以及 saddle point 三种情况. 因此, 需要分析<code>$H$</code>来判断当前的critical point属于哪种情况.</p>
+<p><img src="https://i.loli.net/2021/06/03/F9dXjqDtCyfh8kz.png" style="width:400px;"></p>
+<hr>
+<p><strong>Review 1: Linear Algebra</strong></p>
+<p><code>$Av=\lambda v$</code></p>
+<ul>
+<li><code>$v$</code>是<code>$A$</code>的特征向量</li>
+<li><code>$\lambda$</code>是<code>$A$</code>上对应于<code>$v$</code>的特征向量</li>
+</ul>
+<p><img src="https://i.loli.net/2021/06/03/tZA1KPMGrJjwzsn.png" style="width:300px;"></p>
+<p><br><br><br></p>
+<p><strong>Review 2: Postive/Negative Definite</strong></p>
+<p><img src="https://i.loli.net/2021/06/03/J3sqlAbjX29B6Df.png" style="width:400px;"></p>
+<p><strong>Review End Back to Hessian</strong></p>
+<hr>
+<p>通过宏毅老师给的Review 2的例子可以知道<code>$Hessian\, H$</code>可以取出不同的值, 取出不同的值则对应三个不同的状态.</p>
+<p><img src="https://i.loli.net/2021/06/03/LhoFkCn2KgeQGDc.png" style="width:400px;"></p>
+<p><strong>e.g. 1</strong></p>
+<p><img src="https://i.loli.net/2021/06/03/TCHo5lweDfORAuE.png" style="width:400px;"></p>
+<p><strong>e.g. 2</strong></p>
+<p><img src="https://i.loli.net/2021/06/03/aWRvuZhO1eGfktT.png" style="width:400px;"></p>
+<p>鞍点判断参考: <a href="https://zhuanlan.zhihu.com/p/33340316" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/33340316</a></p>
+<p>正定矩阵和半正定矩阵参考: <a href="https://zhuanlan.zhihu.com/p/44860862" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/44860862</a></p>
+<h2 id="2-Deep-Linear-Network"><a href="#2-Deep-Linear-Network" class="headerlink" title="2. Deep Linear Network"></a>2. Deep Linear Network</h2><p>当hidden layers超过两层时就会产生不包含负特征值的鞍点.</p>
+<p>经过证明，在Deep Linear Network中，local minima也就是global minima.</p>
+<p><strong>注: 带有证明过程的references可参考原PPT.</strong></p>
+<h2 id="3-Does-Deep-Network-have-Local-Minima"><a href="#3-Does-Deep-Network-have-Local-Minima" class="headerlink" title="3. Does Deep Network have Local Minima"></a>3. Does Deep Network have Local Minima</h2><p>然鹅, ReLU会存在local minima的情况.</p>
+<p><img src="https://i.loli.net/2021/06/03/v4fB89udTY6CRqr.png" style="width:400px;"></p>
+<p>这就造成了盲点，导致gradient变为0.</p>
+<p><img src="https://i.loli.net/2021/06/03/HBzQumvkhEP69lV.png" style="width:400px;"></p>
+<p>e.g. 在MNIST数据集上使用Adam进行优化，图中上半部分使用一般的初始化进行训练，下半部分使用混乱的方法(标签打乱,例如手写数字为5，标签为2)进行训练，但是，在这种情况下，如果neuron数量比较少，则model不能训练出来.</p>
+<p><img src="https://i.loli.net/2021/06/03/gZO9fRTL6hHKJqx.png" style="width:500px;"></p>
+<p>然而, 在训练过程中进入盲点则acc保持为0. 因此, 数据的初始化结果会影响训练情况.</p>
+<p>除了initialization，数据本身的情况也会影响训练的结果. 要找到global minima，使用正态分布选出n个<code>$x$</code>的数据，让其去与k个<code>$y$</code>进行匹配, 只要满足<code>$w^i=v^i$</code>且<code>$n≥k$</code>就能找到global minima.</p>
+<p><img src="https://i.loli.net/2021/06/03/fStl65YFpIuhEom.png" style="width:400px;"></p>
+<p>如下所示，当network参数增多的时候，local minima出现的概率就减少，找到的就是global minima.</p>
+<p><img src="https://i.loli.net/2021/06/03/kEs7GixKAZV2ho8.png" style="width:400px;"></p>
+<h2 id="4-Conjecture-about-Deep-Learning"><a href="#4-Conjecture-about-Deep-Learning" class="headerlink" title="4. Conjecture about Deep Learning"></a>4. Conjecture about Deep Learning</h2><p>分析<code>$Hessian \, Matrix\, H$</code>,在遇到critical point的时候，这个点可能是local minima ，也可能是saddle point. 其中<code>$\lambda$</code>参数可能为+，也可能为-，因此，<code>$\lambda v$</code>的值有1/2的几率为+，也有1/2的几率为-.</p>
+<p><img src="https://i.loli.net/2021/06/03/ncLPYQEWJZFOB76.png" style="width:400px;"></p>
+<p>当不断增加neuron的个数时，local minima, local maxima 以及 saddle point 的可能性都在不断变化, 如下图所示.</p>
+<p><img src="https://i.loli.net/2021/06/03/5eDImhqPgHSEjzC.png" style="width:400px;"></p>
+<p>当neuron足够大的时候，几乎每个critical point都是saddle point.</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/11/05/从零实现基于医疗知识图谱的问答系统目录及总结/" data-id="ckph0dpcl006abgv483go0xph" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2021/06/03/Basic-Understanding-of-Optimization/" data-id="ckph0dp8r0000bgv4s43t1ejk" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/知识图谱/">知识图谱</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ML/">ML</a></li></ul>
 
     </footer>
   </div>
@@ -129,19 +199,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/11/21/【论文笔记】Distributed-Representations-of-Sentences-and-Documents/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          【论文笔记】Distributed Representations of Sentences and Documents
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/11/04/从零实现基于医疗知识图谱的问答系统-四/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2021/06/02/Why-Deep-Structure/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">从零实现基于医疗知识图谱的问答系统(四)-构建回答</div>
+      <div class="article-nav-title">Why Deep Structure</div>
     </a>
   
 </nav>
