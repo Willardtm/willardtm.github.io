@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n-Lecture-6 依存分析 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="好几天没有学习，罪恶感深重，接着学接着学。关于这讲，后续我打算把Manning老师的论文读一遍写个论文笔记再自己试试做做依存分析什么的。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n-Lecture-6 依存分析">
+<meta property="og:url" content="http://yoursite.com/2019/08/28/cs224n-Lecture-6-依存分析/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="好几天没有学习，罪恶感深重，接着学接着学。关于这讲，后续我打算把Manning老师的论文读一遍写个论文笔记再自己试试做做依存分析什么的。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTIDun.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTIcNT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTIRCF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTIhv9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTIjvd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTIzDI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mToM5T.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTo324.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mToUVx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTo4JS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mToqZq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTTie1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTTlwt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTT8Ff.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTTaOs.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTTBT0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTTTfO.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mTTb1e.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mT7K9U.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/28/mT7wge.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/lHZBqN1svwf2K3m.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/28/MlLeJFI2RPaS98D.png">
+<meta property="og:updated_time" content="2019-08-28T05:41:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n-Lecture-6 依存分析">
+<meta name="twitter:description" content="好几天没有学习，罪恶感深重，接着学接着学。关于这讲，后续我打算把Manning老师的论文读一遍写个论文笔记再自己试试做做依存分析什么的。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/08/28/mTIDun.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-Lecture-6-依存分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/28/cs224n-Lecture-6-依存分析/" class="article-date">
+  <time datetime="2019-08-28T05:14:11.000Z" itemprop="datePublished">2019-08-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n-Lecture-6 依存分析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#依存分析法的作用"><span class="toc-number">1.</span> <span class="toc-text">依存分析法的作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#树库"><span class="toc-number">2.</span> <span class="toc-text">树库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依存句法的思想是一个句法模型"><span class="toc-number">3.</span> <span class="toc-text">依存句法的思想是一个句法模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#特征选择"><span class="toc-number">3.1.</span> <span class="toc-text">特征选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特征选择样例"><span class="toc-number">3.2.</span> <span class="toc-text">特征选择样例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#前馈神经网络模型（Feedforward-Neural-Network-Model）"><span class="toc-number">3.3.</span> <span class="toc-text">前馈神经网络模型（Feedforward Neural Network Model）</span></a></li></ol></li></ol>
+		  </div>
+		
+        <p>好几天没有学习，罪恶感深重，接着学接着学。<br>关于这讲，后续我打算把Manning老师的论文读一遍写个论文笔记再自己试试做做依存分析什么的。</p>
+<a id="more"></a>
+<p>语言学上对于描述语法有两种主流观点，其中一种是短语结构文法（constituency structures），另外一种是依存结构（dependency structures）。</p>
+<p>弄清楚如何将短语结构应用于一些人类语言的句子中。<br>基本思想：句子和句子的一部分有一种结构，可以被用来以特定的方式组合起来。<br>举例：<br>the cat<br>a dog<br>上面两个词组看起来有一点结构性，有一个冠词，通常称之为限定词，这类短语被称为名词短语，用来描述事物，有一些规则可以用来扩展它们：<br>(1)可以在冠词和名词之间加一个形容词：the large dog 或者 a barking dog；<br>(2)可以在名词后添加介词短语：a large dog in a crate；</p>
+<h2 id="依存分析法的作用"><a href="#依存分析法的作用" class="headerlink" title="依存分析法的作用"></a>依存分析法的作用</h2><p>通过找到句子当中每一个词所依赖的部分来描述句子结构。如果一个词修饰另一个词，或者，是另外一些词的一个论证，那么它就是这个词的依赖。<br>所以，在 a barking dog 中，barking 就是 dog 的依赖，因为 barking 修饰 dog。同理，a large barking dog 中，large 也是 dog 的修饰。</p>
+<p>我们可以在词之间添加依存关系，通常使用箭头来表示它们之间的依存关系。<br><img src="https://s2.ax1x.com/2019/08/28/mTIDun.png" alt></p>
+<p>句子的语义模糊性可以认为是（多数是）以依存结构来看是什么修饰什么的问题。<br>这就变成了一个自然语言中的普通问题了，因为这里什么修饰什么的问题主导了许多关于解释的问题。 </p>
+<p><img src="https://s2.ax1x.com/2019/08/28/mTIcNT.png" alt></p>
+<p>[董事会在每月例会上证实了多伦多皇家信托以每股27美元的收购。]<br>这个句子具有完整的句子结构，它有主语，动词，宾语，也就是 The board approved its acquisition，随后的内容都是介词短语，[by Royal Trustco Ltd.] 修饰的是 acquisition，[of Toronto] 修饰的是公司 Royal Trstco Limited，[for $27 a share] 修饰的是 acquisition，[at its monthly meeting] 修饰的是 approved，如下所示：<br><img src="https://s2.ax1x.com/2019/08/28/mTIRCF.png" alt></p>
+<h2 id="树库"><a href="#树库" class="headerlink" title="树库"></a>树库</h2><p>在英语当中，如果你要指向同一个被修饰成分或者再往前找一个，这样就找到了一个嵌套关系。<br><img src="https://s2.ax1x.com/2019/08/28/mTIhv9.png" alt></p>
+<p>树库给出了一种真实语言，具有完整的句法，在此基础上就可以做各种量化语言学方面的分析，依存树库使用了真实的覆盖面广的数据，而人们写规则时只是依靠对英语语法的直觉判断。人们容易考虑不周，所以依存树更容易找到所有可能发生的情况.</p>
+<h2 id="依存句法的思想是一个句法模型"><a href="#依存句法的思想是一个句法模型" class="headerlink" title="依存句法的思想是一个句法模型"></a>依存句法的思想是一个句法模型</h2><p>即有一个词法项之间的关系或词之间的关系，只有词法项之间是二元的不对称关系，也就是说，我们在词法项之间画箭头，这些箭头被称为依存，全部内容是there is a dependency analysis of bills on ports on immigration were submitted by Senator Brownback,Republican of Kansas.<br>得到的句法依存树如下：</p>
+<font color="#0099FF">注：这里箭头的尾部是 head（被修饰的主题），箭头指向的是 dependent（修饰 语）。</font><br><img src="https://s2.ax1x.com/2019/08/28/mTIjvd.png" alt><br><br>通常会根据一些语法关系来给这些依存关系分类命名。<br><img src="https://s2.ax1x.com/2019/08/28/mTIzDI.png" alt><br><br>## 如何做依存分析<br> 把句子中每个词都提出来，然后判断这些词的独立项或者头部是什么。一般来说，只需要一个词作为ROOT的依赖项（dependent）[ROOT 只能被一个词依赖]，并且不希望有环出现，二者同时满足的话，就能保证生成一个依存树。<br><img src="https://s2.ax1x.com/2019/08/28/mToM5T.png" alt><br>箭头不可能存在两两不相交的情况，大部分语言，包括英语，这些语言中绝大部分依存关系都是嵌套结构，并且有着线性顺序，如果一个依存树是完全嵌套的，那它陈伟投影依存树。可以把它投射到一个平面上，然后得到一个嵌套关系。英语中也有少数结构是非嵌套的，并且存在交叉。<br><br>用来做依存分析的四种方法：<br>1.动态编程法（Dynamic Programming）；<br>2.图算法（Graph Algorithm）；<br>3.约束补偿（Contraint Satisfaction）；<br>4.基于转换的解析（Transition-based parsing）；<br><img src="https://s2.ax1x.com/2019/08/28/mTo324.png" alt><br><br>## 依存分析的主要方法<br><br>假如有一个需要进行依存分析的句子和一些分析用的规则：<br><img src="https://s2.ax1x.com/2019/08/28/mToUVx.png" alt><br><br>下面给出对应的句子：<br><img src="https://s2.ax1x.com/2019/08/28/mTo4JS.png" alt><br><br>开始分析：<br>有两个东西，一个栈（stack）[灰色框]，任意句子开始分析时都放到这个堆栈上，就是这个root标志，栈的顶端在右面，然后我们还有一个称作缓冲的东西[橙色框]。<br>缓冲就是需要处理的句子，将缓冲左端作为缓冲的顶部，因为要拿掉多余的词，所以它们的顶部就是它们的交界点，在这个基于转换的模式下做依存分析，有三种操作：<br>1.shift；<br>2.left-arc；<br>3.right-arc；<br>要做的第一个操作是shift：<br>shift要做的就是取缓冲区顶部词，然后把它放到栈（stack）顶部，如下所示：<br><img src="https://s2.ax1x.com/2019/08/28/mToqZq.png" alt><br>然后再做一次shift处理，将缓冲顶部的词挪到堆顶部：<br><img src="https://s2.ax1x.com/2019/08/28/mTTie1.png" alt><br><br>left-arc 和 right-arc做的事情是通过在左侧或右侧添加词作为依赖项（dependent）来附加判断。<br>对 left-arc 做的事情是：我们说栈中第二个顶部元素是栈的顶部元素的依赖项（dependent），即 I 是 ate 的依赖项（dependent）， 然后把这个依赖项（dependent）从这个栈中拿走，这就是 left-arc 操作：<br><img src="https://s2.ax1x.com/2019/08/28/mTTlwt.png" alt><br>下面再做一次shift，把fish放到栈里：<br><img src="https://s2.ax1x.com/2019/08/28/mTT8Ff.png" alt><br>对 right-arc ，规定栈的顶部元素是栈的第二顶部元素的一个依赖项（dependent），把顶部项移走之后增加一个弧，比如：fish 是 ate 的依赖项（dependent）具体操作如下：<br><img src="https://s2.ax1x.com/2019/08/28/mTTaOs.png" alt><br>再做一次right-arc，即 ate 是 root 的依赖项。<br><img src="https://s2.ax1x.com/2019/08/28/mTTBT0.png" alt><br><br>将 ate 从堆中弹出，然后就只剩下 root 在堆中，我们就得到了一个新的依存关系，就是 ate 是 root 的依赖项（dependent）。<br>最后，栈（stack）里只有一个 root 缓冲为空，这就是正确分析句子后想要达到的一个状态。<br><br>在实际情况中，无论任何时候使用基于转换的依存分析方法，都会有一定的内容存在于栈中。<br>Nivre提出需要做一个机器学习的分类器，鉴于已经有树库来做句子的分析，那就可以用这些句子的分析来看哪种操作序列给出正确的句子分析。<br>简而言之，假如你有一个经过树库标注的句子，就可以完成上述 shift，left-arc，right-arc的操作，因为这个操作序列是唯一的，对于每个树库来说都有一个操作序列给出一个正确的句子结构。[Nivre等人使用卷积机器学习分类器]<br><br>## 使用什么来做特征<br><br>在传统模型中，会把所有的词都考虑进去，然后看栈顶端的词是什么，那个词的词性是什么，缓冲的第一个词是什么，它的词性是什么，再看一下栈顶的词之后的词是一件好事，是什么词，词性是什么，并且在缓冲区做同样的事，所以你在看一堆词，看这些词的归属，比如词性，这就给了你一堆特征，这就是传统机器学习中经典的稀疏特征。人们通过这些特征来构建分类器。<br><br>最简单的模型是Nivre发明的，NO search 模型。<br>仅仅拿到下一个词，然后测试分类器，比如：这个是动词的宾语，下个词是名词性修饰语，然后继续做出这些判断。<br><br>## 依存分析的评估<br><br>假如给定如下的句子：<br><img src="https://s2.ax1x.com/2019/08/28/mTTTfO.png" alt><br>依存分析的评估方法就是，对每个词我们都说它的依赖项是什么，实际做的是选择每个词的依赖项是什么，从树库中得到的答案如下：<br><img src="https://s2.ax1x.com/2019/08/28/mTTb1e.png" alt><br>通常有两种方式来进行评估：<br>1.仅看箭头，忽略标签（UAS），未标记准确率；<br>2.使用标签，并且规定只有当标签正确时结果才是正确的（LAS）。<br><br>## 神经依存分析（Neural Dependency Parsing）<br><br><font color="#0099FF">这个部分的主要内容来自Manning的论文，此处的笔记过多的写详细内容，后续会进行相应的补充。</font>
+
+<p>课程主要讨论的是基于转换的贪心神经依存分析器（greedy, transition-based neural dependency parsers），这种方法已经证实比传统的特征判别依存分析器（ traditional<br>feature-based discriminative dependency parsers）更好且更高效。课程中讨论的模型和先前的各类模型相比是依赖于密集特征表示，而不是稀疏特征表示。</p>
+<p>转换主要使用arc-standard，即上述栈表示的依存转换方法。最终，该模型的目的是预测从某个初始配置c到终端配置的转换序列，其中对依赖解析树进行编码。由于该模型是贪婪的，它试图根据从当前配置c=(δ，β，A)中提取的特征，一次正确地预测一个转换T∈{Shift、Left-Arc、Rid-Arc}。定义，δ是栈，β是缓冲，A是给定句子的依赖弧（dependency arcs）。</p>
+<h3 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h3><p>由于期望模型的复杂性，定义神经网络的输入时具有灵活性。一个给定的句子S通常包含某些子集（some subset）：<br><img src="https://s2.ax1x.com/2019/08/28/mT7K9U.png" alt></p>
+<p>对于每一个特征累心难过，我们都有一个对应的嵌入矩阵，通过特征的one-hot编码的映射到一个d维的密集向量表示。嵌入矩阵Sword是E^w∈R^dxNw，其中Nw是词典的大小。相应地，POS和标签嵌入矩阵是 E^t∈R^dxNt 以及 E^l∈R^dxNl，其中 Nt 和 Nl 是 POS标签（tags）和arc labels。<br>放一段原文(来自cs224n 2017年版讲义)来对应一下符号问题：<br><img src="https://s2.ax1x.com/2019/08/28/mT7wge.png" alt><br>最后，将每组特征中选择的元素数分别表示为 nword 、 ntag 和 nLabel 。</p>
+<h3 id="特征选择样例"><a href="#特征选择样例" class="headerlink" title="特征选择样例"></a>特征选择样例</h3><p>1.Sword：栈顶和缓冲区顶部的三个词汇：s1,s2,s3,b1,b2,b3。堆栈中前两个单词的第一个和第二个最左/最右边的子单词：lc1(si)，rc1(si)，lc2（si），rc2(si)，i=1,2。最左边/最右边的两个单词最左边/最右边的两个单词在堆栈上：lc1(lc1(si)),rc1(rc1(si))，i=1,2。所以，Sword总的包含nw有18个元素。<br>2.Stag：对应POS tags的Stag，所以nt=18。<br>3.Slabel：对应单词的弧标签，不包括堆栈/缓冲区中的这6个单词（nl=12）。<br>老规矩，放原图：<br><img src="https://i.loli.net/2019/08/28/lHZBqN1svwf2K3m.png" alt></p>
+<p>请注意，对于不存在的元素，我们使用了一个特殊的Null令牌：当堆栈和缓冲区为空或尚未被赋值时。对于一个给定的句子样例，我们选择这个词，提供上面定义的示意图的pos标签（POS tags）和弧标签（arc labels），通过嵌入矩阵E^w，E^t和E^l生成对应的密集特征表示，然后将这些向量放入输入中 [x^w，x^t，x^l]。在训练时，反向传播到密集向量表示，以及在后面的层参数。</p>
+<h3 id="前馈神经网络模型（Feedforward-Neural-Network-Model）"><a href="#前馈神经网络模型（Feedforward-Neural-Network-Model）" class="headerlink" title="前馈神经网络模型（Feedforward Neural Network Model）"></a>前馈神经网络模型（Feedforward Neural Network Model）</h3><p>这个神经网络包含了一个输入层 [x^w，x^t，x^l]，一个隐藏层，还有一个softmax层附带一个交叉损失函数。具体结构如下：<br><img src="https://i.loli.net/2019/08/28/MlLeJFI2RPaS98D.png" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/28/cs224n-Lecture-6-依存分析/" data-id="cktfedoy4003af4ukq3bngrxf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/09/05/cs224n-Lecture-7-TensorFlow入门/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          cs224n-Lecture 7 TensorFlow入门
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/17/Softmax的交叉熵损失函数求导推导/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Softmax的交叉熵损失函数求导推导</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

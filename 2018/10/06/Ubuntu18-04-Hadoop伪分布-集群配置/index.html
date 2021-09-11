@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Ubuntu18.04 Hadoop伪分布/集群配置 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这篇文章，从实际角度来说应该叫做：当你的老师给了你一份从头错到尾的配置文件以后……配置文件是错的，那就只能自己认真(瞎)搞了呗，从早上一睁眼配到下午快吃饭（超大声）除去中间摸鱼的时间（小声哔哔）。">
+<meta name="keywords" content="大数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu18.04 Hadoop伪分布&#x2F;集群配置">
+<meta property="og:url" content="http://yoursite.com/2018/10/06/Ubuntu18-04-Hadoop伪分布-集群配置/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="这篇文章，从实际角度来说应该叫做：当你的老师给了你一份从头错到尾的配置文件以后……配置文件是错的，那就只能自己认真(瞎)搞了呗，从早上一睁眼配到下午快吃饭（超大声）除去中间摸鱼的时间（小声哔哔）。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb8741707e81.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87477ad01d.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb8753fdaeb9.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87587534c2.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87606e48cd.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87678d487c.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb876b8d87b0.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb877ced4283.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87857112a0.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb878a7b6fea.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb8795a99cdf.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb8799adbe3b.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb879c625828.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb879f3e80e1.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87a6c652fe.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87ab4ddc2f.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87ad8bd255.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87b26b222d.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87b5ab16c6.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87b74eb3ed.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87beba58e8.png">
+<meta property="og:image" content="https://i.loli.net/2018/10/06/5bb87d6ee3412.png">
+<meta property="og:updated_time" content="2018-10-06T09:20:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ubuntu18.04 Hadoop伪分布&#x2F;集群配置">
+<meta name="twitter:description" content="这篇文章，从实际角度来说应该叫做：当你的老师给了你一份从头错到尾的配置文件以后……配置文件是错的，那就只能自己认真(瞎)搞了呗，从早上一睁眼配到下午快吃饭（超大声）除去中间摸鱼的时间（小声哔哔）。">
+<meta name="twitter:image" content="https://i.loli.net/2018/10/06/5bb8741707e81.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Ubuntu18-04-Hadoop伪分布-集群配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/06/Ubuntu18-04-Hadoop伪分布-集群配置/" class="article-date">
+  <time datetime="2018-10-06T08:25:51.000Z" itemprop="datePublished">2018-10-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Ubuntu18.04 Hadoop伪分布/集群配置
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-环境配置"><span class="toc-number">1.</span> <span class="toc-text">Java 环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#从官网下载JDK1-8并解压"><span class="toc-number">1.1.</span> <span class="toc-text">从官网下载JDK1.8并解压</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置Java1-8为全局变量"><span class="toc-number">1.2.</span> <span class="toc-text">设置Java1.8为全局变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置默认JDK"><span class="toc-number">1.3.</span> <span class="toc-text">设置默认JDK</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hadoop配置相关操作"><span class="toc-number">2.</span> <span class="toc-text">Hadoop配置相关操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本配置"><span class="toc-number">2.1.</span> <span class="toc-text">基本配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#伪分布模式配置"><span class="toc-number">2.2.</span> <span class="toc-text">伪分布模式配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行伪分布模式示例"><span class="toc-number">2.3.</span> <span class="toc-text">运行伪分布模式示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置YARN"><span class="toc-number">2.4.</span> <span class="toc-text">配置YARN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hadoop集群搭建"><span class="toc-number">2.5.</span> <span class="toc-text">Hadoop集群搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#设置host"><span class="toc-number">2.5.1.</span> <span class="toc-text">设置host</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#设置SSH免密码登录"><span class="toc-number">2.5.2.</span> <span class="toc-text">设置SSH免密码登录</span></a></li></ol></li></ol></li></ol>
+		  </div>
+		
+        <p>这篇文章，从实际角度来说应该叫做：当你的老师给了你一份从头错到尾的配置文件以后……<br>配置文件是错的，那就只能自己认真(瞎)搞了呗，从早上一睁眼配到下午快吃饭（超大声）除去中间摸鱼的时间（小声哔哔）。</p>
+<a id="more"></a>
+<p><b>下面正文</b></p>
+<p>虚拟机：Ubuntu 18.04<br>Java版本：1.8.0_181<br>Hadoop版本：2.7.7</p>
+<h2 id="Java-环境配置"><a href="#Java-环境配置" class="headerlink" title="Java 环境配置"></a>Java 环境配置</h2><h3 id="从官网下载JDK1-8并解压"><a href="#从官网下载JDK1-8并解压" class="headerlink" title="从官网下载JDK1.8并解压"></a>从官网下载JDK1.8并解压</h3><p>这里放在Desktop上<br><img src="https://i.loli.net/2018/10/06/5bb8741707e81.png" alt><br>然后在终端输入命令，这里要注意路径问题，这里暂时还没切换到root权限<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -zxvf /home/willard/Desktop/jdk-<span class="number">8</span>u181-linux-x64.tar.gz -C /usr/<span class="class"><span class="keyword">lib</span>/<span class="title">jvm</span></span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87477ad01d.png" alt></p>
+<p>P.S.后面的操作均以<b>root</b>来执行。</p>
+<h3 id="设置Java1-8为全局变量"><a href="#设置Java1-8为全局变量" class="headerlink" title="设置Java1.8为全局变量"></a>设置Java1.8为全局变量</h3><p>使用vim打开这个文件<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="keyword">vim</span> /etc/<span class="keyword">profile</span></span><br></pre></td></tr></table></figure></p>
+<p>没有安装vim可以先执行下面的命令安装好vim<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="builtin-name">get</span> install vim</span><br></pre></td></tr></table></figure></p>
+<p>使用vim打开以后往里面写入下面的内容<br><b>注意</b>：JAVA_HOME这里是写之前解压的jdk安装包路径，根据下载的版本写<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">export</span> <span class="attribute">JAVA_HOME</span>=/usr/lib/jvm/jdk1.8.0_181</span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">JRE_HOME</span>=<span class="variable">$JAVA_HOME</span>/jre </span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">CLASSPATH</span>=.:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH </span><br><span class="line"><span class="builtin-name">export</span> <span class="attribute">PATH</span>=<span class="variable">$JAVA_HOME</span>/bin:$PATH</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb8753fdaeb9.png" alt></p>
+<p>保存之后执行下面命令<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">source</span> <span class="regexp">/etc/</span>profile</span><br></pre></td></tr></table></figure></p>
+<p>查看当前Java环境<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -<span class="built_in">version</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87587534c2.png" alt></p>
+<p>如图所示即为配置成功。</p>
+<h3 id="设置默认JDK"><a href="#设置默认JDK" class="headerlink" title="设置默认JDK"></a>设置默认JDK</h3><p>直接执行下面的命令，同样要注意文件路径等问题<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo update-alternatives --install /usr/bin/java java /usr/<span class="class"><span class="keyword">lib</span>/<span class="title">jvm</span>/<span class="title">jdk1</span>.8.0<span class="title">_181</span>/<span class="title">bin</span>/<span class="title">java</span> 300</span></span><br><span class="line">sudo update-alternatives --install /usr/bin/javac javac /usr/<span class="class"><span class="keyword">lib</span>/<span class="title">jvm</span>/<span class="title">jdk1</span>.8.0<span class="title">_181</span>/<span class="title">bin</span>/<span class="title">javac</span> 300</span></span><br><span class="line">sudo update-alternatives --install /usr/bin/jar jar /usr/<span class="class"><span class="keyword">lib</span>/<span class="title">jvm</span>/<span class="title">jdk1</span>.8.0<span class="title">_181</span>/<span class="title">bin</span>/<span class="title">jar</span> 300</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87606e48cd.png" alt></p>
+<p>最后执行,如果本机环境只有这一个Java版本也无所谓~<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="keyword">update</span>-alternatives <span class="comment">--config java</span></span><br><span class="line">sudo <span class="keyword">update</span>-alternatives <span class="comment">--config javac</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="Hadoop配置相关操作"><a href="#Hadoop配置相关操作" class="headerlink" title="Hadoop配置相关操作"></a>Hadoop配置相关操作</h2><h3 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h3><p>首先把下载的安装包放在Ubuntu18.4的桌面上<br><img src="https://i.loli.net/2018/10/06/5bb87678d487c.png" alt></p>
+<p>然后执行命令<br>(1)解压<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tar -zxf <span class="regexp">/home/</span>willard<span class="regexp">/Desktop/</span>hadoop-<span class="number">2.7</span>.<span class="number">7</span>.tar.gz -C <span class="regexp">/usr/</span>local<span class="regexp">/hadoop</span></span><br></pre></td></tr></table></figure></p>
+<p>(2)修改权限<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R root <span class="string">./hadoop</span></span><br></pre></td></tr></table></figure></p>
+<p>(3)验证hadoop<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./bin/hadoop</span> <span class="keyword">version</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb876b8d87b0.png" alt><br>这样表示成功。</p>
+<h3 id="伪分布模式配置"><a href="#伪分布模式配置" class="headerlink" title="伪分布模式配置"></a>伪分布模式配置</h3><p>Hadoop默认为单机模式，可通过配置为伪分布模式。<br>修改 \/usr/local/hadoop/etc/hadoop 下面的几个文件</p>
+<p>执行命令<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">vim</span> <span class="selector-tag">core-site</span><span class="selector-class">.xml</span></span><br></pre></td></tr></table></figure></p>
+<p>然后再文件里面写入<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">&lt;configuration&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>hadoop.tmp.dir<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>file:<span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/hadoop/</span>tmp<span class="params">&lt;/value&gt;</span></span><br><span class="line">             <span class="params">&lt;description&gt;</span>Abase for other temporary directories.<span class="params">&lt;/description&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>fs.defaultFS<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>hdfs:<span class="comment">//localhost:9000&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line"><span class="params">&lt;/configuration&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>执行命令<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">vim</span> <span class="selector-tag">hdfs-site</span><span class="selector-class">.xml</span></span><br></pre></td></tr></table></figure></p>
+<p>再在文件里面写入</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="params">&lt;configuration&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>dfs.replication<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span><span class="number">1</span><span class="params">&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>dfs.namenode.name.dir<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>file:<span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/hadoop/</span>tmp<span class="meta-keyword">/dfs/</span>name<span class="params">&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line">        <span class="params">&lt;property&gt;</span></span><br><span class="line">             <span class="params">&lt;name&gt;</span>dfs.datanode.data.dir<span class="params">&lt;/name&gt;</span></span><br><span class="line">             <span class="params">&lt;value&gt;</span>file:<span class="meta-keyword">/usr/</span>local<span class="meta-keyword">/hadoop/</span>tmp<span class="meta-keyword">/dfs/</span>data<span class="params">&lt;/value&gt;</span></span><br><span class="line">        <span class="params">&lt;/property&gt;</span></span><br><span class="line"><span class="params">&lt;/configuration&gt;</span></span><br></pre></td></tr></table></figure>
+<p>修改完毕以后执行,这条命令在/usr/local/hadoop下执行<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./<span class="keyword">bin/hdfs </span>namenode -format</span><br></pre></td></tr></table></figure></p>
+<p>执行完毕后再在改目录下面执行<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.<span class="regexp">/sbin/</span>start-dfs.sh</span><br></pre></td></tr></table></figure></p>
+<p>然后运行<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">jps</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb877ced4283.png" alt></p>
+<p>出现的结点数均正确，OK，完成。</p>
+<h3 id="运行伪分布模式示例"><a href="#运行伪分布模式示例" class="headerlink" title="运行伪分布模式示例"></a>运行伪分布模式示例</h3><p>创建hadoop用户，这里我直接设置root<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.<span class="regexp">/bin/</span>hdfs dfs -mkdir -p <span class="regexp">/user/</span>root</span><br></pre></td></tr></table></figure></p>
+<p>创建input文件夹</p>
+<figure class="highlight hsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/hdfs dfs -<span class="keyword">mkdir</span> <span class="keyword">input</span></span><br></pre></td></tr></table></figure>
+<p>把本地文件复制到HDFS中<br><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/hdfs dfs -put ./etc/hadoop/*.<span class="keyword">xml</span> <span class="title">input</span></span><br></pre></td></tr></table></figure></p>
+<p>查看文件列表<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/hdfs dfs -<span class="keyword">ls</span> <span class="keyword">input</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87857112a0.png" alt></p>
+<p>OK，文件复制成功，继续执行下面的命令</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.<span class="regexp">/bin/</span>hadoop jar .<span class="regexp">/share/</span>hadoop<span class="regexp">/mapreduce/</span>hadoop-mapreduce-examples-*.jar <span class="keyword">grep</span> input output <span class="string">'dfs[a-z.]+'</span></span><br></pre></td></tr></table></figure>
+<p><b>然鹅！！！！这里报错了！！！</b><br>错误长酱紫的…(没有报错的不用看下面的)</p>
+<p><img src="https://i.loli.net/2018/10/06/5bb878a7b6fea.png" alt></p>
+<p><b>报错原因</b><br>Hadoop集群yarn-site.xml配置错误：<br>默认情况下yarn ResourceManager 相关服务IP地址指向的是0.0.0.0。<br>而在服务器中，0.0.0.0指的是本机网络地址，那么NodeManager就会在本机找ResourceManager相关服务，而slave节点上并没有这些服务，这些服务在ResourceManager Master节点上。所以针对Hadoop集群配置yare-site.xml某些配置项不能使用默认配置。<br>注意：hadoop伪分布式可以使用默认配置，因为所有服务都在本地运行。</p>
+<p><b>解决办法</b></p>
+<p>修改所有节点上yare-site.xml配置文件(这个文件在/usr/local/hadoop/etc/hadoop下面)，在该文件中配置ResourceManager Master节点所在地址即可解决问题。详细配置信息如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hadoopMaster:8032<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.scheduler.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span> hadoopMaster:8030<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.resource-tracker.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span> hadoopMaster:8031<span class="tag">&lt;/<span class="name">value</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>修改完这些以后重新运行：<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.<span class="regexp">/bin/</span>hadoop jar .<span class="regexp">/share/</span>hadoop<span class="regexp">/mapreduce/</span>hadoop-mapreduce-examples-*.jar <span class="keyword">grep</span> input output <span class="string">'dfs[a-z.]+'</span></span><br></pre></td></tr></table></figure></p>
+<p>最后的结果应该是这样：</p>
+<p><img src="https://i.loli.net/2018/10/06/5bb8795a99cdf.png" alt></p>
+<p>查看运行结果<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./<span class="keyword">bin/hdfs </span>dfs -cat output<span class="comment">/*</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb8799adbe3b.png" alt></p>
+<p>将运行结果放到本地文件夹<br><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./<span class="keyword">bin/hdfs </span>dfs -<span class="meta">get</span> output ./output</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb879c625828.png" alt></p>
+<p>删除HDFS中的output文件夹</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./<span class="keyword">bin/hdfs </span>dfs -rm -r output</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.loli.net/2018/10/06/5bb879f3e80e1.png" alt></p>
+<h3 id="配置YARN"><a href="#配置YARN" class="headerlink" title="配置YARN"></a>配置YARN</h3><p>首先进入到 \/usr/local/hadoop/etc/hadoop 下面<br>直接vim新建一个文件，不改名了，直接<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">vim</span> <span class="selector-tag">mapred-site</span><span class="selector-class">.xml</span></span><br></pre></td></tr></table></figure></p>
+<p>在里面加入内容<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>修改yarn-site.xml，vim YARN-SITE.XML</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">             <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行（在这之前先运行./sbin/start-dfs.sh）<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.<span class="regexp">/sbin/</span>start-yarn.sh</span><br></pre></td></tr></table></figure></p>
+<p>再运行jsp查看<br><img src="https://i.loli.net/2018/10/06/5bb87a6c652fe.png" alt></p>
+<p>配置YARN成功应该显示NodeManager和ResourceManager</p>
+<h3 id="Hadoop集群搭建"><a href="#Hadoop集群搭建" class="headerlink" title="Hadoop集群搭建"></a>Hadoop集群搭建</h3><h4 id="设置host"><a href="#设置host" class="headerlink" title="设置host"></a>设置host</h4><p>首先把之前配置好的虚拟机克隆一份作为slave1<br>ifconfig，查看两台机器的ip地址<br>master：192.168.242.138</p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87ab4ddc2f.png" alt></p>
+<p>slave1：192.168.242.141</p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87ad8bd255.png" alt></p>
+<p>然后在两台机器里<b>分别</b>执行下面的命令，并写入相同的文件<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="regexp">/etc/</span>hosts</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87b26b222d.png" alt></p>
+<p>注意：两台机器都要写！！!</p>
+<p>完成上述步骤之后两台虚拟机之间需要相互ping一下对方的ip地址，比如这样</p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87b5ab16c6.png" alt></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87b74eb3ed.png" alt></p>
+<h4 id="设置SSH免密码登录"><a href="#设置SSH免密码登录" class="headerlink" title="设置SSH免密码登录"></a>设置SSH免密码登录</h4><p>1.以下操作现在master节点上运行</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cd</span> ~<span class="string">/.ssh</span></span><br><span class="line">rm <span class="string">./id_rsa</span>*      因为之前建过rsa key，所以需要先删除之前建好的</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">cat <span class="string">./id_rsa.pub</span> &gt;&gt; <span class="string">./authorized_keys</span></span><br></pre></td></tr></table></figure>
+<p>运行完之后验证：ssh master</p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87beba58e8.png" alt></p>
+<p>2.将MASTER的公钥分发给SLAVE1节点</p>
+<p><b>这里巨坑！！！天坑！！！坑死我了！！！</b></p>
+<p>这里如果直接执行命令，那就等着报错吧！！！<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp id_rsa.pub root<span class="variable">@192</span>.<span class="number">168.242</span>.<span class="number">141</span><span class="symbol">:~/</span>.ssh/authorized_keys</span><br></pre></td></tr></table></figure></p>
+<p>各种ssh permission denied…这里在执行上面的命令前要先修改一点东西，在slave1节点上改。<br>执行命令<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="regexp">/etc/</span>ssh<span class="regexp">/sshd_config</span></span><br></pre></td></tr></table></figure></p>
+<p>然后将其中的PermitRootLogin no修改为yes<br>PubkeyAuthentication yes修改为no<br>AuthorizedKeysFile .ssh/authorized_keys前面加上#屏蔽掉，<br>PasswordAuthentication no修改为yes</p>
+<p>保存退出以后，给slave1的root重新设个密码</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">sudo passwd root</span></span><br></pre></td></tr></table></figure>
+<p>然后执行下面的命令重启slave1的服务器<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo<span class="built_in"> service </span>ssh localhost</span><br></pre></td></tr></table></figure></p>
+<p>切换回master机器，再执行<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp id_rsa.pub root<span class="variable">@192</span>.<span class="number">168.242</span>.<span class="number">141</span><span class="symbol">:~/</span>.ssh/authorized_keys</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/10/06/5bb87d6ee3412.png" alt></p>
+<p>这才叫完成了~</p>
+<p>然后再进到slave1这边<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">cat</span> <span class="selector-tag">id_rsa</span><span class="selector-class">.pub</span> &gt;&gt; <span class="selector-tag">authorized_keys</span></span><br><span class="line"><span class="selector-tag">chmod</span> 600 <span class="selector-tag">authorized_keys</span>   设置权限</span><br><span class="line"><span class="selector-tag">chmod</span> 700 <span class="selector-tag">-R</span> <span class="selector-class">.ssh</span>  设置<span class="selector-class">.ssh</span>目录权限，这要在外层目录设置</span><br></pre></td></tr></table></figure></p>
+<p>完成这些以后在master就能免密ssh登录了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/06/Ubuntu18-04-Hadoop伪分布-集群配置/" data-id="cktfedoxq0022f4ukb5c94bjc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/11/28/Python文件转换-csv和json互转/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Python文件转换 csv/json/html
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/10/05/Python-读写csv文件相关操作/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python 读写csv文件相关操作</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

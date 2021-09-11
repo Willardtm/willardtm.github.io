@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n-Lecture-5 反向传播和项目建议 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="具体的项目建议我没有写下来，可以参看今年cs224n课程给出的项目列表">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n-Lecture-5 反向传播和项目建议">
+<meta property="og:url" content="http://yoursite.com/2019/08/15/cs224n-Lecture-5-反向传播和项目建议/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="具体的项目建议我没有写下来，可以参看今年cs224n课程给出的项目列表">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVALq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVVe0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVZwV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVnFU.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVuYF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVKW4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVll9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAV3O1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVGex.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVJw6.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVNFO.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVUYD.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVafe.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVwSH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAV0ld.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVB6A.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVsmt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVy0P.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVgk8.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAV2tS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVRfg.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVfpQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAV46s.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAV5Xn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVomq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/15/mAVT00.png">
+<meta property="og:updated_time" content="2019-08-14T19:01:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n-Lecture-5 反向传播和项目建议">
+<meta name="twitter:description" content="具体的项目建议我没有写下来，可以参看今年cs224n课程给出的项目列表">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/08/15/mAVALq.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-Lecture-5-反向传播和项目建议" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/15/cs224n-Lecture-5-反向传播和项目建议/" class="article-date">
+  <time datetime="2019-08-14T18:43:04.000Z" itemprop="datePublished">2019-08-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n-Lecture-5 反向传播和项目建议
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#两层神经网络和完整的反向传播"><span class="toc-number">1.</span> <span class="toc-text">两层神经网络和完整的反向传播</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#以计算图来理解反向传播"><span class="toc-number">2.</span> <span class="toc-text">以计算图来理解反向传播</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#以流动图理解反向传播"><span class="toc-number">3.</span> <span class="toc-text">以流动图理解反向传播</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实际神经网络中的误差信号"><span class="toc-number">4.</span> <span class="toc-text">实际神经网络中的误差信号</span></a></li></ol>
+		  </div>
+		
+        <p>具体的项目建议我没有写下来，可以参看今年cs224n课程给出的<a href="https://web.stanford.edu/class/cs224n/project.html" target="_blank" rel="noopener">项目列表</a></p>
+<a id="more"></a>
+<h2 id="两层神经网络和完整的反向传播"><a href="#两层神经网络和完整的反向传播" class="headerlink" title="两层神经网络和完整的反向传播"></a>两层神经网络和完整的反向传播</h2><p>· 相同的窗口定义<br>· 相同的得分函数<br>· 两个隐藏层<br><img src="https://s2.ax1x.com/2019/08/15/mAVALq.png" alt></p>
+<p> 主要工作：通过神经网络函数计算激活值，最后通过U.Ta(3)得到最终结果。<br>课堂提问：在最后一层用了一个线性层的原因是什么？<br>答案：为了让这里的数学计算简单一点，并且为了介绍另外一种目标函数。其中并不是每个值都要正则化然后让它们像概率一样加起来等于1。如果只是想从一大堆东西里把某一个挑出来（比如把处在中间的位置上的有命名的实体找出来），那么只要它的值高，就很可能是它；反之，值低，那就很可能不是在中央位置上。<br>从某个角度上，也可以在 s 计算完之后加上一个sigmoid函数，从而把得到的结果称为概率，然后在模型中使用标准的交叉熵损失。</p>
+<p>将上图左边的部分写为一个完整的式子：<br><img src="https://s2.ax1x.com/2019/08/15/mAVVe0.png" alt><br><img src="https://s2.ax1x.com/2019/08/15/mAVZwV.png" alt></p>
+<p>对W(2)的求导也是相同的：<br><img src="https://s2.ax1x.com/2019/08/15/mAVnFU.png" alt></p>
+<p>矩阵表示如下：<br><img src="https://s2.ax1x.com/2019/08/15/mAVuYF.png" alt></p>
+<p>其中:<br><img src="https://s2.ax1x.com/2019/08/15/mAVKW4.png" alt></p>
+<p>现在主要需要弄清楚的是：最底层穿进来的误差消息δ(2)是什么？<br>当已经求导到W(2)Tδ(3)，作为下一个从下而上的更新，如果是在前一个模型中，这就是会达到单词向量的那个信号，最终的单词向量更新就会定义为这样，接着通过链式法则再来一遍。<br><img src="https://s2.ax1x.com/2019/08/15/mAVll9.png" alt></p>
+<p>求导小trick：把这个值都看作标量，这就成了只有一个变量的函数（From Richard老师）。<br>然后就能得到δ(2)的值：<br><img src="https://s2.ax1x.com/2019/08/15/mAV3O1.png" alt></p>
+<p>最终求导结果如下：<br><img src="https://s2.ax1x.com/2019/08/15/mAVGex.png" alt><br>也就是说，如果想要计算进入到一个新层的误差信号的话，你就需要某个形式的更高层的权重W的转置乘上穿进来的误差信号。<br><img src="https://s2.ax1x.com/2019/08/15/mAVJw6.png" alt></p>
+<h2 id="以计算图来理解反向传播"><a href="#以计算图来理解反向传播" class="headerlink" title="以计算图来理解反向传播"></a>以计算图来理解反向传播</h2><p>这里的内容感觉有点类似之前吴恩达老师课程里讲反向传播的内容，<a href="http://klausvon.cn/2019/08/10/%E5%90%B4%E6%81%A9%E8%BE%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%8E%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Week-2-%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">原先写过的笔记中有相应的内容</a>,在计算图导数部分可以看到吴老师给出的反向传播演示。<br><img src="https://s2.ax1x.com/2019/08/15/mAVNFO.png" alt></p>
+<p>由上图中的计算，F就是损失函数，x,y,z就是这里的参数，目的是让损失函数最小化。<br>下面给出一个稍微复杂一点的计算图来理解反向传播：<br><img src="https://s2.ax1x.com/2019/08/15/mAVUYD.png" alt></p>
+<p>通常使用sigmoid的地方是某个隐层的激活函数，在多数情况下，x是函数输入，w是权重，假设我们想要计算函数关于其中所有的元素w和x的偏导数，假设x是2维的，w是3维的，然后w有一个额外的项作为偏置项。<br> 将所有的计算投影在计算图上，分解每一步操作，然后就可以计算梯度和每个节点的局部梯度。<br>计算图的反向传播过程：<br>Step 1：初始化是1，反向之后要对1/x求导，得到-1/(1.37)²*(1.00)<br><img src="https://s2.ax1x.com/2019/08/15/mAVafe.png" alt></p>
+<p>Step 2:<br><img src="https://s2.ax1x.com/2019/08/15/mAVwSH.png" alt></p>
+<p>Step 3:<br><img src="https://s2.ax1x.com/2019/08/15/mAV0ld.png" alt></p>
+<p>Step 4:<br><img src="https://s2.ax1x.com/2019/08/15/mAVB6A.png" alt></p>
+<font color="#0099ff">注：每一次局部梯度乘上全局梯度或者说是更高层传下来的梯度信号的时候，当相乘之后，就得到了这个位置的真实梯度，所以乘之前并不是真正的梯度。它们只是一些计算梯度用的中间值。<br></font>
+
+<p>除了上述操作之外，其实可以把计算路线上的这部分操作都合并在一起，作为路线上的一个节点。<br><img src="https://s2.ax1x.com/2019/08/15/mAVsmt.png" alt></p>
+<h2 id="以流动图理解反向传播"><a href="#以流动图理解反向传播" class="headerlink" title="以流动图理解反向传播"></a>以流动图理解反向传播</h2><p>对于相同的计算方式，如果x在流动图里分出了两条路线，那么根据多变量链式法则，需要把分别来自这两条路线局部的梯度信号加起来。<br><img src="https://s2.ax1x.com/2019/08/15/mAVy0P.png" alt><br>假如存在多条路径时，计算方式如下：<br><img src="https://s2.ax1x.com/2019/08/15/mAVgk8.png" alt><br>下面是更复杂的流程图示意：<br><img src="https://s2.ax1x.com/2019/08/15/mAV2tS.png" alt><br>神经网络视作流程图的一个实例，如下所示：<br><img src="https://s2.ax1x.com/2019/08/15/mAVRfg.png" alt><br>沿着运算图反向走的过程中更新各个参数。</p>
+<p>现在这些推导过程不需要手算，现存的软件包（比如tensorflow），可以自动推导梯度。<br><img src="https://s2.ax1x.com/2019/08/15/mAVfpQ.png" alt></p>
+<h2 id="实际神经网络中的误差信号"><a href="#实际神经网络中的误差信号" class="headerlink" title="实际神经网络中的误差信号"></a>实际神经网络中的误差信号</h2><p><img src="https://s2.ax1x.com/2019/08/15/mAV46s.png" alt><br>还是这张图，是否能把这张图表述成一个流动图或者计算路线的方法呢？<br>Step 1：<br><img src="https://s2.ax1x.com/2019/08/15/mAV5Xn.png" alt></p>
+<p>Step 2:<br><img src="https://s2.ax1x.com/2019/08/15/mAVomq.png" alt></p>
+<p>Step 3:<br><img src="https://s2.ax1x.com/2019/08/15/mAVT00.png" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/15/cs224n-Lecture-5-反向传播和项目建议/" data-id="cktfedoy30037f4ukau3ln7qb" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/15/吴恩达神经网络与深度学习-Week-3-学习记录/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          吴恩达神经网络与深度学习 Week-3 学习记录
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/14/cs224n-Lecture-4-Word-Window分类与神经网络/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">cs224n-Lecture-4 Word Window分类与神经网络</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

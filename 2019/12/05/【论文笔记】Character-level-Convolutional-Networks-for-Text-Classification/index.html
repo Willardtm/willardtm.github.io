@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>【论文笔记】Character-level Convolutional Networks for Text Classification | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本篇论文笔记基于《Character-level Convolutional Networks for Text Classification》。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【论文笔记】Character-level Convolutional Networks for Text Classification">
+<meta property="og:url" content="http://yoursite.com/2019/12/05/【论文笔记】Character-level-Convolutional-Networks-for-Text-Classification/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="本篇论文笔记基于《Character-level Convolutional Networks for Text Classification》。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/QGai28.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJAOpV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJEN7j.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJELEd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJEvCt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJAOpV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJELEd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJZznS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJmA5d.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJmcxx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJnkLT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJnwlt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJucDK.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJuvCj.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/06/QJKA54.png">
+<meta property="og:updated_time" content="2019-12-06T03:25:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【论文笔记】Character-level Convolutional Networks for Text Classification">
+<meta name="twitter:description" content="本篇论文笔记基于《Character-level Convolutional Networks for Text Classification》。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/12/05/QGai28.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-【论文笔记】Character-level-Convolutional-Networks-for-Text-Classification" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/05/【论文笔记】Character-level-Convolutional-Networks-for-Text-Classification/" class="article-date">
+  <time datetime="2019-12-05T13:43:19.000Z" itemprop="datePublished">2019-12-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【论文笔记】Character-level Convolutional Networks for Text Classification
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前期知识补充"><span class="toc-number">1.</span> <span class="toc-text">前期知识补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文本分类"><span class="toc-number">1.1.</span> <span class="toc-text">文本分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#机器学习"><span class="toc-number">1.2.</span> <span class="toc-text">机器学习</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#论文主要内容"><span class="toc-number">2.</span> <span class="toc-text">论文主要内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#模型主要模块"><span class="toc-number">2.1.</span> <span class="toc-text">模型主要模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符量化"><span class="toc-number">2.2.</span> <span class="toc-text">字符量化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模型设计"><span class="toc-number">2.3.</span> <span class="toc-text">模型设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#比较模型"><span class="toc-number">2.4.</span> <span class="toc-text">比较模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#大规模的数据集和结果"><span class="toc-number">2.5.</span> <span class="toc-text">大规模的数据集和结果</span></a></li></ol></li></ol>
+		  </div>
+		
+        <p>本篇论文笔记基于《Character-level Convolutional Networks for Text Classification》。<br><a id="more"></a></p>
+<font color="red"><b>注：笔记学习参考深度之眼人工智能Paper训练营NLP方向第九课时课程。</b></font>
+
+<h2 id="前期知识补充"><a href="#前期知识补充" class="headerlink" title="前期知识补充"></a>前期知识补充</h2><h3 id="文本分类"><a href="#文本分类" class="headerlink" title="文本分类"></a>文本分类</h3><p>文本分类就是根据文本内容将其分到合适的类别。</p>
+<p>文本分类发展历史如下：<br><img src="https://s2.ax1x.com/2019/12/05/QGai28.png" width="700" height="300"></p>
+<h3 id="机器学习"><a href="#机器学习" class="headerlink" title="机器学习"></a>机器学习</h3><p>人工特征工程：<br>1.设计特征<br>(1) 统计词表内所有词在文本中出现的频率；<br>(2 )计算词表中每个词在文本中的TF-IDF；<br>(3) 统计N-gram词组信息；</p>
+<p>2.特征选择和特征降维<br>(1) 信息增益，互信息等；<br>(2) PCA,SVD；</p>
+<p>浅层分类模型：<br>SVM，KNN，决策树。</p>
+<p>注：一般机器学习的方法可以作为baseline来体现深度学习的优势。</p>
+<h2 id="论文主要内容"><a href="#论文主要内容" class="headerlink" title="论文主要内容"></a>论文主要内容</h2><h3 id="模型主要模块"><a href="#模型主要模块" class="headerlink" title="模型主要模块"></a>模型主要模块</h3><p>主要组件是时间卷积模块，它简单地计算一维卷积。<br>假如有一个离散输入函数：<br><img src="https://s2.ax1x.com/2019/12/06/QJAOpV.png" width="150" height="80"><br>还有一个离散的核函数：<br><img src="https://s2.ax1x.com/2019/12/06/QJEN7j.png" width="150" height="80"><br>然后卷积：<br><img src="https://s2.ax1x.com/2019/12/06/QJELEd.png" width="200" height="150"><br>是基于f(x)和g(x)之间，并且步长d定义为：<br><img src="https://s2.ax1x.com/2019/12/06/QJEvCt.png" width="250" height="200"><br>其中c=k-d+1是一个偏移常量。正如在视觉中的传统卷积网络中一样，模块通过一组内容函数fij(x)(i=1,2,…,m和j=1,2,…,n)我们称之为权重，在一组输入gi(x)和输出hj(y)上进行参数化，我们调用每个gi(或hj)输入(或输出)功能，以及m(或n)输入(或输出)功能大小。输出hj(y)是通过gi(x)和fij(x)之间的卷积的总和来获得的。</p>
+<p>另一个帮助训练更深层次模型的关键模块是最大池化，它是计算机视觉中使用的最大池化模块的1维版本，给定离散输入函数：<br><img src="https://s2.ax1x.com/2019/12/06/QJAOpV.png" width="150" height="80"><br>g(x)的最大池化函数：<br><img src="https://s2.ax1x.com/2019/12/06/QJELEd.png" width="200" height="150"><br>可以定义为：<br><img src="https://s2.ax1x.com/2019/12/06/QJZznS.png" width="250" height="200"><br>其中c=k-d+1是偏移常量。这个极池化的模块允许我们训练卷积网络深度超过6层，而其他的都失败了。</p>
+<p>模型中使用的非线性是整流器或阈值函数 h(x)=max{0,x}，它使得卷积层类似于整流线性单元（ReLU）。使用的算法是具有128个小批量的随机梯度下降，使用动量0.9和初始步长0.01，每3个时间段减半，持续10次。每个时期采用固定数量的随机训练样本，这些样本在类之间均匀采样。</p>
+<h3 id="字符量化"><a href="#字符量化" class="headerlink" title="字符量化"></a>字符量化</h3><p>作者的模型接受一系列编码字符作为输入。通过为输入语言规定大小为m的字母表来完成编码，然后使用1-m编码（或“one-hot”编码）对每个字符进行量化。然后，将字符序列转换为具有固定长度的这种m大小的向量的序列。任何超过长度的字符都将被忽略，并且包含空白字符的字母表中不包含的任何字符都将被量化为全零向量。字符量化顺序是向后的，因此最新的字符读取始终位于输出的开头附近，使得完全连接的图层可以轻松地将权重与最新读数相关联。</p>
+<p>模型中所有的字母都是是70个字符构成的，包括26个英文字母，10个数字，33个其他字符和其他新行字符。<br><img src="https://s2.ax1x.com/2019/12/06/QJmA5d.png" width="600" height="200"></p>
+<h3 id="模型设计"><a href="#模型设计" class="headerlink" title="模型设计"></a>模型设计</h3><p>作者设计了两个卷积网络，一个大型一个小型，它们都是9层深，有6个卷积层和3个完全连接的层。<br><img src="https://s2.ax1x.com/2019/12/06/QJmcxx.png" width="800" height="500"></p>
+<p>由于我们的字符量化方法，输入的特征数等于70，输入特征长度为1014。似乎1014个字符已经可以捕获大部分感兴趣的文本。我们还在3个完全连接的层之间插入2个dropout模块以进行规范化。他们的dropout概率为0.5。下面列出了卷积层的配置，卷积层步长均为1：<br><img src="https://s2.ax1x.com/2019/12/06/QJnkLT.png" width="800" height="500"><br>作者使用高斯分布初始化权重。用于初始化大型模型的平均值和标准偏差为(0,0.02)和小模型(0,0.05)。<br>下图列出了全连接层的配置：<br><img src="https://s2.ax1x.com/2019/12/06/QJnwlt.png" width="800" height="400"><br>对于不同的问题，输入长度可能不同（例如在我们的情况下为lo=1014），帧长度也是如此。从我们的模型设计中，很容易知道给定输入长度lo，最后一个卷积层之后（但在任何完全连接的层之前）的输出帧长度是l6=(lo-96)/27。此数字乘以第6层的帧大小将给出第一个完全连接的层接受的输入维度。</p>
+<h3 id="比较模型"><a href="#比较模型" class="headerlink" title="比较模型"></a>比较模型</h3><p>作者使用传统的机器学习方法中的BOW还有TF-IDF模型以及深度学习中的LSTM来和他们提出的CovNet进行比较。<br>在基于词的CovNet中，其中一个差异是使用预训练或端到端学习单词表示的选择，作者提供了word2vec和查表的方式来比较。两种情况下的嵌入尺寸都是300维。</p>
+<h3 id="大规模的数据集和结果"><a href="#大规模的数据集和结果" class="headerlink" title="大规模的数据集和结果"></a>大规模的数据集和结果</h3><p>使用的数据集大小类别如下：<br><img src="https://s2.ax1x.com/2019/12/06/QJucDK.png" width="800" height="500"></p>
+<p>各个数据集在不同的模型上的结果：<br><img src="https://s2.ax1x.com/2019/12/06/QJuvCj.png" width="800" height="900"></p>
+<p>模型的对比误差如下：<br><img src="https://s2.ax1x.com/2019/12/06/QJKA54.png" width="800" height="600"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/12/05/【论文笔记】Character-level-Convolutional-Networks-for-Text-Classification/" data-id="cktfedoyg004af4ukdyqug2mv" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/09/【论文笔记】A-Convolutional-Neural-Network-for-Modelling-Sentences/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          【论文笔记】A Convolutional Neural Network for Modelling Sentences
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/27/【论文笔记】Convolutional-Neural-Networks-for-Sentence-Classification/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">【论文笔记】Convolutional Neural Networks for Sentence Classification</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

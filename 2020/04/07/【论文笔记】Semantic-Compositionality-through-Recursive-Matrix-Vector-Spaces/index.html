@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>【论文笔记】Semantic Compositionality through Recursive Matrix-Vector Spaces | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="EMNLP 2012 Semantic Compositionality through Recursive Matrix-Vector Spaces论文的代码实现：https://github.com/github-pengge/MV_RNN">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【论文笔记】Semantic Compositionality through Recursive Matrix-Vector Spaces">
+<meta property="og:url" content="http://yoursite.com/2020/04/07/【论文笔记】Semantic-Compositionality-through-Recursive-Matrix-Vector-Spaces/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="EMNLP 2012 Semantic Compositionality through Recursive Matrix-Vector Spaces论文的代码实现：https://github.com/github-pengge/MV_RNN">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s1.ax1x.com/2020/04/08/G2oYnI.png">
+<meta property="og:updated_time" content="2020-04-07T16:48:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【论文笔记】Semantic Compositionality through Recursive Matrix-Vector Spaces">
+<meta name="twitter:description" content="EMNLP 2012 Semantic Compositionality through Recursive Matrix-Vector Spaces论文的代码实现：https://github.com/github-pengge/MV_RNN">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/04/08/G2oYnI.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-【论文笔记】Semantic-Compositionality-through-Recursive-Matrix-Vector-Spaces" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/07/【论文笔记】Semantic-Compositionality-through-Recursive-Matrix-Vector-Spaces/" class="article-date">
+  <time datetime="2020-04-07T12:39:13.000Z" itemprop="datePublished">2020-04-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【论文笔记】Semantic Compositionality through Recursive Matrix-Vector Spaces
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+        <p>EMNLP 2012 Semantic Compositionality through Recursive Matrix-Vector Spaces<br>论文的代码实现：<a href="https://github.com/github-pengge/MV_RNN" target="_blank" rel="noopener">https://github.com/github-pengge/MV_RNN</a></p>
+<a id="more"></a>
+<h2 id="论文改进点"><a href="#论文改进点" class="headerlink" title="论文改进点"></a>论文改进点</h2><p>单个词向量模型能够成功学习到词汇信息。然而他们并不能获取长短语的组合信息，这一点阻碍了词向量理解语言的深层信息。<br>因此，本文提出了一个RNN模型，可以学习任意句法类型和长度的短语及句子的组合向量表示。</p>
+<h2 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h2><p>作者提出的模型为解析树上的每一个结点都分配了一个向量和一个矩阵：向量捕获成分的固有信息，而矩阵捕获其如何改变相邻单词或短语的含义。 如下图所示，每一个成分（一个单词或长短语）都有一个矩阵向量（Matrix-Vector,MV）表示。<br><img src="https://s1.ax1x.com/2020/04/08/G2oYnI.png" alt><br>Figure 1. 一个循环神经网络在一个树结构上学习短语中的语义表示。每个词和短语都是用一个向量和一个矩阵来进行表示，例如 very=(a,A)，其中，矩阵应用于相邻向量表示。相同的方式被重复应用以结合短语 very good 和 movie.</p>
+<p> 根据解析树的句法结构，递归地将单词组合起来，从下往上计算一个较长短语的表示。</p>
+<h2 id="模型-MV-RNN"><a href="#模型-MV-RNN" class="headerlink" title="模型-MV-RNN"></a>模型-MV-RNN</h2><p>从单个单词向量表示中构建多单词单元表示的主要方法是形成单个单词表示的线性组合，例如求和或加权平均值，这发生在信息检索和基于以下内容的各种文本相似性函数中 词汇相似性。 当文本的含义从字面上看是“其部分的总和”时，这些方法可以很好地工作，但是当单词充当修改另一个单词的含义的运算符时，这些方法将失败：无法将“extremely strong”的含义捕捉为 用词表示“extremely”和“strong”。</p>
+<p>最近的工作（截止至2012年）已经开始捕捉自然语言算子在语义向量空间中的行为，将它们建模为矩阵，而作者希望使用非线性函数来计算多单词短语或完整句子的组成含义表示。</p>
+<p>因此，MV-RNN结合了这两种思想的优点，方法是：<br>(1) 为每个单词分配一个向量和一个矩阵；<br>(2) 学习特定于输入的非线性合成函数，以计算任何语法类型的多词序列的向量和矩阵表示。</p>
+<p>将向量矩阵表示分配给所有单词，而不是只分配给一个词性类别的单词，可以获得更大的灵活性，从而有利于性能。如果单词缺乏运算符语义，则其矩阵可以是一个单位矩阵。 但是，如果某个单词主要充当运算符（例如“extremely”），则其向量可能会接近零，而其矩阵会获得清晰的运算符含义，从而在postive和negative两个方向上都放大了修饰词的含义 。</p>
+<h3 id="矩阵向量在自然词汇上的表示"><a href="#矩阵向量在自然词汇上的表示" class="headerlink" title="矩阵向量在自然词汇上的表示"></a>矩阵向量在自然词汇上的表示</h3><p>作者表示一个词使用了一个连续的向量和一个矩阵，初始化所有的向量 x ∈R[n] ，x是只有50维的经过预训练的词向量。<br>与其他基于局部共现的向量空间模型相似，得到的词向量捕获句法和语义信息。 每个单词也与矩阵X相关联。在所有的实验中，作者初始化矩阵 X=I+ε，加上了一小部分高斯噪声。如果向量维度是n，那么每个单词的矩阵维度就是 X ∈ R[n x n]。<br>尽管初始化是随机的，但随后将对向量和矩阵进行修改，以使一系列单词构成一个可以预测语义标签分布的向量。 此后，将长度为m的任何短语或句子表示为向量矩阵对((a，A),…,(m，M))的有序列表，其中每对词组或句子都是基于该位置的单词检索的 。</p>
+<h3 id="两个单词的组成模型"><a href="#两个单词的组成模型" class="headerlink" title="两个单词的组成模型"></a>两个单词的组成模型</h3><p>首先回顾两个词的组合功能。 为了从两个连续的单词及其各自的向量a和b计算父向量p，Mitchell和Lapata（2010）给出了它们最通用的函数：p = f(a，b，R，K)，其中R是 先验已知的句法关系，K是背景知识。<br>f有许多可能的功能。 对于我们的模型，p有一个约束，那就是它与每个输入向量具有相同的维数。 这样，我们可以轻松地将p与它的子级进行比较，并且p可以是另一个单词组成的输入。<br>我们将探索不需要任何人工设计的语义资源作为背景知识K的方法。不使用有关关系类型R的显式知识。 相反，我们希望模型通过学习的矩阵隐式捕获此信息。 我们提出以下取决于输入的组合功能：</p>
+<image src="https://s1.ax1x.com/2020/04/08/G2osjs.png" style="text-align:center;width:550px;height:80px;">
+
+<p>其中A和B是单个单词的矩阵，全局W∈R[n x 2n]，将两个映射的单词转换到相同的n维空间。</p>
+<p>逐元素函数g可以简单地是恒等函数，但作者改用非线性，例如sigmoid或双曲正切tanh。 这种非线性将使模型能够近似于除纯线性函数以外的更广泛的函数。 也可以在应用g之前添加一个偏差项，但是为了清楚起见，可以省略它。 将两个变换后的向量重写为一个向量z，我们得到p = g（W z），这是一个单层神经网络。 在此模型中，单词矩阵可以捕获特定于每个单词的自觉效果，而W可以捕获一般的组合功能。<br>该功能建立在文献上的几种最新模型的基础上并加以概括。 最相关的工作是（Mitchell和Lapata，2010年； Zanzotto等人，2010年），他们介绍并探索了词对的合成函数p = Ba + Ab，这个模型是式子2的一个特殊类型。当设置W=[II]（将两个初始化矩阵连接起来），g(x)=x。</p>
+<h3 id="多种词和短语的递归构成"><a href="#多种词和短语的递归构成" class="headerlink" title="多种词和短语的递归构成"></a>多种词和短语的递归构成</h3><p>主要思想是将相同的函数f应用于解析树中的成对成分。 为此，我们需要将短语或句子的二进制分析树作为输入，并在每个非终端父节点上计算矩阵。 函数f可以递归兼容（p具有与其子代相同的维数），因此可以很容易地用于短语向量。 为了计算非终结短语矩阵，定义函数：</p>
+<p><image src="https://s1.ax1x.com/2020/04/08/G2oIgJ.png" style="text-align:center;width:350px;height:80px;"><br>WM ∈ R [ n x 2n ]，所以 P ∈[n x n]，类似于每一个输入矩阵。</image></p>
+<h3 id="训练目标功能"><a href="#训练目标功能" class="headerlink" title="训练目标功能"></a>训练目标功能</h3><p>我们通过在每个父节点上添加一个简单的Softmax分类器来训练这些表示，以预测类分布，例如情感类或关系类：d(p)=softmax( W[label]p ).如果有K个标签，那么d∈R[K]，是一个K维的多项式分布。<br>对于下面的应用（excluding logic），为句子s及其树t最小化的相应误差函数E(s，t，θ)是所有节点处的交叉熵误差之和。</p>
+<h3 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h3><p><image src="https://s1.ax1x.com/2020/04/08/G2TPbt.png" style="text-align:center;width:300px;height:50px;"><br>将θ和λ向量作为规划饭的模型参数并应用到模型当中。L和LM是所有词向量和词矩阵。总体目标函数J的梯度变为：</image></p>
+<image src="https://s1.ax1x.com/2020/04/08/G2Tmvj.png" style="text-align:center;width:400px;height:80px;">
+
+<p>为了计算这个梯度，首先要自底向上计算所有的树结点(pi,Pi)，然后对每个节点的softmax分类器进行自顶向上求导。</p>
+<p>低秩矩阵近似</p>
+<p>如果每个单词都由n维向量表示，并且另外由n×n矩阵表示，则在n = 100的常用向量大小下，整个模型的维数可能会变得太大。为了减少参数的数量 ，我们通过以下低阶加对角线近似表示单词矩阵：</p>
+<p><image src="https://s1.ax1x.com/2020/04/08/G2TY24.png" style="text-align:center;width:300px;height:50px;"><br>U∈R[n x r]，V∈R[ r x n ] ，a∈R[n]，对于所有的实验，r=3。</image></p>
+<h3 id="讨论：评估和普遍性"><a href="#讨论：评估和普遍性" class="headerlink" title="讨论：评估和普遍性"></a>讨论：评估和普遍性</h3><p>合成向量空间的评估是一个复杂的任务。大多数相关工作将无监督模型的相似性判断与人类判断的相似性进行比较，并力求高度相关。这些评估可以提供重要的见解。但是，即使具有良好的相关性，问题仍然在于这些模型将如何在下游NLP任务（例如情感检测）上执行。作者通过让MV RNN在正确的上下文中预测单词来对通用矢量矩阵表示形式进行无监督学习的实验。使用这些一般表示来初始化模型并不能提高我们考虑的任务的性能。对于情感分析，这并不令人意外，因为由于局部句法上下文的高度相似性，反义词在从同现的无监督学习中经常会得到相似的向量。在实验中，较高的预测性能来自使用标记数据对含义表示进行监督学习。尽管这些表示形式是特定于任务的，但它们可以在多任务学习设置中的各个任务之间使用。但是，为了公平地与相关工作进行比较，仅使用每个任务的监督数据。</p>
+</image></image>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/07/【论文笔记】Semantic-Compositionality-through-Recursive-Matrix-Vector-Spaces/" data-id="cktfedoyr0059f4ukzrc2s7jx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/09/【论文笔记】Preemptive-Information-Extraction-using-Unrestricted-Relation-Discovery/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          【论文笔记】Preemptive Information Extraction using Unrestricted Relation Discovery
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/06/【论文笔记】Discovering-Relations-among-Named-Entities-from-Large-Corpora/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">【论文笔记】Discovering Relations among Named Entities from Large Corpora</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

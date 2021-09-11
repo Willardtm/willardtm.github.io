@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n-Lecture 7 TensorFlow入门 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这个章节就是一个TensorFlow的入门课，直接上TF框架吧。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n-Lecture 7 TensorFlow入门">
+<meta property="og:url" content="http://yoursite.com/2019/09/05/cs224n-Lecture-7-TensorFlow入门/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="这个章节就是一个TensorFlow的入门课，直接上TF框架吧。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmKV1O.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmKZcD.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmKUBj.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmKB40.png">
+<meta property="og:updated_time" content="2019-09-10T09:03:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n-Lecture 7 TensorFlow入门">
+<meta name="twitter:description" content="这个章节就是一个TensorFlow的入门课，直接上TF框架吧。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/09/05/nmKV1O.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-Lecture-7-TensorFlow入门" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/05/cs224n-Lecture-7-TensorFlow入门/" class="article-date">
+  <time datetime="2019-09-05T04:34:48.000Z" itemprop="datePublished">2019-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n-Lecture 7 TensorFlow入门
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TensorFlow中的计算图"><span class="toc-number">1.</span> <span class="toc-text">TensorFlow中的计算图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#定义损失函数"><span class="toc-number">2.</span> <span class="toc-text">定义损失函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#计算梯度"><span class="toc-number">3.</span> <span class="toc-text">计算梯度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建立训练步骤"><span class="toc-number">4.</span> <span class="toc-text">建立训练步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#训练模型"><span class="toc-number">5.</span> <span class="toc-text">训练模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用TensorFlow构建线性分类的基本步骤"><span class="toc-number">6.</span> <span class="toc-text">使用TensorFlow构建线性分类的基本步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用TensorFlow的完整版线性分类"><span class="toc-number">7.</span> <span class="toc-text">使用TensorFlow的完整版线性分类</span></a></li></ol>
+		  </div>
+		
+        <p>这个章节就是一个TensorFlow的入门课，直接上TF框架吧。<br><a id="more"></a></p>
+<h2 id="TensorFlow中的计算图"><a href="#TensorFlow中的计算图" class="headerlink" title="TensorFlow中的计算图"></a>TensorFlow中的计算图</h2><p>Tensorflow是一种图计算编程模型，它的中心思想是将数值运算以图的形式描述。<br>假如存在下列计算：<br><img src="https://s2.ax1x.com/2019/09/05/nmKV1O.png" alt></p>
+<p>下图所示的计算图就是上述式子的计算步骤：<br><img src="https://s2.ax1x.com/2019/09/05/nmKZcD.png" alt><br>W 和 b 是变量，除此之外，还有一个占位符用来表示x，图中的节点表示每一步操作。<br>注：占位符是那些在执行时间才会接收值得节点。</p>
+<p>变量将成为输出其当前值的有状态节点，在这个例子中 W 和 b 就是变量，它们是有状态的，他们保留多次执行过程中的当前值，将保存的值恢复到变量是很容易的，所以，变量有许多其他有用的特征，他们可以在训练过程以及训练后保存到硬盘中。</p>
+<p>假如在你的图中有依赖外部，但是并不想在建立图时依赖任何实际的值，这些就是在计算当中添加到模型中充当占位符的值。<br>所以，对于占位符，我们不给定任何初始化的值，仅仅分配一个数据类型，分配一种大小的张量。但是计算图仍然知道需要计算什么，尽管当前模型中并没有存储的值。<br>计算图中的计算节点则是调用tensorflow来进行计算，而不是直接使用numpy。</p>
+<p>上述计算通过Tensorflow编写如下：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env <span class="keyword">python</span></span><br><span class="line">#codin<span class="variable">g:utf</span>-<span class="number">8</span></span><br><span class="line"></span><br><span class="line">import tensorflow <span class="keyword">as</span> <span class="keyword">tf</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">b</span>=<span class="keyword">tf</span>.Variable(<span class="keyword">tf</span>.zeros(<span class="number">100</span>,))</span><br><span class="line">    # [<span class="number">1</span>,<span class="number">100</span>]</span><br><span class="line">    W=<span class="keyword">tf</span>.Variable(<span class="keyword">tf</span>.random_uniform((<span class="number">184</span>,<span class="number">100</span>),-<span class="number">1</span>,<span class="number">1</span>))</span><br><span class="line">    # [<span class="number">184</span>,<span class="number">100</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">x</span>=<span class="keyword">tf</span>.placeholder(<span class="keyword">tf</span>.float32,(<span class="number">100</span>,<span class="number">184</span>))</span><br><span class="line">    # 由于 wx+<span class="keyword">b</span> 需要计算，所以这里<span class="keyword">x</span>矩阵的大小就是<span class="keyword">w</span>矩阵的转置</span><br><span class="line"></span><br><span class="line">    h=<span class="keyword">tf</span>.<span class="keyword">nn</span>.relu(<span class="keyword">tf</span>.matmul(<span class="keyword">x</span>,W)+<span class="keyword">b</span>)</span><br><span class="line">    # 计算激活函数 relu</span><br></pre></td></tr></table></figure></p>
+<p>后面会用到两个变量 Fetches 和 feeds。<br>Fetches：返回节点输出的图形节点列表。<br>feeds：一个从图节点到我们想要在模型中运行的实际值的字典映射。<br>这些就是实际填写在前面提到的占位符的地方。</p>
+<p>在原先的代码上再加上几行，变成如下：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line">import numpy as np</span><br><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="attribute">__name__</span>=="__main__":</span><br><span class="line">    <span class="attribute">b</span>=tf.Variable(tf.zeros(100,))</span><br><span class="line">    # [1,100]</span><br><span class="line">    <span class="attribute">W</span>=tf.Variable(tf.random_uniform((184,100),-1,1))</span><br><span class="line">    # [184,100]</span><br><span class="line"></span><br><span class="line">    <span class="attribute">x</span>=tf.placeholder(tf.float32,(100,184))</span><br><span class="line">    # 由于 wx+b 需要计算，所以这里x矩阵的大小就是w矩阵的转置</span><br><span class="line"></span><br><span class="line">    <span class="attribute">h</span>=tf.nn.relu(tf.matmul(x,W)+b)</span><br><span class="line">    # 计算激活函数 relu</span><br><span class="line"></span><br><span class="line">    <span class="attribute">sess</span>=tf.Session()</span><br><span class="line">    # 创建会话</span><br><span class="line">    sess.<span class="builtin-name">run</span>(tf.initialize_all_variables())</span><br><span class="line">    # 初始化所有的变量</span><br><span class="line">    sess.<span class="builtin-name">run</span>(h,&#123;x:np.random.random(100,184)&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>现在这个亚子肯定是没法进行训练的，其中没有加入任何训练数据。</p>
+<h2 id="定义损失函数"><a href="#定义损失函数" class="headerlink" title="定义损失函数"></a>定义损失函数</h2><p>首先，使用占位符来表示标签，作为只在执行时喂给的数据。<br>label 是真实标记的占位符，模型根据这个值来进行计算。<br>最后创建交叉熵（cross_entropy），它是真实标签乘上TensorFlow中对prediction取对数的乘积，然后再按列求和。<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">prediction</span>=tf.nn.softmax(...)</span><br><span class="line"><span class="comment"># 神经网络的预测输出</span></span><br><span class="line"><span class="attr">label</span>=tf.placeholder(tf.float32,[<span class="number">100</span>,<span class="number">10</span>])</span><br><span class="line"><span class="comment"># 数据标签</span></span><br><span class="line"></span><br><span class="line"><span class="attr">cross_entropy</span>=-tf.reduce_sum(label*tf.log(prediction),axis=<span class="number">1</span>)</span><br><span class="line"><span class="comment"># 计算交叉熵</span></span><br></pre></td></tr></table></figure></p>
+<p>我们想要对每行数据进行求和，label 是一个one-hot变量。</p>
+<h2 id="计算梯度"><a href="#计算梯度" class="headerlink" title="计算梯度"></a>计算梯度</h2><p>在tensorflow中首先要创建一个优化器对象。<br>TF中有一个通用的抽象类叫做优化器，这个类中的每一个子类都是一个针对特定学习算法的优化器，目前使用的是梯度下降算法。<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">train_step</span>=tf.train.GradientDescentOptimizer(<span class="number">0.5</span>).minimize(cross_entropy)</span><br></pre></td></tr></table></figure></p>
+<p>通过这个式子，参数W和b就会根据一定的梯度进行下降。<br>在TF框架中它的工作方式是，每一个图节点都有一个附加的梯度操作，都有相对于输入预先构建的输出梯度。所以，当我们在计算交叉熵相对于所有参数的梯度时，通过图使用链式法则利用反向传播计算是非常简单的。</p>
+<h2 id="建立训练步骤"><a href="#建立训练步骤" class="headerlink" title="建立训练步骤"></a>建立训练步骤</h2><p>只需在上述步骤中加入交叉熵的部分并代入即可。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">prediction</span>=tf.nn.softmax(...)</span><br><span class="line"><span class="comment"># 神经网络的预测输出</span></span><br><span class="line"><span class="attr">label</span>=tf.placeholder(tf.float32,[None,<span class="number">10</span>])</span><br><span class="line"><span class="comment"># 数据标签</span></span><br><span class="line"><span class="attr">cross_entropy</span>=tf.reduce_mean(-tf.reduce_sum(label*tf.log(prediction),axis=<span class="number">1</span>))</span><br><span class="line"><span class="comment"># 计算交叉熵</span></span><br><span class="line"></span><br><span class="line"><span class="attr">train_step</span>=tf.train.GradientDescentOptimizer(<span class="number">0.5</span>).minimize(cross_entropy)</span><br></pre></td></tr></table></figure>
+<h2 id="训练模型"><a href="#训练模型" class="headerlink" title="训练模型"></a>训练模型</h2><p>假设迭代 1000 次，注意，在 train_step 上调用 sess.run 方法时，它已经对图中所有的变量应用了梯度。<br>此时需要建立一个字典，将值传给之前定义好的两个占位符，x 和 label 是图中的节点，字典中的关键字是图中的节点，对应的项是numpy数据。TF框架会自动把设定图中节点的数据转换为张量。<br>所以，可以把numpy数组插入到字典中，比如 batch_x 和 batch_label，执行 sess.run 之后会得到输出。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">sess</span>=tf.Session()</span><br><span class="line">sess.<span class="builtin-name">run</span>(tf.initialize_all_variables())</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(1000):</span><br><span class="line">    batch_x,<span class="attribute">batch_label</span>=data.next_batch()</span><br><span class="line">    sess.<span class="builtin-name">run</span>(train_step,feed_dict=&#123;x:batch_x,label:batch_label&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>字典示例：<br><img src="https://s2.ax1x.com/2019/09/05/nmKUBj.png" alt></p>
+<p>但是像上述的命名会导致不知道变量类型等相关数据，所以TF框架的variable_scope 提供了一个简单得名称空间方案来避免冲突，而另一个相关的函数则是一个叫做 get_variable 的东西，get_variable 将会给你创建一个变量，如果具备特定名字的变量不存在的话，否则如果发现它存在，它将访问该变量。<br><img src="https://s2.ax1x.com/2019/09/05/nmKB40.png" alt></p>
+<h2 id="使用TensorFlow构建线性分类的基本步骤"><a href="#使用TensorFlow构建线性分类的基本步骤" class="headerlink" title="使用TensorFlow构建线性分类的基本步骤"></a>使用TensorFlow构建线性分类的基本步骤</h2><p>2019.9.10 更新<br>（拖延症一直拖了好久才写的这个部分，明明字不多的…（捂脸<br>首先，构建分类器的目的，就是为了给数据做分类，这里相当于一个数据的拟合。<br>这里根据习惯，可以先设置模型的基本参数，也可以后面需要训练的时候再进行设置。<br>1.设置模型参数：学习率（learning_rate），训练的轮数（trainiing_epoches），每多少step展示一次训练效果（display_step）；<br>2.对应的训练数据集，包括X和Y两个部分；<br>3.找出对应的训练样例数，n_samples；<br>4.写出图输入对应的tf占位符（tf.placeholder）；<br>5.为线性模型的权重（Weights）和偏置（bias）设置初始值，可以使用np.random.randn来生成，由于这里是在tf框架里，所以是tf.Variable的数据类型；<br>6.生成线性模型：Y=W*X+b;<br>7.误差计算（交叉熵或者是均方误差）；<br>8.构建优化器来进行梯度下降：tf.train.GradientDescentOptimizer(学习率).minimize(交叉熵或是均方误差)；<br>9.启动tf.Session()来run各轮训练的结果；<br>10.可以用matplotlib来画个图什么的。（这步可以直接忽略）</p>
+<h2 id="使用TensorFlow的完整版线性分类"><a href="#使用TensorFlow的完整版线性分类" class="headerlink" title="使用TensorFlow的完整版线性分类"></a>使用TensorFlow的完整版线性分类</h2><p>直接上代码吧<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line">import numpy as np</span><br><span class="line">import tensorflow as tf</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="attribute">__name__</span>=="__main__":</span><br><span class="line">    <span class="attribute">learning_rate</span>=0.01</span><br><span class="line">    <span class="attribute">training_epochs</span>=1000</span><br><span class="line">    <span class="attribute">display_step</span>=50</span><br><span class="line"></span><br><span class="line">    # Training Data</span><br><span class="line">    <span class="attribute">train_X</span>=np.array([3.3, 4.4, 5.5, 6.71, 6.93, 4.168, 9.779, 6.182, 7.59, 2.167,</span><br><span class="line">                      7.042, 10.791, 5.313, 7.997, 5.654, 9.27, 3.1])</span><br><span class="line">    <span class="attribute">train_Y</span>=np.array([1.7, 2.76, 2.09, 3.19, 1.694, 1.573, 3.366, 2.596, 2.53, 1.221,</span><br><span class="line">                      2.827, 3.465, 1.65, 2.904, 2.42, 2.94, 1.3])</span><br><span class="line">    <span class="attribute">n_samples</span>=train_X.shape[0]</span><br><span class="line">    # 存在多行的情况,shape[0] 表示row,shape[1] 表示col</span><br><span class="line">    # 倘若数据只有一列，那么shape[0]表示的就是这行有多少个数值</span><br><span class="line"></span><br><span class="line">    # TF 图输入</span><br><span class="line">    <span class="attribute">X</span>=tf.placeholder(tf.float32)</span><br><span class="line">    <span class="attribute">Y</span>=tf.placeholder(tf.float32)</span><br><span class="line"></span><br><span class="line">    # 设置线性模型权重</span><br><span class="line">    <span class="attribute">W</span>=tf.Variable(np.random.randn(),name='Weight')</span><br><span class="line">    <span class="attribute">b</span>=tf.Variable(np.random.randn(),name='bias')</span><br><span class="line"></span><br><span class="line">    # 构建线性模型</span><br><span class="line">    <span class="attribute">prediction</span>=tf.add(tf.multiply(X,W),b)</span><br><span class="line"></span><br><span class="line">    # 计算均方误差</span><br><span class="line">    <span class="attribute">cross_entropy</span>=tf.reduce_mean(tf.square(prediction-Y))</span><br><span class="line">    # 梯度下降</span><br><span class="line">    <span class="attribute">optimizier</span>=tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line">    # 初始化变量</span><br><span class="line">    <span class="attribute">init</span>=tf.global_variables_initializer()</span><br><span class="line"></span><br><span class="line">    # 开始训练</span><br><span class="line">    with tf.Session() as sess:</span><br><span class="line">        # 运行初始化</span><br><span class="line">        sess.<span class="builtin-name">run</span>(init)</span><br><span class="line"></span><br><span class="line">        # 加入全部的训练数据</span><br><span class="line">        <span class="keyword">for</span> epoch <span class="keyword">in</span> range(training_epochs):</span><br><span class="line">            <span class="keyword">for</span>(x,y) <span class="keyword">in</span> zip(train_X,train_Y):</span><br><span class="line">                sess.<span class="builtin-name">run</span>(optimizier,feed_dict=&#123;X:x,Y:y&#125;)</span><br><span class="line"></span><br><span class="line">            # 显示每一轮训练的损失函数</span><br><span class="line">            <span class="keyword">if</span> (epoch+1)%<span class="attribute">display_step</span>==0:</span><br><span class="line">                <span class="attribute">c</span>=sess.run(cross_entropy,feed_dict=&#123;X:train_X,Y:train_Y&#125;)</span><br><span class="line">                <span class="builtin-name">print</span>(<span class="string">"Epoch:"</span>,<span class="string">"%04d"</span>%(epoch+1),<span class="string">"cost="</span>, <span class="string">"&#123;:.9f&#125;"</span>.format(c), \</span><br><span class="line">                <span class="string">"W="</span>, sess.<span class="builtin-name">run</span>(W), <span class="string">"b="</span>, sess.<span class="builtin-name">run</span>(b))</span><br><span class="line"></span><br><span class="line">        <span class="builtin-name">print</span>(<span class="string">"Optimization Finished!"</span>)</span><br><span class="line">        <span class="attribute">training_cost</span>=sess.run(cross_entropy,feed_dict=&#123;X:train_X,Y:train_Y&#125;)</span><br><span class="line">        <span class="builtin-name">print</span>(<span class="string">"Training cost="</span>,training_cost,<span class="string">"W="</span>,sess.<span class="builtin-name">run</span>(W),<span class="string">"b="</span>,sess.<span class="builtin-name">run</span>(b))</span><br><span class="line"></span><br><span class="line">        # 图展示</span><br><span class="line">        plt.plot(train_X,train_Y,<span class="string">'ro'</span>,<span class="attribute">label</span>=<span class="string">'Original Data'</span>)</span><br><span class="line">        plt.plot(train_X,sess.<span class="builtin-name">run</span>(W)*train_X+sess.<span class="builtin-name">run</span>(b),<span class="attribute">label</span>=<span class="string">'Fitted Line'</span>)</span><br><span class="line">        plt.legend()</span><br><span class="line">        plt.show()</span><br><span class="line"></span><br><span class="line">        # 测试样例</span><br><span class="line">        test_X = np.asarray([6.83, 4.668, 8.9, 7.91, 5.7, 8.7, 3.1, 2.1])</span><br><span class="line">        test_Y = np.asarray([1.84, 2.273, 3.2, 2.831, 2.92, 3.24, 1.35, 1.03])</span><br><span class="line"></span><br><span class="line">        <span class="builtin-name">print</span>(<span class="string">"Testing...(Mean square loss Comparison)"</span>)</span><br><span class="line">        <span class="attribute">testing_cost</span>=sess.run(tf.reduce_sum(tf.pow(prediction - Y, 2)) / (2 * test_X.shape[0]),</span><br><span class="line">        feed_dict=&#123;X: test_X, Y: test_Y&#125;)</span><br><span class="line">        <span class="builtin-name">print</span>(<span class="string">"Testing cross-entropy="</span>,testing_cost)</span><br><span class="line">        <span class="builtin-name">print</span>(<span class="string">"Absolute mean square loss difference:"</span>,abs(training_cost-testing_cost))</span><br><span class="line"></span><br><span class="line">        plt.plot(test_X, test_Y, <span class="string">'bo'</span>, <span class="attribute">label</span>=<span class="string">'Testing data'</span>)</span><br><span class="line">        plt.plot(train_X, sess.<span class="builtin-name">run</span>(W) * train_X + sess.<span class="builtin-name">run</span>(b), <span class="attribute">label</span>=<span class="string">'Fitted line'</span>)</span><br><span class="line">        plt.legend()</span><br><span class="line">        plt.show()</span><br></pre></td></tr></table></figure></p>
+<p>代码参考自：<a href="https://blog.csdn.net/left_think/article/details/78061675" target="_blank" rel="noopener">https://blog.csdn.net/left_think/article/details/78061675</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/09/05/cs224n-Lecture-7-TensorFlow入门/" data-id="cktfedoy6003hf4ukur9yrqmf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/09/05/cs224n-Lecture-8-RNN和语言模式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          cs224n-Lecture 8 RNN和语言模式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/28/cs224n-Lecture-6-依存分析/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">cs224n-Lecture-6 依存分析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

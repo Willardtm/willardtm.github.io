@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Django在开发中的基本操作小结 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="预感到以后会经常和Django打交道，写个备忘吧，什么时候忘了什么时候回来翻。">
+<meta name="keywords" content="开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django在开发中的基本操作小结">
+<meta property="og:url" content="http://yoursite.com/2020/05/18/Django在开发中的基本操作小结/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="预感到以后会经常和Django打交道，写个备忘吧，什么时候忘了什么时候回来翻。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YfeJHS.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YfmSDf.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/Yfuptg.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/Yfu1j1.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/Yfuf3j.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YfuOC4.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YfKpb6.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YfKHsI.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YfMLc9.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/YfQkjA.png">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/18/Yf7ceU.png">
+<meta property="og:updated_time" content="2020-05-19T09:00:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Django在开发中的基本操作小结">
+<meta name="twitter:description" content="预感到以后会经常和Django打交道，写个备忘吧，什么时候忘了什么时候回来翻。">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/05/18/YfeJHS.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Django在开发中的基本操作小结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/05/18/Django在开发中的基本操作小结/" class="article-date">
+  <time datetime="2020-05-18T06:32:24.000Z" itemprop="datePublished">2020-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Django在开发中的基本操作小结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Django项目创建"><span class="toc-number">1.</span> <span class="toc-text">Django项目创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Django项目下创建应用"><span class="toc-number">2.</span> <span class="toc-text">Django项目下创建应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Django创建超级管理员"><span class="toc-number">3.</span> <span class="toc-text">Django创建超级管理员</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Django创建视图"><span class="toc-number">4.</span> <span class="toc-text">Django创建视图</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基础视图创建"><span class="toc-number">4.1.</span> <span class="toc-text">基础视图创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高级视图创建"><span class="toc-number">4.2.</span> <span class="toc-text">高级视图创建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#用户登录与退出"><span class="toc-number">4.2.1.</span> <span class="toc-text">用户登录与退出</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Django与MySQL进行交互"><span class="toc-number">5.</span> <span class="toc-text">Django与MySQL进行交互</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在外部文件中调用Django的model"><span class="toc-number">6.</span> <span class="toc-text">在外部文件中调用Django的model</span></a></li></ol>
+		  </div>
+		
+        <p>预感到以后会经常和Django打交道，写个备忘吧，什么时候忘了什么时候回来翻。<br><a id="more"></a><br>开发基于Windows。<br>p.s. 由于懒，示例代码大部分截取自我的毕设。</p>
+<h2 id="Django项目创建"><a href="#Django项目创建" class="headerlink" title="Django项目创建"></a>Django项目创建</h2><p>直接进入cmd环境，在需要开发应用的文件夹下面执行如下命令：<br><figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">django-<span class="literal">admin</span> startproject 项目名称</span><br></pre></td></tr></table></figure></p>
+<p>创建好的django文件夹如下图所示：<br><img src="https://s1.ax1x.com/2020/05/18/YfeJHS.png" alt></p>
+<p>Django项目文件夹review_django下文件包括一个同名的项目文件夹review_django和manage.py文件。<br>分别说明：</p>
+<ol>
+<li><p>manage.py：用以运行整个项目，执行:</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python3</span> manage.<span class="keyword">py</span> runserver</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>review_django文件夹说明，其中包含3个主要文件：<br><img src="https://s1.ax1x.com/2020/05/18/YfmSDf.png" alt><br>(1) settings.py：用来设置全局各种环境变量，例如，在项目中注册应用，前端文件存放的文件夹，数据库的链接配置，时区设置等；<br>e.g. 注册应用<br><img src="https://s1.ax1x.com/2020/05/18/Yfuptg.png" alt></p>
+</li>
+</ol>
+<p>e.g. 设置前端文件存放文件夹<br><img src="https://s1.ax1x.com/2020/05/18/Yfu1j1.png" alt></p>
+<p>e.g. 设置数据库连接<br><img src="https://s1.ax1x.com/2020/05/18/Yfuf3j.png" alt><br>参数说明：<br>NAME:需要连接的数据库的名称<br>PASSWORD：数据库用户的密码</p>
+<p>e.g. 时区和语言配置<br><img src="https://s1.ax1x.com/2020/05/18/YfuOC4.png" alt></p>
+<p>e.g. 设置静态文件读取路径<br><img src="https://s1.ax1x.com/2020/05/18/YfKpb6.png" alt></p>
+<p>(2) urls.py：用来创建不同页面对应的总链接。<br>以用户为例，用户要以 <a href="https://lalalal.com/user/" target="_blank" rel="noopener">https://lalalal.com/user/</a> 开头，这个文件夹存在的目的就是建立这个user路径。<br>这里的用户可以看作是存在于项目中的user应用。<br><img src="https://s1.ax1x.com/2020/05/18/YfKHsI.png" alt></p>
+<p>同理，对于其他的应用创建对应的url，只需要创建如同user的链接即可。<br>^ 表示以xx开头。</p>
+<p>(3) wsgi.py：在部署项目到服务器上时需要，这里暂时跳过。</p>
+<h2 id="Django项目下创建应用"><a href="#Django项目下创建应用" class="headerlink" title="Django项目下创建应用"></a>Django项目下创建应用</h2><p>上述中仅描述了如何创建一个Django的框架，现在要在框架里填东西，就需要构建一个个具体的应用。<br>创建应用的命令：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python3</span> manage.<span class="keyword">py</span> startapp 应用名</span><br></pre></td></tr></table></figure></p>
+<p>这里创建一个叫做user的应用，创建完之后，要记得去settings.py文件的INSTALLED_APPS下面添加一个user应用。<br><img src="https://s1.ax1x.com/2020/05/18/YfMLc9.png" alt></p>
+<p>创建好的应用文件夹如下，其中也包含了Django框架提前为我们生成好的文件：<br><img src="https://s1.ax1x.com/2020/05/18/YfQkjA.png" alt><br>(1) admin.py: 这个文件用户创建默认管理员目录下的应用，也就是可以通过Django框架下默认的管理员界面来管理各个应用，但是如果需要自定义管理员界面，则可以不在里面写东西。然而，如果需要注册应用，则可以写为：<br><figure class="highlight capnproto"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 引入应用</span></span><br><span class="line"><span class="keyword">from</span> 应用名.models <span class="keyword">import</span> 类名</span><br><span class="line"></span><br><span class="line">admin.site.register(类名)</span><br></pre></td></tr></table></figure></p>
+<p>(2) models.py：这个文件很重要，里面需要设置在数据库中生成的表。<br>首先需要在其中引入抽象类和基类，还有时间类：<br><figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from django.contrib.auth.models <span class="keyword">import</span> AbstractUser</span><br><span class="line">from db.base_model <span class="keyword">import</span> BaseModel</span><br><span class="line"><span class="keyword">import</span> <span class="built_in">time</span></span><br></pre></td></tr></table></figure></p>
+<p>然后以类的形式，创建数据库中包含的基本表，害，这里拿出我毕设中的一个表作为例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TeamCount</span><span class="params">(BaseModel)</span>:</span></span><br><span class="line">    <span class="string">'''统计球队提到次数'''</span></span><br><span class="line">    team_name=models.CharField(max_length=<span class="number">32</span>,default=<span class="string">''</span>,verbose_name=<span class="string">'球队名称'</span>)</span><br><span class="line">    count=models.IntegerField(default=<span class="number">0</span>,verbose_name=<span class="string">'提到次数'</span>)</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">'bundesliga_teamname_count'</span></span><br><span class="line">        verbose_name = <span class="string">'球队问及次数'</span></span><br><span class="line">        verbose_name_plural = verbose_name</span><br></pre></td></tr></table></figure></p>
+<p>这个表中包含两个字段：team_name和count，models提供的CharFiled和IntegerField类型用来对这两个字段进行描述，包括最大长度，默认值，verbose_name(别名)。<br>class Meta属于对数据表进行自定义（包括表名以及别名），如果不设置这条，数据表得名字就由框架自动生成，会很长，不方便查表。</p>
+<p>根据以上描述，针对项目中对数据表的需求对表进行设置，然后迁移并生成数据表，执行命令：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">生成迁移文件：<span class="keyword">python3</span> manage.<span class="keyword">py</span> makemigrations</span><br><span class="line">生成迁移表： <span class="keyword">python3</span> manage.<span class="keyword">py</span> migrate</span><br></pre></td></tr></table></figure></p>
+<p>然后再查看数据库，可以看到数据表已经成功生成。</p>
+<h2 id="Django创建超级管理员"><a href="#Django创建超级管理员" class="headerlink" title="Django创建超级管理员"></a>Django创建超级管理员</h2><p>从创建项目那一块中的urls.py中可以看出，其中有一个默认的admin页面，而这里创建的Django超级管理员就是用来登录这个后台的。<br>执行命令：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python3</span> manage.<span class="keyword">py</span> createsuperuser</span><br></pre></td></tr></table></figure></p>
+<p>注意，在创建超级用户时，要确认数据库中已经包含了用户表，否则创建失败。<br>用户模型类示例：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span><span class="params">(AbstractUser, BaseModel)</span>:</span></span><br><span class="line">    <span class="string">'''用户模型类'''</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        db_table = <span class="string">'df_user'</span></span><br><span class="line">        verbose_name = <span class="string">'用户'</span></span><br><span class="line">        verbose_name_plural = verbose_name</span><br></pre></td></tr></table></figure></p>
+<h2 id="Django创建视图"><a href="#Django创建视图" class="headerlink" title="Django创建视图"></a>Django创建视图</h2><p>视图一般是在应用的views.py中通过定义函数的方式来定义对应的视图。<br>定义视图一般包含两个步骤：<br>(1) 定义一个完整的视图功能；<br>(2) 在应用的urls.py（这个文件需要自己创建，可以把项目下面的urls.py复制过来修改后直接用）下面配置应用下面不同视图对应的链接。</p>
+<h3 id="基础视图创建"><a href="#基础视图创建" class="headerlink" title="基础视图创建"></a>基础视图创建</h3><p><b>1. HttpResponse响应：</b><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> HttpResponse(<span class="string">'index page'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>在views.py中写完这块内容，毫无疑问需要到urls.py中进行url的配置。<br>(1) 首先需要在项目的urls.py中设置：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.conf.urls <span class="keyword">import</span> include, url</span><br><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    url(<span class="string">r'^admin/'</span>, include(admin.site.urls)),</span><br><span class="line">	url(<span class="string">r'^user/'</span>,include(<span class="string">'user.urls'</span>,namespace=<span class="string">'user'</span>)),<span class="comment"># 可以是任何你自定义的模块</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>(2) 在应用的urls下面创建连接<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.conf.urls <span class="keyword">import</span> url</span><br><span class="line"><span class="keyword">from</span> 应用 <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns=[</span><br><span class="line">	url(<span class="string">r'^index'</span>,views.index)</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<p>然后启动项目，访问localhost:8000/index界面，就可以看到index page字样。</p>
+<p><b>2. 调用模板：</b><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse</span><br><span class="line"><span class="keyword">from</span> django.template <span class="keyword">import</span> loader,RequestContext</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">(request)</span>:</span></span><br><span class="line">	<span class="comment"># 1.加载模板文件</span></span><br><span class="line">    temp=loader.get_template(<span class="string">'booktest/index.html'</span>)</span><br><span class="line">    <span class="comment"># 2.定义模板上下文:给模板文件传递数据</span></span><br><span class="line">    context=RequestContext(request,&#123;&#125;)</span><br><span class="line">    <span class="comment"># 3.模板渲染：产生标准的html内容</span></span><br><span class="line">    res_html=temp.render(context)</span><br><span class="line">    <span class="comment"># 4.返回给浏览器</span></span><br><span class="line">    <span class="keyword">return</span> HttpResponse(res_html)</span><br></pre></td></tr></table></figure></p>
+<p>定义url的部分如1中所示，这里不再赘述。</p>
+<h3 id="高级视图创建"><a href="#高级视图创建" class="headerlink" title="高级视图创建"></a>高级视图创建</h3><p>上述视图创建会有一个问题，一旦某个视图改了名字，全盘都要改。<br>所以这里可以使用from django.views.generic import View，让每个页面作为一个类继承于View。<br>同理，还是拿出我毕设里的一小块代码来示例-管理员登录界面：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /user/login</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoginView</span><span class="params">(View)</span>:</span></span><br><span class="line">    <span class="string">'''登录'''</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span><span class="params">(self,request)</span>:</span></span><br><span class="line">        <span class="string">'''显示登录页面'''</span></span><br><span class="line">        <span class="keyword">return</span> render(request,<span class="string">'login.html'</span>)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span><span class="params">(self,request)</span>:</span></span><br><span class="line">        <span class="string">'''处理登录'''</span></span><br><span class="line">        <span class="comment"># print(request.POST.get('username'))</span></span><br><span class="line">        <span class="comment"># print(request.POST.get('password'))</span></span><br><span class="line">        username=request.POST.get(<span class="string">'username'</span>)</span><br><span class="line">        password=request.POST.get(<span class="string">'password'</span>)</span><br><span class="line">        <span class="comment"># 校验数据</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> all([username,password]):</span><br><span class="line">            <span class="keyword">return</span> render(request,<span class="string">'login.html'</span>,&#123;<span class="string">'errmsg'</span>:<span class="string">'您输入的用户名或密码不完整!'</span>&#125;)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 业务处理:登录校验</span></span><br><span class="line">        user=authenticate(username=username,password=password)</span><br><span class="line">        <span class="keyword">if</span> user <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="comment"># 用户名密码正确</span></span><br><span class="line">            <span class="comment"># 记住用户的登录状态</span></span><br><span class="line">            login(request,user)</span><br><span class="line">            <span class="comment">#return render(request,'admin.html',&#123;'username':user.username&#125;)</span></span><br><span class="line">            url=reverse(<span class="string">'user:admin'</span>)</span><br><span class="line">            <span class="keyword">return</span> redirect(url)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 用户名或密码错误</span></span><br><span class="line">            <span class="keyword">return</span> render(request,<span class="string">'login.html'</span>,&#123;<span class="string">'errmsg'</span>:<span class="string">'用户名或密码错误'</span>&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>View中需要处理两种响应，get和post，我对get和post简单且粗暴的理解如下：<br>get:不和前端页面有任何交互信息；<br>post：需要接收处理并返回给前端页面数据。</p>
+<p>前端交互的时候会返回一个request，通过request.POST.get取出关键词对应的数据就能获取前端返回的信息。<br>这里涉及到的ajax响应部分，后面会单独写一篇ajax博客进行讲解。</p>
+<p>继承于View的视图在创建url时是这样(以上述LoginView为例)：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> user.views <span class="keyword">import</span> LoginView</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    url(<span class="string">r'^login$'</span>,LoginView.as_view(),name=<span class="string">'login'</span>),<span class="comment"># 管理员登录</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+<h4 id="用户登录与退出"><a href="#用户登录与退出" class="headerlink" title="用户登录与退出"></a>用户登录与退出</h4><p>既然这里提到了用户登录，就简单说一下Django框架提供的用户认证功能吧。<br>核心包:<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib.auth <span class="keyword">import</span> authenticate, login, logout</span><br><span class="line"><span class="keyword">from</span> django.core.urlresolvers <span class="keyword">import</span> <span class="keyword">reverse</span></span><br></pre></td></tr></table></figure></p>
+<p>然后通过request.POST.get取出关键字段：<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">username</span>=request.POST.get(<span class="string">'username'</span>)</span><br><span class="line"><span class="attr">password</span>=request.POST.get(<span class="string">'password'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>使用authenticate验证输入是否正确:<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">user</span>=authenticate(username=username,password=password)</span><br></pre></td></tr></table></figure></p>
+<p>如果用户名和密码输入正确，那么user的值就不为空，说明这个用户是存在的，所以直接调用login:<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span><span class="built_in"> user </span>is <span class="keyword">not</span> None:</span><br><span class="line">    # 用户名密码正确</span><br><span class="line">    # 记住用户的登录状态</span><br><span class="line">    login(request,user)</span><br><span class="line">    #return render(request,<span class="string">'admin.html'</span>,&#123;<span class="string">'username'</span>:user.username&#125;)</span><br><span class="line">    <span class="attribute">url</span>=reverse('user:admin')</span><br><span class="line">    return redirect(url)</span><br></pre></td></tr></table></figure></p>
+<p>反之，使用render功能跳转会登录的初始界面，并提示错误信息:<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="meta"># 用户名或密码错误</span></span><br><span class="line">    <span class="keyword">return</span> render(request,<span class="string">'login.html'</span>,&#123;<span class="string">'errmsg'</span>:<span class="string">'用户名或密码错误'</span>&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>render和redirect的区别:<br>render:同时返回request,跳转的页面,页面上需要显示的信息;<br>redirect：直接指定需要跳转过去的链接。</p>
+<h2 id="Django与MySQL进行交互"><a href="#Django与MySQL进行交互" class="headerlink" title="Django与MySQL进行交互"></a>Django与MySQL进行交互</h2><p>好吧，这里仍然是取出我毕设的一小部分代码来做示例。<br>如先前所示，我们在models.py中创建了一个TeamCount类，ok，导入。<br><figure class="highlight capnproto"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> user.models <span class="keyword">import</span> TeamCount</span><br></pre></td></tr></table></figure></p>
+<p>同时，这里需要引入另外一个包LoginRequiredMixin，因为这个界面需要登录后才能查看，这个包的作用就是用来查看用户是否登录。<br>这需要在整个项目的下面创建一个utils文件夹，并设置<strong>init</strong>.py使其成为一个自定义的python包。<br><img src="https://s1.ax1x.com/2020/05/18/Yf7ceU.png" alt><br>其中的内容如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib.auth.decorators <span class="keyword">import</span> login_required</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">这个文件存在的目的就是为了使某些页面只有在登录后才能访问</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LoginRequiredMixin</span><span class="params">(object)</span>:</span></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">as_view</span><span class="params">(cls,**initkwargs)</span>:</span></span><br><span class="line">        <span class="comment"># 调用父类的 as_view</span></span><br><span class="line">        view=super(LoginRequiredMixin,cls).as_view(**initkwargs)</span><br><span class="line">        <span class="keyword">return</span> login_required(view)</span><br></pre></td></tr></table></figure></p>
+<p>然后在视图views.py中引入相应包：<br><figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> utils.<span class="keyword">mixin</span> <span class="keyword">import</span> <span class="type">LoginRequiredMixin</span></span><br></pre></td></tr></table></figure></p>
+<p>现在正式进入交互正题：<br>(1) 取出一个表中某列对应的全部值<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tcs</span>=TeamCount.objects.values_list(<span class="string">'team_name'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>注意：这里的TeamCount是表名,team_name是列名，取出的tcs中就包含了这列中的全部数据；<br>(2) 根据列中的唯一值，取出该列值所在行的数据<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">tco</span>=TeamCount.objects.get(team_name=<span class="string">'具体值'</span>)</span><br><span class="line"><span class="attr">count</span>=tco.count</span><br></pre></td></tr></table></figure></p>
+<p>tco取出的就是一整列，使用tco.count，就是取出这行中列名为count得全部数据值。</p>
+<p>然后通过构建上下文的方式将值传回给前端。<br><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构建上下文</span></span><br><span class="line"><span class="built_in">context</span>=&#123;</span><br><span class="line">    <span class="string">'team_name'</span>: <span class="keyword">json.dumps(team_name),</span></span><br><span class="line"><span class="keyword"> </span>   <span class="string">'team_value'</span>: <span class="keyword">json.dumps(team_value)</span></span><br><span class="line"><span class="keyword"> </span>   &#125;</span><br><span class="line"></span><br><span class="line">return render(request,<span class="string">'admin_team_question.html'</span>,<span class="built_in">context</span>=<span class="built_in">context</span>)</span><br></pre></td></tr></table></figure></p>
+<p>核心就两个功能：<br>(1) values_list;<br>(2) get.</p>
+<h2 id="在外部文件中调用Django的model"><a href="#在外部文件中调用Django的model" class="headerlink" title="在外部文件中调用Django的model"></a>在外部文件中调用Django的model</h2><p>Django这个model是真的方便啊，直接类名+objects+get就能取出来了，其他的多麻烦…<br>但是这个引用，是需要在头部加一些参数的，不然报错报得你一个头两个大。<br>直接放定义文件：<br><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import <span class="built_in">os</span></span><br><span class="line">import sys</span><br><span class="line">import django</span><br><span class="line"></span><br><span class="line">pathname = <span class="built_in">os</span>.<span class="built_in">path</span>.dirname(<span class="built_in">os</span>.<span class="built_in">path</span>.abspath(__file__))</span><br><span class="line">sys.<span class="built_in">path</span>.<span class="built_in">insert</span>(<span class="number">0</span>, pathname)</span><br><span class="line"># 项目所在文件夹的相对于需要引入文件的相对地址</span><br><span class="line">sys.<span class="built_in">path</span>.<span class="built_in">insert</span>(<span class="number">0</span>, <span class="built_in">os</span>.<span class="built_in">path</span>.abspath(<span class="built_in">os</span>.<span class="built_in">path</span>.join(pathname, <span class="string">'..'</span>)))</span><br><span class="line"><span class="built_in">os</span>.environ.setdefault(<span class="string">"DJANGO_SETTINGS_MODULE"</span>, <span class="string">"django项目名.settings"</span>)</span><br><span class="line"></span><br><span class="line">django.setup()</span><br></pre></td></tr></table></figure></p>
+<p>引入完毕，下面直接<br><figure class="highlight capnproto"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> user.models <span class="keyword">import</span> Django应用中model的定义类</span><br></pre></td></tr></table></figure></p>
+<p>歪瑞古德，歪瑞方便。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/05/18/Django在开发中的基本操作小结/" data-id="cktfedowz0009f4uk2vixpzzg" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/05/19/JavaScript在开中的基本操作小结/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JavaScript在开中的基本操作小结
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/26/TensorFlow-2-0-使用指南/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">TensorFlow 2.0 使用指南 (2020.5.4完结)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

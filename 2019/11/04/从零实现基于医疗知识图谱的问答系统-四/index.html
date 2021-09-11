@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>从零实现基于医疗知识图谱的问答系统(四)-构建回答 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一开始我预计分三个部分来写完这份KG的阅读记录的，然鹅没想到单单是问题的解析就有点点麻烦QAQ所以多写了一篇来叙述如何构建基于知识图谱的问答系统，也是系列的最终篇(这莫名的激动是怎么肥四!">
+<meta name="keywords" content="NLP,知识图谱">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零实现基于医疗知识图谱的问答系统(四)-构建回答">
+<meta property="og:url" content="http://yoursite.com/2019/11/04/从零实现基于医疗知识图谱的问答系统-四/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="一开始我预计分三个部分来写完这份KG的阅读记录的，然鹅没想到单单是问题的解析就有点点麻烦QAQ所以多写了一篇来叙述如何构建基于知识图谱的问答系统，也是系列的最终篇(这莫名的激动是怎么肥四!">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/05/MpBsyQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/05/MpBTOJ.png">
+<meta property="og:updated_time" content="2020-02-24T09:51:02.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从零实现基于医疗知识图谱的问答系统(四)-构建回答">
+<meta name="twitter:description" content="一开始我预计分三个部分来写完这份KG的阅读记录的，然鹅没想到单单是问题的解析就有点点麻烦QAQ所以多写了一篇来叙述如何构建基于知识图谱的问答系统，也是系列的最终篇(这莫名的激动是怎么肥四!">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/11/05/MpBsyQ.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-从零实现基于医疗知识图谱的问答系统-四" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/04/从零实现基于医疗知识图谱的问答系统-四/" class="article-date">
+  <time datetime="2019-11-04T09:50:54.000Z" itemprop="datePublished">2019-11-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      从零实现基于医疗知识图谱的问答系统(四)-构建回答
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#寻找答案-answer-search-py"><span class="toc-number">1.</span> <span class="toc-text">寻找答案-answer_search.py</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Neo4j配置"><span class="toc-number">1.1.</span> <span class="toc-text">Neo4j配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#根据问题类型回调模板"><span class="toc-number">1.2.</span> <span class="toc-text">根据问题类型回调模板</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行CQL查询并返回相关结果"><span class="toc-number">1.3.</span> <span class="toc-text">执行CQL查询并返回相关结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构建回答系统-chatbot-graph-py"><span class="toc-number">2.</span> <span class="toc-text">构建回答系统-chatbot_graph.py</span></a></li></ol>
+		  </div>
+		
+        <p>一开始我预计分三个部分来写完这份KG的阅读记录的，然鹅没想到单单是问题的解析就有点点麻烦QAQ<br>所以多写了一篇来叙述如何构建基于知识图谱的问答系统，也是系列的最终篇(这莫名的激动是怎么肥四!<br><a id="more"></a></p>
+<h2 id="寻找答案-answer-search-py"><a href="#寻找答案-answer-search-py" class="headerlink" title="寻找答案-answer_search.py"></a>寻找答案-answer_search.py</h2><p>在第三篇博客中讲了如何对问题进行分类并且构建了问题在Neo4j中的查询语句，现在要开始说回答咯~<br>下面的内容在chatbot文件中要进行调用，chatbot及上述代码中的数据调用在第二部分详细介绍。</p>
+<h3 id="Neo4j配置"><a href="#Neo4j配置" class="headerlink" title="Neo4j配置"></a>Neo4j配置</h3><p>因为是基于知识图谱的问答系统，所以要先把Neo4j连起来，于是在初始化中进行设置。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置Neo4j</span></span><br><span class="line">def __init__(self):</span><br><span class="line">    self.<span class="attribute">g</span>=Graph(</span><br><span class="line">        <span class="attribute">host</span>=<span class="string">'127.0.0.1'</span>,</span><br><span class="line">        <span class="attribute">http_port</span>=<span class="string">'7474'</span>,</span><br><span class="line">        <span class="attribute">user</span>=<span class="string">'neo4j'</span>,</span><br><span class="line">        <span class="attribute">password</span>=<span class="string">'123456'</span></span><br><span class="line">    )</span><br><span class="line">    self.<span class="attribute">num_limit</span>=20</span><br></pre></td></tr></table></figure></p>
+<h3 id="根据问题类型回调模板"><a href="#根据问题类型回调模板" class="headerlink" title="根据问题类型回调模板"></a>根据问题类型回调模板</h3><figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"># 根据对应的question_type,调用相应的回复模板</span><br><span class="line">def answer_prettify(self,question_type,answers):</span><br><span class="line">    final_answer=[]</span><br><span class="line">    if not answers:</span><br><span class="line">        return <span class="string">''</span></span><br><span class="line"></span><br><span class="line">    if question_type==<span class="string">'disease_symptom'</span>:</span><br><span class="line">        desc=[i[<span class="string">'n.name'</span>] for i in answers]</span><br><span class="line">        subject=answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;的症状包括：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'symptom_disease'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'n.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'症状&#123;0&#125;可能染上的疾病有：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_cause'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.cause'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;可能的成因有：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_prevent'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.prevent'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;的预防措施包括：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_lasttime'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.cure_lasttime'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;治疗可能持续的周期为：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_cureway'</span>:</span><br><span class="line">        desc = [<span class="string">';'</span>.join(i[<span class="string">'m.cure_way'</span>]) for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;可以尝试如下治疗：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_cureprob'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.cured_prob'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;治愈的概率为（仅供参考）：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_easyget'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.easy_get'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line"></span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;的易感人群包括：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_desc'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.desc'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;,熟悉一下：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_acompany'</span>:</span><br><span class="line">        desc1 = [i[<span class="string">'n.name'</span>] for i in answers]</span><br><span class="line">        desc2 = [i[<span class="string">'m.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        desc = [i for i in desc1 + desc2 if i != subject]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;的症状包括：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_not_food'</span>:</span><br><span class="line">        desc = [i[<span class="string">'n.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;忌食的食物包括有：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_do_food'</span>:</span><br><span class="line">        do_desc = [i[<span class="string">'n.name'</span>] for i in answers if i[<span class="string">'r.name'</span>] == <span class="string">'宜吃'</span>]</span><br><span class="line">        recommand_desc = [i[<span class="string">'n.name'</span>] for i in answers if i[<span class="string">'r.name'</span>] == <span class="string">'推荐食谱'</span>]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;宜食的食物包括有：&#123;1&#125;\n推荐食谱包括有：&#123;2&#125;'</span>.format(subject, <span class="string">';'</span>.join(list(set(do_desc))[:self.num_limit]),</span><br><span class="line">                                                             <span class="string">';'</span>.join(list(set(recommand_desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'food_not_disease'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'n.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'患有&#123;0&#125;的人最好不要吃&#123;1&#125;'</span>.format(<span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]), subject)</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'food_do_disease'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'n.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'患有&#123;0&#125;的人建议多试试&#123;1&#125;'</span>.format(<span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]), subject)</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_drug'</span>:</span><br><span class="line">        desc = [i[<span class="string">'n.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;通常的使用的药品包括：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'drug_disease'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'n.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;主治的疾病有&#123;1&#125;,可以试试'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'disease_check'</span>:</span><br><span class="line">        desc = [i[<span class="string">'n.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'m.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'&#123;0&#125;通常可以通过以下方式检查出来：&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    elif question_type == <span class="string">'check_disease'</span>:</span><br><span class="line">        desc = [i[<span class="string">'m.name'</span>] for i in answers]</span><br><span class="line">        subject = answers[<span class="number">0</span>][<span class="string">'n.name'</span>]</span><br><span class="line">        final_answer = <span class="string">'通常可以通过&#123;0&#125;检查出来的疾病有&#123;1&#125;'</span>.format(subject, <span class="string">'；'</span>.join(list(set(desc))[:self.num_limit]))</span><br><span class="line"></span><br><span class="line">    return final_answer</span><br></pre></td></tr></table></figure>
+<h3 id="执行CQL查询并返回相关结果"><a href="#执行CQL查询并返回相关结果" class="headerlink" title="执行CQL查询并返回相关结果"></a>执行CQL查询并返回相关结果</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 执行CQL查询并返回相应结果</span></span><br><span class="line">def search_main(self,sqls):</span><br><span class="line">    final_answers=[]</span><br><span class="line">    <span class="keyword">for</span> sql_ <span class="keyword">in</span> sqls:</span><br><span class="line">        <span class="attribute">question_type</span>=sql_[<span class="string">'question_type'</span>]</span><br><span class="line">        <span class="attribute">queries</span>=sql_[<span class="string">'sql'</span>]</span><br><span class="line">        answers=[]</span><br><span class="line">        <span class="keyword">for</span> query <span class="keyword">in</span> queries:</span><br><span class="line">            <span class="attribute">ress</span>=self.g.run(query).data()</span><br><span class="line">            answers+=ress</span><br><span class="line">        <span class="attribute">final_answer</span>=self.answer_prettify(question_type,answers)</span><br><span class="line">        <span class="keyword">if</span> final_answer:</span><br><span class="line">            final_answers.append(final_answer)</span><br><span class="line">    return final_answers</span><br></pre></td></tr></table></figure>
+<h2 id="构建回答系统-chatbot-graph-py"><a href="#构建回答系统-chatbot-graph-py" class="headerlink" title="构建回答系统-chatbot_graph.py"></a>构建回答系统-chatbot_graph.py</h2><p>这个python文件是整个项目里最短小的文件了，然鹅，如果前面的文件写不好，后面也是要粗事情的。<br>我对源代码进行了回答部分的一丢丢修改，其他内容基本不变。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> question_classifer <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> question_parser <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> answer_search <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="string">'''问答构建'''</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChatBotGraph</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.classifier = QuestionClassifier()</span><br><span class="line">        self.parser = QuestionParser()</span><br><span class="line">        self.searcher = AnswerSearcher()</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">chat_main</span><span class="params">(self, sent)</span>:</span></span><br><span class="line">        answer = <span class="string">'您好，我是小勇医药智能助理，希望可以帮到您。'</span></span><br><span class="line">        res_classify = self.classifier.classify(sent)</span><br><span class="line">        <span class="comment">#print(res_classify)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> res_classify:</span><br><span class="line">            answer=<span class="string">'不好意思噢这个问题我也不晓得'</span></span><br><span class="line">            <span class="keyword">return</span> answer</span><br><span class="line">        res_sql = self.parser.parser_main(res_classify)</span><br><span class="line">        <span class="comment">#print(res_sql)</span></span><br><span class="line">        final_answers = self.searcher.search_main(res_sql)</span><br><span class="line">        print(final_answers)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> final_answers:</span><br><span class="line">            answer = <span class="string">'不好意思噢这个问题我也不晓得'</span></span><br><span class="line">            <span class="keyword">return</span> answer</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'\n'</span>.join(final_answers)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    handler = ChatBotGraph()</span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">        question = input(<span class="string">'用户:'</span>)</span><br><span class="line">        answer = handler.chat_main(question)</span><br><span class="line">        print(<span class="string">'小勇:'</span>, answer)</span><br></pre></td></tr></table></figure></p>
+<p>测试一下效果：<br><img src="https://s2.ax1x.com/2019/11/05/MpBsyQ.png" alt><br><img src="https://s2.ax1x.com/2019/11/05/MpBTOJ.png" alt></p>
+<p>OK，基于医疗知识图谱的问答系统已经复现完成，再次感谢刘老师提供的开源代码！<br>有问题也可以联系我，邮箱见侧栏-w-</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/04/从零实现基于医疗知识图谱的问答系统-四/" data-id="cktfedoyv005nf4ukxr3xs8dx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/知识图谱/">知识图谱</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/05/从零实现基于医疗知识图谱的问答系统目录及总结/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          从零实现基于医疗知识图谱的问答系统目录及总结
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/04/Neo4j数据库查询语句总结-v/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Neo4j数据库查询语句总结-v-</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

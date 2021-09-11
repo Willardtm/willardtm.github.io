@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n-Lecture-2 词向量表示：word2vec | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="笔记主要为个人学习记录，资料来源于斯坦福CS224N课程。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n-Lecture-2 词向量表示：word2vec">
+<meta property="og:url" content="http://yoursite.com/2019/08/08/cs224n-Lecture-2-词向量表示：word2vec/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="笔记主要为个人学习记录，资料来源于斯坦福CS224N课程。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/3J9XQ7NFRxkuiKM.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/xGy7HIYqCnoTjbc.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/nrzqH9VKyRTAB6o.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/QgbujeRTwMfDPNS.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/rVIKth6pZ2yFJMe.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/VY4XunNLksfqd5e.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/YsBw12ZT6Dj7Poa.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/Mm2Z4KnoNRayqkO.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/VY4XunNLksfqd5e.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/1K4rBnO5vgupZ6M.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/WZmXdVOHBGqbuAg.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/sNQ1gryGZWTlHOP.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/JnYTlKCPA1xtb4X.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/6EWuZwPbeTDHxAv.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/RJ8Ws2ZLTjfz7Gc.jpg">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/PJiNZm5YxcHMW7a.png">
+<meta property="og:image" content="https://i.loli.net/2019/08/08/DOuU6JIaLjQidhP.png">
+<meta property="og:updated_time" content="2019-08-14T19:07:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n-Lecture-2 词向量表示：word2vec">
+<meta name="twitter:description" content="笔记主要为个人学习记录，资料来源于斯坦福CS224N课程。">
+<meta name="twitter:image" content="https://i.loli.net/2019/08/08/3J9XQ7NFRxkuiKM.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-Lecture-2-词向量表示：word2vec" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/08/cs224n-Lecture-2-词向量表示：word2vec/" class="article-date">
+  <time datetime="2019-08-07T17:55:09.000Z" itemprop="datePublished">2019-08-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n-Lecture-2 词向量表示：word2vec
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Word2Vec"><span class="toc-number">1.</span> <span class="toc-text">Word2Vec</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Skip-gram模型"><span class="toc-number">2.</span> <span class="toc-text">Skip-gram模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Word2Vec的各类细节"><span class="toc-number">3.</span> <span class="toc-text">Word2Vec的各类细节</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模型训练"><span class="toc-number">4.</span> <span class="toc-text">模型训练</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#课后作业"><span class="toc-number">5.</span> <span class="toc-text">课后作业</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Softmax"><span class="toc-number">5.1.</span> <span class="toc-text">Softmax</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#神经网络基础"><span class="toc-number">5.2.</span> <span class="toc-text">神经网络基础</span></a></li></ol></li></ol>
+		  </div>
+		
+        <p>笔记主要为个人学习记录，资料来源于斯坦福CS224N课程。</p>
+<a id="more"></a>
+<h2 id="Word2Vec"><a href="#Word2Vec" class="headerlink" title="Word2Vec"></a>Word2Vec</h2><p>Word2Vec一共存在两种形式，Skip-gram模型和CBOW模型。<br>Skip-gram：主要用于预测上下文；<br>CBOW：主要用于预测单词。</p>
+<h2 id="Skip-gram模型"><a href="#Skip-gram模型" class="headerlink" title="Skip-gram模型"></a>Skip-gram模型</h2><p>在每一个估算步都取一个词作为中心词汇，通过这个模型来预测一个单词的上下文。<br><img src="https://i.loli.net/2019/08/08/3J9XQ7NFRxkuiKM.png" alt></p>
+<p>Skip-gram模型的完整计算过程如下图所示：<br><img src="https://i.loli.net/2019/08/08/xGy7HIYqCnoTjbc.png" alt></p>
+<p>我们拥有一个中心词汇，这里是一个 one-hot 编码，然后有一个所有中心词汇的表示组成的矩阵。 如果我们将这个矩阵和向量相乘（其中选出的列是中心词汇的表示），然后构造第二个矩阵用于存储上下文词汇的表示，这里只列举了三个词汇（因为足够复杂）。把这个向量和这个矩阵（上下文词汇表示）相乘， 然后挑出中心词汇和上下文表示的点积，对于每个位置来说都是一个矩阵，我们只有一个上下文词汇矩阵，然后就得到这些点积，再利用Softmax方法将它们转换成概率分布。</p>
+<font color="#0099ff">上述过程可以描述为，给定一个中心词汇，作为一个生成模型，它可以预测在上下文中出现词汇的概率。</font>
+
+<h2 id="Word2Vec的各类细节"><a href="#Word2Vec的各类细节" class="headerlink" title="Word2Vec的各类细节"></a>Word2Vec的各类细节</h2><p>预测每个单词的半径为m的窗口中的单词：<br><img src="https://i.loli.net/2019/08/08/nrzqH9VKyRTAB6o.png" alt></p>
+<p>t 和 t+j 表示的是单词在文本中的位置。<br>根据由单词向量构造而成的中心词汇来得出其上下文单词的概率分布。<br>c，o分布代表单词在词汇表空间中的索引，以及它的类型，这是词汇的排序，在单词表中的索引是763，在文本中的位置是766。但是词汇表中的o（输出单词）和c（中心单词），这里已经知道了单词类型，所以得到73号词在47号中心词条件下的出现概率p。<br>每种单词类型都有一个对应的向量，Uo 是索引为 o 的单词所对应的向量（上下文词汇的向量），Vc 是中心词汇对应的向量，那如何才能确定相应的概率分布呢？</p>
+<font color="red">那就需要使用一种名为Softmax的模型，选取两个向量的点积，将它们转换成Softmax形式，非常慢地过一遍这个步骤。</font><br><img src="https://i.loli.net/2019/08/08/QgbujeRTwMfDPNS.png" alt><br><br>补充，求向量的点积公式如下：<br><img src="https://i.loli.net/2019/08/08/rVIKth6pZ2yFJMe.png" alt><br><br>所以，针对下面这个公式，分母部分就是先求点积的值，再求和。<br><img src="https://i.loli.net/2019/08/08/VY4XunNLksfqd5e.png" alt><br><br>这种求积类似于一种粗糙衡量相似性的方法，两个向量的相似性越大，那么这个点积就越大。所以说这是一种通过点积衡量相似性的方法。<br>当我们得到两个向量的点积，我们就把他们转换成Softmax形式，因此，Softmax就是一种将数值转换成概率的标准方法。<br>当计算点积的时候，得到的结果是一个整数，我们不能直接把它转换成概率分布，所以，最简单的方法就是将它们转换成指数，其结果落在一个正区间，结果就一定为正。<br>这就为求解概率分布提供了一个很好的基础。<br><br><font color="red">eg.假如有大量数据都为正，并且需要把它们等比例转换成概率分布，做法如下：<br>对这些数字求和，然后用将各项依次除以总和，然后就能得到它们的概率分布。接下来，就是要对这个概率进行归一化处理。这就是如上公式中所展示的概率估计。</font>
+
+<font color="#0099ff">注：这种方法完全基于单词的向量表示。</font>
+
+<p>通俗来说，Softmax 就是使用词汇 c 来获取 词汇o 的概率。</p>
+<h2 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h2><p>把所有的参数写进向量θ，对 d 维的词向量和大小为 V 的词汇表来讲，有：<br><img src="https://i.loli.net/2019/08/08/YsBw12ZT6Dj7Poa.png" alt></p>
+<p>对于每个单词，都有一个 d 维的小向量，不管它是中心词汇还是上下文词汇，这样就拥有一个代表上下文中 aardvark 的向量。在上述矩阵中，<font color="#0099ff">v是上下文词的向量，u是中心词的向量</font>，这个向量的总长度是2dV。<br>因为有两个向量（中心词和上下文词），所以是2dV。<br><img src="https://i.loli.net/2019/08/08/Mm2Z4KnoNRayqkO.png" alt><br><img src="https://i.loli.net/2019/08/08/VY4XunNLksfqd5e.png" alt></p>
+<p>在上述的θ公式中，我们得到了目标函数，想要最小化它的负对数似然，上面的概率分布中包含了中心词汇和上下文词汇，思路是要调整参数，也就是这些向量，以便让负的对数似然项最小化，从而使预测的概率最大化。</p>
+<h2 id="课后作业"><a href="#课后作业" class="headerlink" title="课后作业"></a>课后作业</h2><h3 id="Softmax"><a href="#Softmax" class="headerlink" title="Softmax"></a>Softmax</h3><p>(1) 证明SoftMax对于输入中的恒定偏移是不变的，也就是说，对于任何输入向量x和任何常数c，都存在如下：<br>Softmax(x)=Softmax(x+c)</p>
+<p>其中，x+c意味着将常数c添加到x的每个维度：<br><img src="https://i.loli.net/2019/08/08/1K4rBnO5vgupZ6M.png" alt></p>
+<p>Softmax的直观理解如下：<br><img src="https://i.loli.net/2019/08/08/WZmXdVOHBGqbuAg.png" alt><br>假如给定一张图片需要进行分类，通过wx+b得到的分类的结果是cat，car，还有frog，其中，分类为cat的结果是3.2，是car的结果是5.1，是frog的结果是-1.7。再通过指数化得到24.5,164,0.18三个值，最后通过归一化得到最后的结果。</p>
+<p>推导过程如下：<br><img src="https://i.loli.net/2019/08/08/sNQ1gryGZWTlHOP.png" alt></p>
+<p>(2) 编程实现Softmax<br>给定N行和D列的输入矩阵，利用部分优化计算每一行的Softmax预测，将实现写入q1_softmax.py，通过执行 q1_softmax.py 来进行测试。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">def softmax(x):</span><br><span class="line">    orig_shape = x.shape</span><br><span class="line">    <span class="keyword">if</span> len(x.shape) &gt; 1:</span><br><span class="line">        # 假如输入的x是一个矩阵，则len(x.shape)&gt;1</span><br><span class="line">        # Matrix</span><br><span class="line">        <span class="attribute">x-</span>=np.max(x,axis=1,keepdims=True)</span><br><span class="line">        # <span class="attribute">axis</span>=1 表示从行里查找值,<span class="attribute">axis</span>=0表示从竖直方向查找</span><br><span class="line">        # keepdims 保持维度不变</span><br><span class="line">        # 相减的部分利用了常数不变性质</span><br><span class="line">        <span class="attribute">x</span>=np.exp(x)/np.sum(np.exp(x),axis=1,keepdims=True)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        # Vector</span><br><span class="line">        <span class="attribute">x-</span>=np.max(x,axis=0,keepdims=True)</span><br><span class="line">        # 这里只有单个向量，因此是从列中寻找最大值</span><br><span class="line">        <span class="attribute">x</span>=np.exp(x)/np.sum(np.exp(x),axis=0)</span><br><span class="line">    assert x.shape == orig_shape</span><br><span class="line">    return x</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="attribute">__name__</span>=="__main__":</span><br><span class="line">    <span class="attribute">x1</span>=np.array([[1,2,3],[2,5,6]])</span><br><span class="line">    <span class="attribute">result1</span>=softmax(x1)</span><br><span class="line">    <span class="builtin-name">print</span>(result1)</span><br><span class="line">    <span class="attribute">x2</span>=np.array([1,2,3])</span><br><span class="line">    <span class="attribute">result2</span>=softmax(x2)</span><br><span class="line">    <span class="builtin-name">print</span>(result2)</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下：<br><img src="https://i.loli.net/2019/08/08/JnYTlKCPA1xtb4X.png" alt></p>
+<p>(3) Softmax小结<br>1.指数变换去负数，突出特征；<br>2.归一化变为概率的近似；<br>3.利用常数不变防止溢出；<br>4.弄清每个维度代表的含义；<br>5.axis=0 表示竖轴，axis=1 表示横轴。</p>
+<h3 id="神经网络基础"><a href="#神经网络基础" class="headerlink" title="神经网络基础"></a>神经网络基础</h3><p>(1) 导出Sigmoid函数的梯度，并表明它可以重写为函数值的函数（在某些表达式中，只有σ(X)而不是x存在）。假设输入x是这个问题的标量。回想一下，sigmoid函数是：<br><img src="https://i.loli.net/2019/08/08/6EWuZwPbeTDHxAv.png" alt></p>
+<p>推导过程如下：<br><img src="https://i.loli.net/2019/08/08/RJ8Ws2ZLTjfz7Gc.jpg" alt></p>
+<p>(2)利用交叉熵损失求取softmax函数输入的梯度，即求出相对于softmaxn输入向量θ的梯度。函数由yˆ=Softmax(θ)生成。记住交叉熵函数是：<br><img src="https://i.loli.net/2019/08/08/PJiNZm5YxcHMW7a.png" alt><br>其中y是one-hot标号向量，y_hat是所有类的预测概率向量。<br><img src="https://i.loli.net/2019/08/08/DOuU6JIaLjQidhP.png" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/08/cs224n-Lecture-2-词向量表示：word2vec/" data-id="cktfedoy0002vf4ukcqn3ti4d" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/10/吴恩达神经网络与深度学习-Week-2-学习记录/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          吴恩达神经网络与深度学习 Week-2 学习记录
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/11/28/Python文件转换-csv和json互转/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Python文件转换 csv/json/html</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

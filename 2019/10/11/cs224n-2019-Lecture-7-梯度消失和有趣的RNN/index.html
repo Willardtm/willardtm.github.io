@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n(2019)-Lecture 7 梯度消失和有趣的RNN | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="看到Richard老师的时候我真的崩溃了，大佬我跟不上啊啊啊啊，所以cs224n 2019启动！后面的笔记以2019版本为准…Richard老师对不起…">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n(2019)-Lecture 7 梯度消失和有趣的RNN">
+<meta property="og:url" content="http://yoursite.com/2019/10/11/cs224n-2019-Lecture-7-梯度消失和有趣的RNN/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="看到Richard老师的时候我真的崩溃了，大佬我跟不上啊啊啊啊，所以cs224n 2019启动！后面的笔记以2019版本为准…Richard老师对不起…">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHV7xP.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHVv5j.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHZPMV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHZuxx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHelpn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHeh9A.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHej9s.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHmiEF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHmlUe.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHm0Ug.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHm2rV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHmhaF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHmoG9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHuj9H.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHK4IS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHKXZV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHMpRJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHMnRH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHMNWQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHM5ex.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHMLSH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHQFpQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHQe00.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHQ3c9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHQynI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/11/uHQ43Q.png">
+<meta property="og:updated_time" content="2019-10-11T02:15:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n(2019)-Lecture 7 梯度消失和有趣的RNN">
+<meta name="twitter:description" content="看到Richard老师的时候我真的崩溃了，大佬我跟不上啊啊啊啊，所以cs224n 2019启动！后面的笔记以2019版本为准…Richard老师对不起…">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/10/11/uHV7xP.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-2019-Lecture-7-梯度消失和有趣的RNN" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/10/11/cs224n-2019-Lecture-7-梯度消失和有趣的RNN/" class="article-date">
+  <time datetime="2019-10-11T01:43:14.000Z" itemprop="datePublished">2019-10-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n(2019)-Lecture 7 梯度消失和有趣的RNN
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度消失的直观表示"><span class="toc-number">1.</span> <span class="toc-text">梯度消失的直观表示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度消失的证明过程"><span class="toc-number">2.</span> <span class="toc-text">梯度消失的证明过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么梯度消失会是一个问题？"><span class="toc-number">3.</span> <span class="toc-text">为什么梯度消失会是一个问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#梯度消失在RNN-LM模型上的影响"><span class="toc-number">4.</span> <span class="toc-text">梯度消失在RNN-LM模型上的影响</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么梯度爆炸也是一个问题？"><span class="toc-number">5.</span> <span class="toc-text">为什么梯度爆炸也是一个问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决梯度爆炸的办法：梯度裁剪"><span class="toc-number">6.</span> <span class="toc-text">解决梯度爆炸的办法：梯度裁剪</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何解决梯度消失的问题？"><span class="toc-number">7.</span> <span class="toc-text">如何解决梯度消失的问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Long-Short-Term-Memory（LSTM）"><span class="toc-number">8.</span> <span class="toc-text">Long Short-Term Memory（LSTM）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Multi-layer-RNN（多层RNN）"><span class="toc-number">9.</span> <span class="toc-text">Multi-layer RNN（多层RNN）</span></a></li></ol>
+		  </div>
+		
+        <p>看到Richard老师的时候我真的崩溃了，大佬我跟不上啊啊啊啊，所以cs224n 2019启动！<br>后面的笔记以2019版本为准…Richard老师对不起…<br><a id="more"></a></p>
+<h2 id="梯度消失的直观表示"><a href="#梯度消失的直观表示" class="headerlink" title="梯度消失的直观表示"></a>梯度消失的直观表示</h2><p>梯度下降的过程中会存在这样一个问题：如果信号会越变越小，那么信号会出现消失。<br>因为累积的梯度是中间梯度的乘积。<br><img src="https://s2.ax1x.com/2019/10/11/uHV7xP.png" alt></p>
+<h2 id="梯度消失的证明过程"><a href="#梯度消失的证明过程" class="headerlink" title="梯度消失的证明过程"></a>梯度消失的证明过程</h2><p>从上图可以看出，梯度计算的中间过程是一个累积的过程。<br><img src="https://s2.ax1x.com/2019/10/11/uHVv5j.png" alt><br>注：diag：是对角矩阵的意思，对角线上的元素由里面的sigmoid函数产生，其他元素都是0。<br>完整的梯度求导式子可以写作：<br><img src="https://s2.ax1x.com/2019/10/11/uHZPMV.png" alt><br>给上面的式子加上L2范式：<br><img src="https://s2.ax1x.com/2019/10/11/uHZuxx.png" alt><br>Pascanu等人证明过，如果Wh的值比1小，那么梯度值会以指数形式缩小。<br>特殊地，我们可以看到我们所感兴趣的梯度是比Wh的i-j次的乘积的范式要小或者是相等。所以，如果Wh变小，整个式子会不断变小。</p>
+<h2 id="为什么梯度消失会是一个问题？"><a href="#为什么梯度消失会是一个问题？" class="headerlink" title="为什么梯度消失会是一个问题？"></a>为什么梯度消失会是一个问题？</h2><p>下面给出一张图展示出为什么梯度消失会是一件不好的事情。<br>第二步中的损失也和第一步中的隐藏状态有关。<br><img src="https://s2.ax1x.com/2019/10/11/uHelpn.png" alt><br>邻近的梯度信号量级（magnitude）要比远处的梯度信号量级（magnitude）大得多。这就意味着，当你更新模型权重时，你要从附近得到的信号要远远超过远处的信号。<font color="##0099ff">基本上你只要是学习，你只是要优化这些邻近的影响，而不是远端（long-term）的影响。</font><br>所以，在临近的影响中你会失去远端的影响。</p>
+<p>所以，在临近的影响中你会失去远端的影响。</p>
+<p>对于梯度问题的另一种解释：<font color="##0099ff">梯度可以看作是过去对未来结果影响的一种度量。</font><br>梯度就是，如果改变某个权重或是某个激活量一点点，那么它将会对这件事的未来产生多大的影响。</p>
+<p>所以，特别的事，如果梯度在较长的距离上（从 t 到 t+n ）变得越来越小，那么我们将无法判断是否存在以下两种情况：<br>1.步骤 t 和 t+n 之间不存在任何依赖；<br>2.我们使用了错误的参数来获取步骤 t 和 t+n 之间的真实依赖。</p>
+<h2 id="梯度消失在RNN-LM模型上的影响"><a href="#梯度消失在RNN-LM模型上的影响" class="headerlink" title="梯度消失在RNN-LM模型上的影响"></a>梯度消失在RNN-LM模型上的影响</h2><p> LM注：Language Model<br> <img src="https://s2.ax1x.com/2019/10/11/uHeh9A.png" alt><br> 对于RNN-LM模型的问题是能否轻松回答这个问题？他们会在这个特定的语言建模示例中做得好吗？<br>答案是：是的。RNN-LM模型可以从训练数据中学习这种例子，因此，如果它解决了训练数据中的示例，那么RNN-LM模型将需要对依赖关系进行建模来学习第七步中的单词 tickets 和 最后的目标单词 tickets 间的关系。</p>
+<p>但是，如果存在梯度消失的问题，这些梯度将会非常小，因为这是一个相当长的距离，这就意味着该模型将无法实现轻松地或完全地学习这种依赖性。所以，如果模型不能学习这种依赖性，然后模型将无法预测在测试时类似的各种长距离依赖。<br><img src="https://s2.ax1x.com/2019/10/11/uHej9s.png" alt></p>
+<font color="##0099ff">syntactic recency：句法近因</font><br><img src="https://s2.ax1x.com/2019/10/11/uHmiEF.png" alt><br><font color="##0099ff">syntactic recency：句法近因</font><br><img src="https://s2.ax1x.com/2019/10/11/uHmlUe.png" alt><br><br>由上述两个例子引出的问题是：RNN语言模型在顺序近因（sequential recency）方面学习比在sicta-句法近因（sicta-syntactic recency）更好。<br><font color="##0099ff"><br>梯度消失是造成这个问题的原因，如果你的单词距离较远，可能就会很难使用语法上最近的单词中的信息，特别是顺序近因（sequential recency）的单词中有很多强信号。<br></font>
+
+<h2 id="为什么梯度爆炸也是一个问题？"><a href="#为什么梯度爆炸也是一个问题？" class="headerlink" title="为什么梯度爆炸也是一个问题？"></a>为什么梯度爆炸也是一个问题？</h2><p>SGD效果如下：<br><img src="https://s2.ax1x.com/2019/10/11/uHm0Ug.png" alt><br>这个模型的参数使用θ来表示，类似于旧的前提（old premisses），然后你朝着负梯度下降的方法迈进了一步，因为需要最小化 J 的损失函数。<br>所以，问题是，当梯度变得很大时，那么SGD更新步骤也将变得非常大。<br>最差的结果就是：网络中出现 INF 或者 NaN的情况。</p>
+<h2 id="解决梯度爆炸的办法：梯度裁剪"><a href="#解决梯度爆炸的办法：梯度裁剪" class="headerlink" title="解决梯度爆炸的办法：梯度裁剪"></a>解决梯度爆炸的办法：梯度裁剪</h2><p>梯度裁剪：如果梯度的范数大于某个阈值（阈值是一个自己选定的超参数），则在应用SGD更新之前将其缩小。<br><img src="https://s2.ax1x.com/2019/10/11/uHm2rV.png" alt><br>g_hat这个向量,它是误差对前提(premises)的导数，如果说梯度的范式比阈值大，那么只需要缩小它即可。重要的是，它仍然指向同一方向，但只是一小步（take a step in the same direction, but a smaller step）。<br>简单来说就是：<br><img src="https://s2.ax1x.com/2019/10/11/uHmhaF.png" alt><br>其中 W 和 b 都是一个标量，z 轴表示损失，毫无疑问，损失应该越小越好。<br>上图中有一个非常陡的悬崖（cliff），这里的损失（loss）变化很快，如果没有裁剪梯度，那么就会遇到左侧图中所示的情况，这是一个非常差的更新，而现在它的损失比之前的大得多。<br>同时，右边部分的图示也是一个非常差的更新，因为它只是投掷，可能非常随机的配置 w 和 b。</p>
+<p>所以，在这些对比之下，可以看到：<br> 采用梯度裁剪，从悬崖处下降到沟渠，经过裁剪之后，最终离开悬崖一点点，但是不会有太多，因为梯度被裁剪了。<br>然后在悬崖上，又有一个非常陡峭的梯度，同时它也没有采取很大的一步，因为再次修剪了渐变，所以它有点回归。</p>
+<font color="##0099ff"><br>结论：可以通过梯度裁剪的方法来有效避免任何疯狂的步骤来找到在沟渠底部真正的最小值。<br></font>
+
+<h2 id="如何解决梯度消失的问题？"><a href="#如何解决梯度消失的问题？" class="headerlink" title="如何解决梯度消失的问题？"></a>如何解决梯度消失的问题？</h2><p>主要的问题是RNN很难学会在许多时间步骤中保存信息。<br>在vanilla RNN中，隐藏状态是不断被重写更新的：<br><img src="https://s2.ax1x.com/2019/10/11/uHmoG9.png" alt><br>因此这促使我们思考，是否具有某种独立记忆（separate memory）的RNN？<br>如果有一些单独的地方来存储后续想要的信息，这会让RNN更容易学习在更多时间内保存信息。<br>这些就是 LSTM 和 Long Short-Term Memory RNN 背后的理念。</p>
+<h2 id="Long-Short-Term-Memory（LSTM）"><a href="#Long-Short-Term-Memory（LSTM）" class="headerlink" title="Long Short-Term Memory（LSTM）"></a>Long Short-Term Memory（LSTM）</h2><p>LSTM被作为解决梯度消失的主要方案。<br>在步骤 t 中，包含了当前状态 h(t)，以及细胞状态 c(t)，h(t)和c(t)具有相同的长度。在这个神经网络的改进中，细胞(cell)意味着存储我们的长期信息，即存储单元。 另一个更重要的地方是，LSTM 可以擦除并写入，并从单元格中读取信息。</p>
+<font color="##0099ff"><br>同时，LSTM决定是否要擦除，写入，读取信息并决定多少和哪些信息的方式，这些都由各种门来进行控制。如果门是打开的（用 1 表示），则信息可以通过；反之，如果门是关闭的（用0表示），则信息无法通过。重要的是，门是动态的，他们的值是基于当前的文本计算出来的。<br></font><br>在时间步长 t 上，我们有一个序列输入 x(t)，我们将需要计算一个序列的隐藏状态 h(t) 和细胞状态 c(t)：<br><img src="https://s2.ax1x.com/2019/10/11/uHuj9H.png" alt><br>f(t)是一个介于0和1之间的向量，当在做一个基于f(t)和前一个单元状态c(t-1)元素积（element-wise product）时，你真正在做的是掩盖掉从之前的隐藏状态中输出的一些信息。当 f(t) 是1时，表示复制这些信息，当 f(t) 是 0 时，表示摆脱这些信息，也就是删除或是忘记它。<br><br>上述的六个计算步骤的直观展示如下图所示：<br><img src="https://s2.ax1x.com/2019/10/11/uHK4IS.png" alt><br><br>计算步骤如上图中标识所示，具体计算过程我写在纸上，如下：<br><img src="https://s2.ax1x.com/2019/10/11/uHKXZV.png" alt><br><br>## LSTM如何解决梯度消失的问题？<br><br>LSTM的结构更容易保存时间步长上的信息：<br>1.如果遗忘门(forget gate)被设置为记住每一步的一切，细胞中的信息在许多时间步长上将被无限期的保留。<br>2.相比之下，vanilla RNN更难学习一个循环权重矩阵Wh来保存隐藏状态的信息。<br><br>注意：LSTM并不保证不会出现梯度消失或者是梯度爆炸的情况，但它确实提供了一种更容易的放来来让模型学习长距离依赖。<br><br>## Gated Recurrenr Units（GRU）<br><br>GRU 要比 LSTM 更简单。<br>在GRU中没有细胞状态（cell state），只有一个隐藏的状态。它和 LSTM 的相似之处就在于会使用门结构来进行控制信息流，GRU一共有两个门，更新门（Update gate）和重置门（Reset gate）的式子如下：<br><font color="##0099ff"><br>更新门：控制着隐藏状态中哪个部分需要被更新和保存。<br>重置门：控制着先前状态中隐藏状态的哪个部分将用于计算新的内容。<br></font><br><img src="https://s2.ax1x.com/2019/10/11/uHMpRJ.png" alt><br><br><font color="##0099ff"><br>新隐藏状态的内容：重置门选择了先前隐藏状态中有用的部分。使用这些和当前的输入来计算新的隐藏内容。<br>隐藏状态：更新门同时控制从以前的隐藏状态保留的内容，以及更新到新的隐藏状态内容的内容。<br></font><br><img src="https://s2.ax1x.com/2019/10/11/uHMnRH.png" alt><br><br><font color="##0099ff"><br>为什么GRU有助于梯度消失问题？<br>因为GRU和LSTM一样没有明确的内存细胞（memory cell）。<br></font><br>如果u(t)设置为0，然后我们将会在每一步保持隐藏状态相同（可能不是个好主意，但是容易实现），这是为了保留长距离的信息，这就是GRU比RNN更容易保持远距离信息的一个原因。<br>GRU结构图如下：<br><img src="https://s2.ax1x.com/2019/10/11/uHMNWQ.png" alt><br>参考来源：<a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank" rel="noopener">http://colah.github.io/posts/2015-08-Understanding-LSTMs/</a><br><br>## LSTM vs GRU<br><br>1.GRU计算速度更快并且参数更少。<br>2.并没有决定性的证据来一致证明其中哪种模型更好。<br>3.如果训练数据较多或者数据有特殊的长期以来，LSTM则被默认是更好的选择。<br>4.经验法则：先用LSTM，如果需要加快效率，则使用GRU。<br><br>## 梯度消失/爆炸只是RNN中的问题吗？<br><br>不是，所有的神经网络中都会存在梯度爆炸或是梯度消失的问题。<br>1.在前馈网络和卷积网络中，经常会有一个渐渐消失的渐变，由于链式法则，梯度会在反向传播变小。<br>2.较低层的网络学习非常慢，难以训练。<br>解决办法：在网络中添加更多的直接连接，不仅仅是临近的层，而是更远的层， 这使得梯度更容易流动，整体训练网络会更容易。<br><br>### For example-Residual Connection<br>1.Residual connections（残差连接）aka “ResNet”<br>2.跳跃连接<br>3.标识连接默认保存信息<br>4.使得深层网络更容易被训练<br><img src="https://s2.ax1x.com/2019/10/11/uHM5ex.png" alt><br>假设有一个初始化网络和初始化权重层得到的小的随机值，如果他们很小并且接近0，然后你会有一个带噪音的确认函数（identity function）。因此，默认情况下，将通过所有层来保存信息。<br><br>### For example-Dense Connections<br>1.Dense connections（密集连接）aka “DenseNet”<br>2.把一切连接到一些。<br><img src="https://s2.ax1x.com/2019/10/11/uHMLSH.png" alt><br><br>### For example-Highway Connections<br>1.Highway connections（高速公路连接）aka “HighwayNet”<br>2.类似于残差连接，但是确认连接（identity connection）和转置层（transformation layer）由动态门控制（dynamic gate）。<br>3.这项工作由LSTM启发，但是应用于深度前馈网络和卷积神经网络。<br><br>### 结论<br>梯度消失和梯度爆炸是一个很常见的问题，由于重复使用相同的矩阵，RNN非常不稳定。<br><br>## Bidirectional RNNs（双向RNN）<br><br>用于情感分类中的RNN结构如下所示：<br><img src="https://s2.ax1x.com/2019/10/11/uHQFpQ.png" alt><br><br> 这个例子当中，terribly exciting这个词需要连在一起看，如果单独把 terribly 这个词取出来，那么有可能整个句子会被划归到negative的分类里。然而，terribly exceting表示的是令人非常兴奋的意思，所以必须了解正确的语义背景。<br><br>well，这就是双向RNN在实践中发挥的作用，双向RNN结构如下所示：<br><img src="https://s2.ax1x.com/2019/10/11/uHQe00.png" alt><br>前向RNN（forward RNN）从左到右编码句子，后向RNN（Backward RNN）与前向RNN具有完全独立的权重，它做的也是同样的事情，从右到左编码序列，每个隐藏状态都是基于右边的一个隐藏状态计算出来的，然后，只要把两个隐藏状态的RNN连接在一起，就可以得到你的最后一种表示。<br><br>双向RNN在时间步长上的计算：<br><img src="https://s2.ax1x.com/2019/10/11/uHQ3c9.png" alt><br><br>双向RNN的简化图表如下：<br><img src="https://s2.ax1x.com/2019/10/11/uHQynI.png" alt><br>Q：前向RNN和反向RNN是分别训练的吗？<br>A：两个方向上的RNN一起训练更常见，这（似乎）是标准做法。<br><font color="##0099ff"><br>注：不能使用Bi-RNN做语言建模，因为语言建模仅允许访问左部的上下文。<br></font>
+
+<h2 id="Multi-layer-RNN（多层RNN）"><a href="#Multi-layer-RNN（多层RNN）" class="headerlink" title="Multi-layer RNN（多层RNN）"></a>Multi-layer RNN（多层RNN）</h2><p>多层RNN允许了神经网络计算更复杂的表示：<br>低阶RNN可以计算低阶的特征，相应地，高阶RNN应该能计算更高阶的特征，比如语义特征。</p>
+<p>三层RNN的工作结构图示：<br><img src="https://s2.ax1x.com/2019/10/11/uHQ43Q.png" alt><br>上图所示是一个单项RNN，但它也可以是双向的，如果你可以访问整个输入序列，一个RNN层的隐藏状态主要作为下一个RNN层的输入。</p>
+<font color="##0099ff"><br>Q：用什么顺序来计算这些隐藏状态？<br>A：计算顺序具有很强的灵活性，可以先计算所有RNN的第一层，然后是RNN的第二层，continue。但是，如果这个多层RNN是双向的，那就必须先完成第一层的计算，才能进入第二层。<br></font>
+
+
+
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/10/11/cs224n-2019-Lecture-7-梯度消失和有趣的RNN/" data-id="cktfedoxy002of4uku73uqt5w" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/14/《统计学习方法》第四章-朴素贝叶斯法/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          《统计学习方法》第四章 朴素贝叶斯法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/05/cs224n-Lecture-8-RNN和语言模式/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">cs224n-Lecture 8 RNN和语言模式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

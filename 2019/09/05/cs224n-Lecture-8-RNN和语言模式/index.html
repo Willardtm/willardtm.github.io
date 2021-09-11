@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n-Lecture 8 RNN和语言模式 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="emmmmm这一讲的内容，嗯，好吧，我不太能理解Richard大神上课的方式和讲解（因为本人实在是菜得抠脚），所以这讲的笔记主要是基于cs224n的2019年版的，课程是英文的，还好有字幕，笔记上的内容则根据字幕和个人理解进行翻译，如有错误，还请见谅。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n-Lecture 8 RNN和语言模式">
+<meta property="og:url" content="http://yoursite.com/2019/09/05/cs224n-Lecture-8-RNN和语言模式/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="emmmmm这一讲的内容，嗯，好吧，我不太能理解Richard大神上课的方式和讲解（因为本人实在是菜得抠脚），所以这讲的笔记主要是基于cs224n的2019年版的，课程是英文的，还好有字幕，笔记上的内容则根据字幕和个人理解进行翻译，如有错误，还请见谅。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmMlqJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmMYPx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmM2z8.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmMWQS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmM7iq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmMbWV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmMxeJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQlSf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQ8Og.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQJmQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQUkn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQdf0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQBlT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQD6U.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQ41K.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmQ70H.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nml141.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nml45n.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nmlzP1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm1mGt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm1uxf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm1GIs.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm1tGq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm1dMT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm10LF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm1rdJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm1cJ1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/09/05/nm3Soj.png">
+<meta property="og:updated_time" content="2019-09-05T05:20:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n-Lecture 8 RNN和语言模式">
+<meta name="twitter:description" content="emmmmm这一讲的内容，嗯，好吧，我不太能理解Richard大神上课的方式和讲解（因为本人实在是菜得抠脚），所以这讲的笔记主要是基于cs224n的2019年版的，课程是英文的，还好有字幕，笔记上的内容则根据字幕和个人理解进行翻译，如有错误，还请见谅。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/09/05/nmMlqJ.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-Lecture-8-RNN和语言模式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/05/cs224n-Lecture-8-RNN和语言模式/" class="article-date">
+  <time datetime="2019-09-05T04:48:27.000Z" itemprop="datePublished">2019-09-05</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n-Lecture 8 RNN和语言模式
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#语言模型"><span class="toc-number">1.</span> <span class="toc-text">语言模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#n-gram-语言模型"><span class="toc-number">2.</span> <span class="toc-text">n-gram 语言模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#n-gram语言模型"><span class="toc-number">2.1.</span> <span class="toc-text">n-gram语言模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#稀疏性问题"><span class="toc-number">2.2.</span> <span class="toc-text">稀疏性问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分母上的数为0"><span class="toc-number">2.3.</span> <span class="toc-text">分母上的数为0</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#n-gram-模型中的稀疏性问题"><span class="toc-number">3.</span> <span class="toc-text">n-gram 模型中的稀疏性问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#n-gram-模型中的存储问题"><span class="toc-number">4.</span> <span class="toc-text">n-gram 模型中的存储问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#n-gram-模型实践"><span class="toc-number">5.</span> <span class="toc-text">n-gram 模型实践</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用n-gram模型生成语言"><span class="toc-number">6.</span> <span class="toc-text">使用n-gram模型生成语言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一个设定窗口大小的神经语言模型"><span class="toc-number">7.</span> <span class="toc-text">一个设定窗口大小的神经语言模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#该模型比n-gram的优势在哪？"><span class="toc-number">7.1.</span> <span class="toc-text">该模型比n-gram的优势在哪？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fixed-window-模型的缺点"><span class="toc-number">7.2.</span> <span class="toc-text">fixed-window 模型的缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#循环神经网络-RNN"><span class="toc-number">8.</span> <span class="toc-text">循环神经网络-RNN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RNN语言模型"><span class="toc-number">9.</span> <span class="toc-text">RNN语言模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RNN-模型的优点"><span class="toc-number">9.1.</span> <span class="toc-text">RNN 模型的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RNN-模型的缺点"><span class="toc-number">9.2.</span> <span class="toc-text">RNN 模型的缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#训练一个RNN模型"><span class="toc-number">10.</span> <span class="toc-text">训练一个RNN模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RNN的反向传播"><span class="toc-number">11.</span> <span class="toc-text">RNN的反向传播</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用RNN来进行文本生成"><span class="toc-number">12.</span> <span class="toc-text">使用RNN来进行文本生成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#评估语言模型"><span class="toc-number">13.</span> <span class="toc-text">评估语言模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用RNN进行标记（tagging）"><span class="toc-number">14.</span> <span class="toc-text">使用RNN进行标记（tagging）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用RNN来做句子分类"><span class="toc-number">15.</span> <span class="toc-text">使用RNN来做句子分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RNN可以作为编码模块"><span class="toc-number">16.</span> <span class="toc-text">RNN可以作为编码模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RNN可以通过声音识别文本"><span class="toc-number">17.</span> <span class="toc-text">RNN可以通过声音识别文本</span></a></li></ol>
+		  </div>
+		
+        <p>emmmmm这一讲的内容，嗯，好吧，我不太能理解Richard大神上课的方式和讲解（因为本人实在是菜得抠脚），所以这讲的笔记主要是基于cs224n的2019年版的，课程是英文的，还好有字幕，笔记上的内容则根据字幕和个人理解进行翻译，如有错误，还请见谅。</p>
+<a id="more"></a>
+<h2 id="语言模型"><a href="#语言模型" class="headerlink" title="语言模型"></a>语言模型</h2><p>语言模型的任务就是预测句子中的下一个词会是什么，如下所示：<br><img src="https://s2.ax1x.com/2019/09/05/nmMlqJ.png" alt></p>
+<p>语言模型提出一个条件概率分布来计算得到X(t+1)个词是什么，这里假设X(t+1)可以是从一个完整的词汇库V中的任何单词，即我们考虑的是一个预置的单词列表。从这个角度，可以把语言模型看作是一种分类任务，因为存在一些预先设定好的概率。<br>可以将语言模型看作一个系统，它将概率分配给一段文本。<br>所以，举个例子，如果我们还有一些文本，x(1)……x(T)，那么，文本根据语言模型的概率可以分解。<br>根据定义，可以说，文本概率就相当于是所有条件概率的乘积。<br><img src="https://s2.ax1x.com/2019/09/05/nmMYPx.png" alt></p>
+<h2 id="n-gram-语言模型"><a href="#n-gram-语言模型" class="headerlink" title="n-gram 语言模型"></a>n-gram 语言模型</h2><p>n-gram：指一串连续的单词。举个栗子：<br>1-gram：指一个单词或者是独立的单词，the students opened the，可以是student，也可以是opened或者别的词。<br>2-gram：指一对连续的单词，比如 the students，students opened，opened their。<br>其他比如 3-gram 或者 4-gram 都是类似的结构。</p>
+<p>n-gram 核心思想：为了预测下一个出现的词是什么，你需要收集一系列的统计，从一些训练数据中找出不同的n-gram组合出现的情况，然后使用这些统计结果来预测下一个单词可能是什么。</p>
+<p>假设需要预测第X(t+1)个词是什么，前面只有 n-1 个词：<br><img src="https://s2.ax1x.com/2019/09/05/nmM2z8.png" alt></p>
+<h3 id="n-gram语言模型"><a href="#n-gram语言模型" class="headerlink" title="n-gram语言模型"></a>n-gram语言模型</h3><p>假设需要学习 4-gram 的语言模型：<br><img src="https://s2.ax1x.com/2019/09/05/nmMWQS.png" alt></p>
+<p>一个简单的假设，下一个输出单词仅依赖于前面的三个单词，即前 N-1 个单词。<br><img src="https://s2.ax1x.com/2019/09/05/nmM7iq.png" alt></p>
+<p>所以，根据语言模型的计算公式，可以得到：<br><img src="https://s2.ax1x.com/2019/09/05/nmMbWV.png" alt></p>
+<p>具体计算如下：<br><img src="https://s2.ax1x.com/2019/09/05/nmMxeJ.png" alt><br>现在的问题是，我们可以放弃监督文本吗（proctor context）？<br>如果我们扔掉太多的文本，之后我们就无法很好的预测文本的词语。</p>
+<h3 id="稀疏性问题"><a href="#稀疏性问题" class="headerlink" title="稀疏性问题"></a>稀疏性问题</h3><p>如果分子上的数等于零，会发生什么？<br>所以，对于一些特定的词W，这个词组 the students opened their W 从来没有在数据中出现过，比如：the students opened their petri dishes，非常不常见，并且在数据中从来没有出现过，这就意味着我们预测下一个词是petri dishes的概率为0。很明显，这样的预测结果出现了问题。</p>
+<font color="##0099FF"><br>Solution：<br>对于这个问题的一个局部解法是我们可以增加一个小的delta（Δ）来到所有词汇的计算值当中，因此，所有的词汇预测最终至少都会有一个较小的概率。<br>因此，petri dishes 也将会有一个较小的概率，但是，也因此其他词语都可能是不好的选项。———平滑化<br></font>
+
+<h3 id="分母上的数为0"><a href="#分母上的数为0" class="headerlink" title="分母上的数为0"></a>分母上的数为0</h3><p>即在训练数据中从来没有见过 student opened their 这个词组。<br>如果出现这个问题，我们甚至不能计算在这个词组上W的概率分布。</p>
+<font color="##0099FF"><br>Solution：<br>如果在语料库中找不到这个词组（student opened their），然后就应该返回，仅考虑需要预测的词的前两个单词而不是前三个词。即，直接考虑 open thier，然后预测下一个词应该是什么。<br></font>
+
+<h2 id="n-gram-模型中的稀疏性问题"><a href="#n-gram-模型中的稀疏性问题" class="headerlink" title="n-gram 模型中的稀疏性问题"></a>n-gram 模型中的稀疏性问题</h2><p>N越大，稀疏性问题就越糟糕。<br>举个例子，10-gram 或者 9-gram 在语料库中根本就不存在，因此最多只计算 5-gram。</p>
+<h2 id="n-gram-模型中的存储问题"><a href="#n-gram-模型中的存储问题" class="headerlink" title="n-gram 模型中的存储问题"></a>n-gram 模型中的存储问题</h2><p>需要通过训练语料来计算所有的n-gram，随着N的增加，需要存储的n-grams的数量也会增加，N增加也会导致模型的大小变大。</p>
+<h2 id="n-gram-模型实践"><a href="#n-gram-模型实践" class="headerlink" title="n-gram 模型实践"></a>n-gram 模型实践</h2><p>你可以通过一个1.7million的语料库构建一个简单的3-gram语言模型<br><img src="https://s2.ax1x.com/2019/09/05/nmQlSf.png" alt><br>语言模型参考：<a href="https://nlpforhackers.io/language-models/" target="_blank" rel="noopener">https://nlpforhackers.io/language-models/</a></p>
+<h2 id="使用n-gram模型生成语言"><a href="#使用n-gram模型生成语言" class="headerlink" title="使用n-gram模型生成语言"></a>使用n-gram模型生成语言</h2><p>假设已经知道前两个词是什么，并且后面会出现的词语的概率：<br><img src="https://s2.ax1x.com/2019/09/05/nmQ8Og.png" alt><br>然后选择一些词，并且知道他们的联合概率。<br>假设给我们的词是 price，所以price就是下一个词，然后你只需要限定前两个词：<br><img src="https://s2.ax1x.com/2019/09/05/nmQJmQ.png" alt><br>重复上面的步骤，将 of 作为预测词，继续通过前两个词预测下一个词：<br><img src="https://s2.ax1x.com/2019/09/05/nmQUkn.png" alt><br>然后你就能得到一个（乱七八糟的）文本：<br><img src="https://s2.ax1x.com/2019/09/05/nmQdf0.png" alt><br>其中出现的符号，比如逗号，句号等，也算作是一个字符来进行预测。</p>
+<h2 id="一个设定窗口大小的神经语言模型"><a href="#一个设定窗口大小的神经语言模型" class="headerlink" title="一个设定窗口大小的神经语言模型"></a>一个设定窗口大小的神经语言模型</h2><p>a fixed-window neural language model<br>假设我们的窗口大小为4，我们要做的操作类似于NER模型。<br><img src="https://s2.ax1x.com/2019/09/05/nmQBlT.png" alt><br>使用one-hot向量来表示这些词语，然后，我们将使用这些来查找这些单词的嵌入。所以我们得到了对应的词嵌入矩阵 E1,2,3,4，然后使用e来连接他们。将e通过一个线性层和一个非线性函数 f 来生成某种（some kind of）隐藏层，然后再将它传入另外一个线性层和softmax，现在得到了输出的概率分布y_hat。<br><img src="https://s2.ax1x.com/2019/09/05/nmQD6U.png" alt><br>在所示的例子中，我们需要预测下一个词是什么，向量y_hat的长度(length，我觉得这里写成大小比较合适)为v其中v是词汇表中所有不同单词的概率。所以神经网络最上层的结构使用的是一个绿色的柱状图来表示，最终的结果可能是 books ,laptops 这些东西。</p>
+<h3 id="该模型比n-gram的优势在哪？"><a href="#该模型比n-gram的优势在哪？" class="headerlink" title="该模型比n-gram的优势在哪？"></a>该模型比n-gram的优势在哪？</h3><p>1.该模型没有稀疏性问题（sparsity problem）；<br>2.不需要存储所有计算得到的n-grams数据，只需要存储当前词汇表的所有词向量；</p>
+<h3 id="fixed-window-模型的缺点"><a href="#fixed-window-模型的缺点" class="headerlink" title="fixed-window 模型的缺点"></a>fixed-window 模型的缺点</h3><p>1.fixed window可能会比较小，不管你把窗口调整得多大，当你需要使用的时候，你也可能会失去一些有用的文本；<br>2.如果你试图去扩大窗口大小（window size），你也需要扩大对应的权重矩阵，即W的宽度，因为W需要和e相乘，e是词嵌入矩阵的连接。W宽度（width of W）增大也就意味着window的增大。<br>因此，可以得出结论，你的窗口可能永远不会足够大。<br>示意图如下：<br><img src="https://s2.ax1x.com/2019/09/05/nmQ41K.png" alt><br>针对 fixed-window神经语言模型，我们需要改进的就是我们需要一个可以处理任何长度输入的神经网络模型。</p>
+<h2 id="循环神经网络-RNN"><a href="#循环神经网络-RNN" class="headerlink" title="循环神经网络-RNN"></a>循环神经网络-RNN</h2><p>RNN简化结构图如下所示：<br><img src="https://s2.ax1x.com/2019/09/05/nmQ70H.png" alt><br>我们有一个输入序列 x1,x2,x3…可以把这个序列假设为你喜欢的任何长度。<br>我们有一个序列的隐藏状态并且有和这些隐藏状态一样多的输入，重要的是，每个隐藏状态的计算是基于先前的隐藏状态和当前的输入步骤。<br>注意，RNN每个时间步长上的权重W都是相同的，这些特点让我们可以处理任意长度的输入。<br>每一步的RNN计算都能得到一个输出，也就是对应的y_hat1,y_hat2…它们是可选的因为你不需要计算它们或者你可以只计算一些步骤而不是其他步骤。它依赖于你想让你的RNN做什么。</p>
+<h2 id="RNN语言模型"><a href="#RNN语言模型" class="headerlink" title="RNN语言模型"></a>RNN语言模型</h2><p>假设有一个给定的句子，构建RNN语言模型，首先使用one-hot向量来表示这些词。然后使用这些来查找词嵌入矩阵中的词嵌入。<br>计算第一个隐藏状态h1，我们需要基于先前的隐藏状态h0和当前的输入来计算它。我们已经拥有了当前的输入状态E1，问题是，如何来获得h0的状态值？<br>在先前的状态（previous state）和输入做一个线性转换，再加上一些偏置项（bias），再添加一个非线性层，比如sigmoid，这就给了你一个新的隐藏状态。<br>通过这样的计算，就能得到一个完整的RNN神经网络。<br><img src="https://s2.ax1x.com/2019/09/05/nml141.png" alt><br>这是一个语言模型，所以我们需要去预测students opened their后面的词，因此，可以使用当前的状态 h4，将它放入一个线性层，再通过一个softmax函数，然后就可以得到一个基于词汇表的输出分布 y_hat4。<br>这样也就得到了一些后续可能出现的单词。 </p>
+<h3 id="RNN-模型的优点"><a href="#RNN-模型的优点" class="headerlink" title="RNN 模型的优点"></a>RNN 模型的优点</h3><p>1.RNN可以处理任何长度的输入；<br>2.计算当前步骤 t 可以使用到先前多次计算的结果；<br>3.模型大小不会因为更长的输入而改变。<br>4.每个时间步长上的权重是相同的，处理输入的是对称的。</p>
+<h3 id="RNN-模型的缺点"><a href="#RNN-模型的缺点" class="headerlink" title="RNN 模型的缺点"></a>RNN 模型的缺点</h3><p>1.由于需要基于先前的状态来计算当前隐藏层的状态，所有的状态无法同时计算，所以计算速度较慢；<br>2.实际上，从许多步骤返回信息是非常困难的。所以即使我说我们应该能够记住监考老师和时钟并用它来预测考试和我们的课本,RNN证实了至少“我”在上课。</p>
+<h2 id="训练一个RNN模型"><a href="#训练一个RNN模型" class="headerlink" title="训练一个RNN模型"></a>训练一个RNN模型</h2><p>1.获取一个大的语料库，即一个词组的序列 x(1),x(2),……,x(T)；<br>2.将语料库输入RNN-LM中，计算每步的分布概率 y_hat。<br>·给出到目前为止所有的单词，预测每个单词的分布概率；<br>·每一步t的损失函数都是基于预测分布概率y_hat和下一个词真实概率y的交叉熵。<br>x（t+1）使用one-hot表示。<br><img src="https://s2.ax1x.com/2019/09/05/nml45n.png" alt></p>
+<font color="##0099FF"><br>注：这里的y(t)是one-hot向量，表示真实的下一个词。<br></font><br>·计算每一步t的损失函数的平均值，这会给你一个完整的损失函数设置。<br><img src="https://s2.ax1x.com/2019/09/05/nmlzP1.png" alt><br><br>假设语料是：the students open their exams<br>我们要做的就是在RNN上运行这段文本，在每一个步骤上，我们都会预测一个y_hat值，对于每一个得出的y_hat，你可以计算你的损失值，即J。<br>在第一步中，损失会是一个负的 log 概率值。<br>对所有的负概率值求和再计算平均，就是最终的loss值。<br><br>然而，计算一整个语料库的损失值和梯度下降，消耗实在是太大了。<br>在实际中，会把x(1)，x(2)，……，x(T)看作是一个句子或一个文档。<br><br><font color="##0099FF"><br>如果你在训练一个语言模型，你在做的则是计算一个句子的损失，实际上你计算的是一堆句子的梯度，更新权重，不断重复。<br></font>
+
+<h2 id="RNN的反向传播"><a href="#RNN的反向传播" class="headerlink" title="RNN的反向传播"></a>RNN的反向传播</h2><p>RNN的特点是他们在矩阵中使用想用的权重并且不断重复。<br>问题是：损失函数（loss function）的导数是什么呢？在第t步时，损失对重复权重矩阵 Wh 的导数是什么呢？<br>损失函数的导数，对应于重复权重的梯度是每一步时间上的梯度之和。<br><img src="https://s2.ax1x.com/2019/09/05/nm1mGt.png" alt><br>这里有一个问题，在实际情况中如何计算上式中右边的部分中对应权重的梯度？<br>简单来说，问题就是计算下图中的蓝色部分：<br><img src="https://s2.ax1x.com/2019/09/05/nm1uxf.png" alt><br>答案是你需要计算反向传播的和，重点是这些不能分开计算，每一个结果都会依赖于先前的结果。</p>
+<h2 id="使用RNN来进行文本生成"><a href="#使用RNN来进行文本生成" class="headerlink" title="使用RNN来进行文本生成"></a>使用RNN来进行文本生成</h2><p>就像n-gram模型一样，你同样可以使用RNN通过重复的样本来生成文本。<br>假设我们的第一个词是my，然后进入到模型中，使用输入和初始化的隐藏层，可以得到第一个隐藏状态H1，然后我们可以计算y_hat的分布式概率来得到下一个词是什么，然后我们就能使用分布式来对一些词进行采样。<br>ok，假设这里采样的词是 favorite，思路就是我们使用输出词作为下一步的输入，将favorite放进RNN的第二步中，然后得到了一个新的隐藏层，一个新的概率分布，从中我们又可以生成一个新的词。<br><img src="https://s2.ax1x.com/2019/09/05/nm1GIs.png" alt><br>通过重复这些步骤，我们就能不断生成文本。</p>
+<h2 id="评估语言模型"><a href="#评估语言模型" class="headerlink" title="评估语言模型"></a>评估语言模型</h2><p>语言模型的评估标准是perplexity<br><img src="https://s2.ax1x.com/2019/09/05/nm1tGq.png" alt><br>这等于交叉熵损失J(θ)的指数：<br><img src="https://s2.ax1x.com/2019/09/05/nm1dMT.png" alt><br>训练一个语言模型，就是需要将cross-entropy最小化，也就是说你需要将 perplexity 优化得尽可能好。</p>
+<font color="##0099FF"><br>越小的perplexity越好！<br></font>
+
+<h2 id="使用RNN进行标记（tagging）"><a href="#使用RNN进行标记（tagging）" class="headerlink" title="使用RNN进行标记（tagging）"></a>使用RNN进行标记（tagging）</h2><p>可以使用RNN来进行标记任务：比如词性标注或者命名体识别。<br><img src="https://s2.ax1x.com/2019/09/05/nm10LF.png" alt><br>如上图所示，对于每一步输入，RNN都会有一个对应的输出，即对应的tag，所以，通过这种方式就能完成标注。</p>
+<h2 id="使用RNN来做句子分类"><a href="#使用RNN来做句子分类" class="headerlink" title="使用RNN来做句子分类"></a>使用RNN来做句子分类</h2><p>以下图做情感分析为例：<br><img src="https://s2.ax1x.com/2019/09/05/nm1rdJ.png" alt><br>你可能会对文本使用RNN进行编码，然后你真正想要的是一些句子编码所以你可以输出句子的标签。<br>如果你有单个向量来表示句子而不是这些离散的向量，这会很有用。</p>
+<font color="##0099FF"><br>Q：如何对句子做 RNN 编码？<br>A：使用最终隐藏层状态作为你句子的编码。在RNN中，我们通常使用隐藏层来作为预测输出的东西，所以我们认为最终的隐藏层包含了输出的所有的文本信息，所以，对于这个原因，你或许认为这是一种好的句子编码，我们可以使用它来进行预测。<br>使用元素最大法（element-wise max）或者元素平均（element-wise mean）通过这些隐藏状态来得到句子编码。<br></font>
+
+<h2 id="RNN可以作为编码模块"><a href="#RNN可以作为编码模块" class="headerlink" title="RNN可以作为编码模块"></a>RNN可以作为编码模块</h2><p>以QA为例，RNN作为编码器的思路是非常常用的。<br>假如你有一系列的文本，维基百科的文章和贝多芬，然后你有一个问题：<br>贝多芬的国籍是什么？（what nationality was Beethoven？）<br>你要做的就是使用RNN来处理这个问题：<br><img src="https://s2.ax1x.com/2019/09/05/nm1cJ1.png" alt><br>RNN的作用就是问题的编码器，你从运行中获得的隐藏状态就表示这个问题。</p>
+<h2 id="RNN可以通过声音识别文本"><a href="#RNN可以通过声音识别文本" class="headerlink" title="RNN可以通过声音识别文本"></a>RNN可以通过声音识别文本</h2><p>这个部分后续的课程有讲，但是我个人不涉及这个研究领域，因此这里只放出简单的模型结构图。<br><img src="https://s2.ax1x.com/2019/09/05/nm3Soj.png" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/09/05/cs224n-Lecture-8-RNN和语言模式/" data-id="cktfedoy5003ef4uktazb0jfe" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/11/cs224n-2019-Lecture-7-梯度消失和有趣的RNN/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          cs224n(2019)-Lecture 7 梯度消失和有趣的RNN
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/05/cs224n-Lecture-7-TensorFlow入门/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">cs224n-Lecture 7 TensorFlow入门</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

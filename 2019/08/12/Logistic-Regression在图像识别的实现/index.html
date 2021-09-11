@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Logistic Regression在图像识别的实现 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这篇博客是基于吴恩达老师深度学习与神经网络课程第二周的作业来写的，第二周的学习笔记链接：http://klausvon.cn/2019/08/10吴恩达神经网络与深度学习-Week-2-学习记录/ 第二周的主要内容就是Logistic Regression，其中涉及到的代价函数，损失函数，预测等在第二周的作业中都有对应的代码实现，博客主要参考作业文档：https://github.com/Albe">
+<meta name="keywords" content="神经网络">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Logistic Regression在图像识别的实现">
+<meta property="og:url" content="http://yoursite.com/2019/08/12/Logistic-Regression在图像识别的实现/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="这篇博客是基于吴恩达老师深度学习与神经网络课程第二周的作业来写的，第二周的学习笔记链接：http://klausvon.cn/2019/08/10吴恩达神经网络与深度学习-Week-2-学习记录/ 第二周的主要内容就是Logistic Regression，其中涉及到的代价函数，损失函数，预测等在第二周的作业中都有对应的代码实现，博客主要参考作业文档：https://github.com/Albe">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exMahn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exM2N9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exMf91.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exM4c6.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exMxjf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exQpDS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exQACn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exQVg0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exQME4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/12/exQQUJ.png">
+<meta property="og:updated_time" content="2019-08-11T18:42:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Logistic Regression在图像识别的实现">
+<meta name="twitter:description" content="这篇博客是基于吴恩达老师深度学习与神经网络课程第二周的作业来写的，第二周的学习笔记链接：http://klausvon.cn/2019/08/10吴恩达神经网络与深度学习-Week-2-学习记录/ 第二周的主要内容就是Logistic Regression，其中涉及到的代价函数，损失函数，预测等在第二周的作业中都有对应的代码实现，博客主要参考作业文档：https://github.com/Albe">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/08/12/exMahn.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Logistic-Regression在图像识别的实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/12/Logistic-Regression在图像识别的实现/" class="article-date">
+  <time datetime="2019-08-11T18:11:33.000Z" itemprop="datePublished">2019-08-12</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/神经网络/">神经网络</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Logistic Regression在图像识别的实现
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习普通算法的模型结构"><span class="toc-number">1.</span> <span class="toc-text">学习普通算法的模型结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#建立算法"><span class="toc-number">2.</span> <span class="toc-text">建立算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#帮助函数"><span class="toc-number">3.</span> <span class="toc-text">帮助函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#初始化参数"><span class="toc-number">4.</span> <span class="toc-text">初始化参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前向和反向传播"><span class="toc-number">5.</span> <span class="toc-text">前向和反向传播</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优化"><span class="toc-number">6.</span> <span class="toc-text">优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#预测结果"><span class="toc-number">7.</span> <span class="toc-text">预测结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#合并所有的功能到一个模型中"><span class="toc-number">8.</span> <span class="toc-text">合并所有的功能到一个模型中</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#图片分类示例"><span class="toc-number">8.1.</span> <span class="toc-text">图片分类示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#绘制损失函数曲线"><span class="toc-number">8.2.</span> <span class="toc-text">绘制损失函数曲线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#特征分析"><span class="toc-number">9.</span> <span class="toc-text">特征分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#学习率选择"><span class="toc-number">9.1.</span> <span class="toc-text">学习率选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用其他图片进行预测"><span class="toc-number">9.2.</span> <span class="toc-text">使用其他图片进行预测</span></a></li></ol></li></ol>
+		  </div>
+		
+        <p>这篇博客是基于吴恩达老师深度学习与神经网络课程第二周的作业来写的，第二周的学习笔记链接：<a href="http://klausvon.cn/2019/08/10吴恩达神经网络与深度学习-Week-2-学习记录/" target="_blank" rel="noopener">http://klausvon.cn/2019/08/10吴恩达神经网络与深度学习-Week-2-学习记录/</a></p>
+<p>第二周的主要内容就是Logistic Regression，其中涉及到的代价函数，损失函数，预测等在第二周的作业中都有对应的代码实现，博客主要参考作业文档：<a href="https://github.com/AlbertHG/Coursera-Deep-Learning-deeplearning.ai/tree/master/01-Neural%20Networks%20and%20Deep%20Learning/week2" target="_blank" rel="noopener">https://github.com/AlbertHG/Coursera-Deep-Learning-deeplearning.ai/tree/master/01-Neural%20Networks%20and%20Deep%20Learning/week2</a></p>
+<a id="more"></a>
+<p>作业中给的数据格式是.h文件，数据链接和课程中预置的数据处理.py文件都可以在github链接中看到,吴老师课程里使用的是Jupyter，我使用Pycharm进行代码编写。</p>
+<p>关于下面这行代码：<br><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">classes</span><span class="selector-attr">[int(np.squeeze(my_predicted_image)),]</span><span class="selector-class">.decode</span>(<span class="string">"utf-8"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>中间一定要加上int()来整数化，否则会报错，原文中有一个地方没加这个函数，代码出现了报错。</p>
+<h2 id="学习普通算法的模型结构"><a href="#学习普通算法的模型结构" class="headerlink" title="学习普通算法的模型结构"></a>学习普通算法的模型结构</h2><p>建立一个Logistic Regression，使用神经网络来识别一张图片上的物种是不是猫。 </p>
+<p><img src="https://s2.ax1x.com/2019/08/12/exMahn.png" alt></p>
+<p>当需要识别一张图片中是不是猫的时候，需要以下关键步骤：<br>1.初始化模型中的参数；<br>2.通过最小化代价函数（Cost Function）来学习参数；<br>3.使用学习后的参数来进行预测；<br>4.分析结果和得出结论。</p>
+<h2 id="建立算法"><a href="#建立算法" class="headerlink" title="建立算法"></a>建立算法</h2><p>构建一个神经网络的主要步骤如下：<br>1.设计模型结构（比如输入的特征值）；<br>2.初始化模型的参数；<br>3.循环：<br>·计算当前损失（Loss Function）；<br>·计算当前梯度；<br>·更新参数；<br>构建以上1-3个函数，并将他们集成到模型中。</p>
+<h2 id="帮助函数"><a href="#帮助函数" class="headerlink" title="帮助函数"></a>帮助函数</h2><p>构建函数实现 sigmoid 计算，通过计算 sigmoid(w.T*x+b)来实现。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># construct sigmoid function</span></span><br><span class="line">def sigmoid(z):</span><br><span class="line">    <span class="attribute">s</span>=1./(1.+np.exp(-z))</span><br><span class="line">    return s</span><br><span class="line"></span><br><span class="line"><span class="comment"># test sigmoid function</span></span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">"sigmoid(0)="</span>,sigmoid(0))</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">"sigmoid(9.2)="</span>,sigmoid(9.2))</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'-----------------'</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="初始化参数"><a href="#初始化参数" class="headerlink" title="初始化参数"></a>初始化参数</h2><p>初始化参数，w 初始化为0向量。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def initialize_with_zeros(dim):</span><br><span class="line">    <span class="attribute">w</span>=np.zeros((dim,1))# 生成(dim,1)大小的全0矩阵</span><br><span class="line">    <span class="attribute">b</span>=0</span><br><span class="line">    # trick:确认生成的w向量大小为(dim,1)</span><br><span class="line">    assert(w.<span class="attribute">shape</span>==(dim,1))</span><br><span class="line">    assert(isinstance(b,float) <span class="keyword">or</span> isinstance(b,int))</span><br><span class="line"></span><br><span class="line">    return w,b</span><br><span class="line"></span><br><span class="line"><span class="attribute">dim</span>=2</span><br><span class="line">w,<span class="attribute">b</span>=initialize_with_zeros(dim)</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">"w="</span>,w)</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">"b="</span>,b)</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'-----------------'</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="前向和反向传播"><a href="#前向和反向传播" class="headerlink" title="前向和反向传播"></a>前向和反向传播</h2><p>现在，经过上述步骤，参数已经初始化过了，可以通过前向传播和反向传播来学习参数。<br>前向传播：<br>1.已经拥有输入的X；<br>2.计算A=σ(w.Tx+b)=(a(0),a(1),a(2),…,a(m-1),a(m))<br>3.计算代价函数：<br><img src="https://s2.ax1x.com/2019/08/12/exM2N9.png" alt></p>
+<p>也许上述描述不够清晰，可以参看原文:<br><img src="https://s2.ax1x.com/2019/08/12/exMf91.png" alt></p>
+<p>前向传播中使用到的公式（第一个式子其实就是dw的值，第二个式子就是db）：<br><img src="https://s2.ax1x.com/2019/08/12/exM4c6.png" alt></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 实现梯度函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">propagate</span><span class="params">(w,b,X,Y)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    :param w: 权重，大小为(num_px*num_px*3,1)</span></span><br><span class="line"><span class="string">    :param b: 偏置值</span></span><br><span class="line"><span class="string">    :param X: 数据量大小，(num_px*num_px*3,样本数)</span></span><br><span class="line"><span class="string">    :param Y: 真实的标签值,包含了两个值(0表示non-cat，1表示cat)，大小为(1,样本数)</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    cost -- 逻辑回归中损失的log值</span></span><br><span class="line"><span class="string">    dw -- 损失(loss)对w的梯度，大小与w相同</span></span><br><span class="line"><span class="string">    db -- 损失(loss)对b的梯度，大小与b相同</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 根据吴老师课程中提到的，样本数使用列(col)来表示</span></span><br><span class="line">    m=X.shape[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 前向传播</span></span><br><span class="line">    A=sigmoid(np.dot(w.T,X)+b) <span class="comment"># 计算激活函数</span></span><br><span class="line">	<span class="comment"># 原文本中没有 +b 这一项，这是私人添加的</span></span><br><span class="line">    cost=(<span class="number">-1</span>/m)*(np.sum(Y*np.log(A)+(<span class="number">1</span>-Y)*np.log(<span class="number">1</span>-A))) <span class="comment"># 计算代价函数</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 反向传播</span></span><br><span class="line">    dw=np.dot(X,(A-Y).T)/m</span><br><span class="line">	<span class="comment"># 这里的公式是直接用的,因为吴老师在课程里已经推导过了</span></span><br><span class="line">    db=np.sum(A-Y)/m</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span>(dw.shape==w.shape)</span><br><span class="line">    <span class="keyword">assert</span>(db.dtype==float)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 删掉shape中1的维度</span></span><br><span class="line">    cost=np.squeeze(cost)</span><br><span class="line"></span><br><span class="line">    grads=&#123;<span class="string">"dw"</span>:dw,</span><br><span class="line">           <span class="string">"db"</span>:db&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> grads,cost</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">w,b,X,Y=np.array([[<span class="number">1</span>],[<span class="number">2</span>]]),<span class="number">2</span>,np.array([[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]]),np.array([[<span class="number">1</span>,<span class="number">0</span>]])</span><br><span class="line">grads,cost=propagate(w,b,X,Y)</span><br><span class="line">print(<span class="string">"dw="</span>,grads[<span class="string">"dw"</span>])</span><br><span class="line">print(<span class="string">"db="</span>,grads[<span class="string">"db"</span>])</span><br><span class="line">print(<span class="string">"cost="</span>,cost)</span><br></pre></td></tr></table></figure>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>截至目前为止，已经完成了：<br>·已经初始化了参数；<br>·可以计算一个代价函数和它的梯度；<br>现在，需要使用梯度下降来更新参数。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  梯度优化函数</span></span><br><span class="line">def optimize(w,b,X,Y,num_iterations,learning_rate,<span class="attribute">print_cost</span>=<span class="literal">False</span>):</span><br><span class="line">    <span class="string">''</span><span class="string">'</span></span><br><span class="line"><span class="string">    :param w: 权重,(num_px*num_px*3,1)</span></span><br><span class="line"><span class="string">    :param b: 偏置项</span></span><br><span class="line"><span class="string">    :param X: 输入数据,(num_px*num_px*3,样本数)</span></span><br><span class="line"><span class="string">    :param Y: 真实的标签值,包含了两个值(0表示non-cat，1表示cat)，大小为(1,样本数)</span></span><br><span class="line"><span class="string">    :param num_iterations: 优化需要迭代的次数</span></span><br><span class="line"><span class="string">    :param learning_rate: 更新梯度下降时需要用到的学习率</span></span><br><span class="line"><span class="string">    :param print_cost: 输出每100次训练的cost</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    params -- 包含w和b的字典</span></span><br><span class="line"><span class="string">    grads -- 包含了w和b在代价函数中的梯度下降值</span></span><br><span class="line"><span class="string">    costs -- 列出优化过程中计算的所有成本，这将用于绘制学习曲线</span></span><br><span class="line"><span class="string">    '</span><span class="string">''</span></span><br><span class="line"></span><br><span class="line">    costs=[]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(num_iterations):</span><br><span class="line">        # 代价和梯度计算</span><br><span class="line">        grads,<span class="attribute">cost</span>=propagate(w,b,X,Y)</span><br><span class="line"></span><br><span class="line">        # 从梯度中获取导数</span><br><span class="line">        dw = grads[<span class="string">"dw"</span>]</span><br><span class="line">        db = grads[<span class="string">"db"</span>]</span><br><span class="line"></span><br><span class="line">        # 更新w和b的值</span><br><span class="line">        <span class="attribute">w</span>=w-learning_rate*dw</span><br><span class="line">        <span class="attribute">b</span>=b-learning_rate*db</span><br><span class="line"></span><br><span class="line">        # 每100次训练后的cost值加入cost[]</span><br><span class="line">        <span class="keyword">if</span> i%100 == 0:</span><br><span class="line">            costs.append(cost)</span><br><span class="line"></span><br><span class="line">        # 输出每100次训练后得到的值</span><br><span class="line">        <span class="keyword">if</span> print_cost <span class="keyword">and</span> i%<span class="attribute">100</span>==0:</span><br><span class="line">            <span class="builtin-name">print</span>(<span class="string">"Cost after iteration %i: %f"</span> %(i, cost))</span><br><span class="line">    params=&#123;<span class="string">"w"</span>:w,</span><br><span class="line">            <span class="string">"b"</span>:b&#125;</span><br><span class="line">    grads=&#123;<span class="string">"dw"</span>: dw,</span><br><span class="line">             <span class="string">"db"</span>: db&#125;</span><br><span class="line">    return params,grads,costs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">params, grads, costs = optimize(w, b, X, Y, num_iterations= 100, learning_rate = 0.009, print_cost = <span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">print</span> (<span class="string">"w = "</span>,params[<span class="string">"w"</span>])</span><br><span class="line"><span class="builtin-name">print</span> (<span class="string">"b = "</span>,params[<span class="string">"b"</span>])</span><br><span class="line"><span class="builtin-name">print</span> (<span class="string">"dw = "</span>,grads[<span class="string">"dw"</span>])</span><br><span class="line"><span class="builtin-name">print</span> (<span class="string">"db = "</span>,grads[<span class="string">"db"</span>])</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'-----------------'</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="预测结果"><a href="#预测结果" class="headerlink" title="预测结果"></a>预测结果</h2><p>在上述的计算中已经得到了w和b，现在要用w和b来预测数据集X的标签值。<br><img src="https://s2.ax1x.com/2019/08/12/exMxjf.png" alt></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预测结果</span></span><br><span class="line">def predict(w,b,X):</span><br><span class="line">    # 样本总数</span><br><span class="line">    <span class="attribute">m</span>=X.shape[1]</span><br><span class="line">    <span class="attribute">Y_prediction</span>=np.zeros((1,m))</span><br><span class="line">    <span class="attribute">w</span>=w.reshape(X.shape[0],1)</span><br><span class="line"></span><br><span class="line">    # 计算A的值来预测当前图片是猫的可能性</span><br><span class="line">    <span class="attribute">A</span>=np.dot(w.T,X)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(A.shape[1]):</span><br><span class="line">        # 将概率值a[0,i]转换为实际预测值p[0,i]</span><br><span class="line">        <span class="keyword">if</span>(A[0,i]&gt;0.5):</span><br><span class="line">            Y_prediction[0][i]=1</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            Y_prediction[0][i]=0</span><br><span class="line"></span><br><span class="line">    assert(Y_prediction.<span class="attribute">shape</span>==(1,m))</span><br><span class="line"></span><br><span class="line">    return Y_prediction</span><br><span class="line"></span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">"prediction="</span>,predict(w,b,X))</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'-----------------'</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="合并所有的功能到一个模型中"><a href="#合并所有的功能到一个模型中" class="headerlink" title="合并所有的功能到一个模型中"></a>合并所有的功能到一个模型中</h2><p>注：<br>·Y_prediction是测试集的预测值<br>·Y_prediction_train是训练集的预测值<br>·w，costs，grads是优化之后的输出值</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">def model(X_train,Y_train,X_test,Y_test,</span><br><span class="line">          <span class="attribute">num_iterations</span>=2000,learning_rate=0.5,print_cost=False):</span><br><span class="line">    <span class="string">''</span><span class="string">'</span></span><br><span class="line"><span class="string">    :param X_train: 通过numpy数组设置的训练集,(num_px*numpx*3,m_train)</span></span><br><span class="line"><span class="string">    :param Y_train: 通过一个numpy数组表示的标签向量,(1,m_train)</span></span><br><span class="line"><span class="string">    :param X_test: 通过一个numpy数组设置的测试集输入(num_px*num_px*3,m_test)</span></span><br><span class="line"><span class="string">    :param Y_test: 通过一个numpy数组设置的Y向量(1,m_test)</span></span><br><span class="line"><span class="string">    :param num_iterations: 表示优化参数的迭代次数的超参数</span></span><br><span class="line"><span class="string">    :param learning_rate: 在优化中更新学习率的参数</span></span><br><span class="line"><span class="string">    :param print_cost: 输出每100次迭代中的cost值</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    d -- 模型中包含信息的字典</span></span><br><span class="line"><span class="string">    '</span><span class="string">''</span></span><br><span class="line"></span><br><span class="line">    # 通过0来初始化参数</span><br><span class="line">    w,<span class="attribute">b</span>=initialize_with_zeros(X_train.shape[0])</span><br><span class="line"></span><br><span class="line">    # 梯度下降</span><br><span class="line">    parameters,grads,<span class="attribute">costs</span>=optimize(w,b,X_train,Y_train,</span><br><span class="line">                                    num_iterations,learning_rate,<span class="attribute">print_cost</span>=<span class="literal">False</span>)</span><br><span class="line">    <span class="attribute">w</span>=parameters[<span class="string">'w'</span>]</span><br><span class="line">    <span class="attribute">b</span>=parameters[<span class="string">'b'</span>]</span><br><span class="line"></span><br><span class="line">    # 预测 测试集/训练集 设置的样例</span><br><span class="line">    <span class="attribute">Y_prediction_test</span>=predict(w,b,X_test)</span><br><span class="line">    <span class="attribute">Y_prediction_train</span>=predict(w,b,X_train)</span><br><span class="line"></span><br><span class="line">    # 输出 train/test 的错误</span><br><span class="line">    <span class="builtin-name">print</span>(<span class="string">"train accuracy: &#123;&#125; %"</span>.format(100 - np.mean(np.abs(Y_prediction_train - Y_train)) * 100))</span><br><span class="line">    <span class="builtin-name">print</span>(<span class="string">"test accuracy: &#123;&#125; %"</span>.format(100 - np.mean(np.abs(Y_prediction_test - Y_test)) * 100))</span><br><span class="line"></span><br><span class="line">    d = &#123;<span class="string">"costs"</span>: costs,</span><br><span class="line">         <span class="string">"Y_prediction_test"</span>: Y_prediction_test,</span><br><span class="line">         <span class="string">"Y_prediction_train"</span>: Y_prediction_train,</span><br><span class="line">         <span class="string">"w"</span>: w,</span><br><span class="line">         <span class="string">"b"</span>: b,</span><br><span class="line">         <span class="string">"learning_rate"</span>: learning_rate,</span><br><span class="line">         <span class="string">"num_iterations"</span>: num_iterations&#125;</span><br><span class="line"></span><br><span class="line">    return d</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="attribute">tic</span>=time.process_time()</span><br><span class="line"><span class="attribute">num_iterations</span>=5000</span><br><span class="line"><span class="attribute">d</span>=model(train_set_x,train_set_y,test_set_x,test_set_y,</span><br><span class="line">        <span class="attribute">num_iterations</span>=num_iterations,learning_rate=0.005,print_cost=True)</span><br><span class="line">toc = time.process_time()</span><br><span class="line"><span class="builtin-name">print</span>(<span class="string">'Use num_iterations of %i, run %f sec '</span> %(num_iterations, toc - tic))</span><br></pre></td></tr></table></figure>
+<h3 id="图片分类示例"><a href="#图片分类示例" class="headerlink" title="图片分类示例"></a>图片分类示例</h3><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 图片分类示例</span></span><br><span class="line"><span class="keyword">index</span> = <span class="number">1</span></span><br><span class="line"><span class="meta">#plt.imshow(test_set_x[:,index].reshape((num_px, num_px, 3)))</span></span><br><span class="line">print (<span class="string">"y = "</span> + <span class="keyword">str</span>(test_set_y[<span class="number">0</span>,<span class="keyword">index</span>]) + <span class="string">", you predicted that it is a \""</span></span><br><span class="line">       ,classes[<span class="keyword">int</span>(d[<span class="string">"Y_prediction_test"</span>][<span class="number">0</span>,<span class="keyword">index</span>])].decode(<span class="string">'utf-8'</span>) , <span class="string">"\" picture."</span>)</span><br><span class="line"><span class="meta">#plt.close()</span></span><br></pre></td></tr></table></figure>
+<h3 id="绘制损失函数曲线"><a href="#绘制损失函数曲线" class="headerlink" title="绘制损失函数曲线"></a>绘制损失函数曲线</h3><figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">costs = <span class="built_in">np</span>.squeeze(d['costs'])</span><br><span class="line">plt.plot(costs)</span><br><span class="line">plt.<span class="built_in">ylabel</span>('cost')</span><br><span class="line">plt.<span class="built_in">xlabel</span>('<span class="built_in">iterations</span> (per hundreds)')</span><br><span class="line">plt.<span class="built_in">title</span>(<span class="string">"Learning rate ="</span> + str(d[<span class="string">"learning_rate"</span>]))</span><br><span class="line">plt.<span class="built_in">show</span>()</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><img src="https://s2.ax1x.com/2019/08/12/exQpDS.png" alt></p>
+<h2 id="特征分析"><a href="#特征分析" class="headerlink" title="特征分析"></a>特征分析</h2><h3 id="学习率选择"><a href="#学习率选择" class="headerlink" title="学习率选择"></a>学习率选择</h3><p>注意：为了使梯度下降能更好的工作，必须明智的选择学习率。学习率α决定了更新参数的频率。如果学习率过大，我们可能会“超调”最优值。同样，如果它太小，我们将需要太多的迭代来收敛到最佳值。这就是为什么使用良好的学习速度是至关重要的。<br>比较以下几个学习率曲线来观察不同学习率下模型的效果。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试设置不同学习率在模型上的表现</span></span><br><span class="line">learning_rates = [0.01, 0.001, 0.0001]</span><br><span class="line">models = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> learning_rates:</span><br><span class="line">    <span class="builtin-name">print</span> (<span class="string">"learning rate is: "</span> + str(i))</span><br><span class="line">    models[str(i)] = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations = 1500, learning_rate = i, print_cost = <span class="literal">False</span>)</span><br><span class="line">    <span class="builtin-name">print</span> (<span class="string">'\n'</span> + <span class="string">"-------------------------------------------------------"</span> + <span class="string">'\n'</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> learning_rates:</span><br><span class="line">    plt.plot(np.squeeze(models[str(i)][<span class="string">"costs"</span>]), label= str(models[str(i)][<span class="string">"learning_rate"</span>]))</span><br><span class="line"></span><br><span class="line">plt.ylabel(<span class="string">'cost'</span>)</span><br><span class="line">plt.xlabel(<span class="string">'iterations'</span>)</span><br><span class="line"></span><br><span class="line">legend = plt.legend(<span class="attribute">loc</span>=<span class="string">'upper center'</span>, <span class="attribute">shadow</span>=<span class="literal">True</span>)</span><br><span class="line">frame = legend.get_frame()</span><br><span class="line">frame.set_facecolor(<span class="string">'0.90'</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>结果如下：<br><img src="https://s2.ax1x.com/2019/08/12/exQACn.png" alt></p>
+<p>图像表示如下：<br><img src="https://s2.ax1x.com/2019/08/12/exQVg0.png" alt></p>
+<p>解释：<br>·不同的学习率会有不同的cost值，因此，预测结果也不一样；<br>·如果学习率过大，cost会不断震荡，甚至偏离；<br>·较低的cost并不意味着更好的模型，你必须检查是否存在过拟合现象。过拟合一般发生在training accuracy 过分过于 test accuracy 的情况上；<br>·深度学习中的建议：<br>-有效的选择学习率能更好的小化cost;<br>-如果模型过拟合了，使用其他技术来解决过拟合（后续课程中解释-&gt;后续博客中会写清）</p>
+<h3 id="使用其他图片进行预测"><a href="#使用其他图片进行预测" class="headerlink" title="使用其他图片进行预测"></a>使用其他图片进行预测</h3><p>用来进行预测的图片：<br><img src="https://s2.ax1x.com/2019/08/12/exQME4.png" alt></p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 使用其他图片进行测试</span><br><span class="line">my_image = <span class="string">"my_image.jpg"</span></span><br><span class="line"></span><br><span class="line">fname = <span class="string">"images/"</span> + my_image</span><br><span class="line"><span class="built_in">image</span> = <span class="built_in">np</span>.<span class="built_in">array</span>(ndimage.imread(fname, <span class="built_in">flatten</span>=False))</span><br><span class="line">my_image = scipy.misc.imresize(<span class="built_in">image</span>, size=(num_px,num_px)).reshape((<span class="number">1</span>, num_px*num_px*<span class="number">3</span>)).T</span><br><span class="line">my_predicted_image = predict(d[<span class="string">"w"</span>], d[<span class="string">"b"</span>], my_image)</span><br><span class="line"></span><br><span class="line">plt.imshow(<span class="built_in">image</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"y = "</span> + str(<span class="built_in">np</span>.squeeze(my_predicted_image)) +</span><br><span class="line">      <span class="string">", your algorithm predicts a \""</span> +</span><br><span class="line">      classes[int(<span class="built_in">np</span>.squeeze(my_predicted_image)),].decode(<span class="string">"utf-8"</span>) +  <span class="string">"\" picture."</span>)</span><br></pre></td></tr></table></figure>
+<p>预测结果如下：<br><img src="https://s2.ax1x.com/2019/08/12/exQQUJ.png" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/12/Logistic-Regression在图像识别的实现/" data-id="cktfedoxh001ef4uky2pky4ou" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/14/Logistic-Regression在文本分类中的应用/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Logistic Regression在文本分类中的应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/10/吴恩达神经网络与深度学习-Week-2-学习记录/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">吴恩达神经网络与深度学习 Week-2 学习记录</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

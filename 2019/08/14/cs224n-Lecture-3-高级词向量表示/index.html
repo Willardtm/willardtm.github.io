@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n-Lecture-3 高级词向量表示 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="由于没有相关基础（GloVe etc），第三讲中的内容听起来有些晦涩，所以这里引入吴恩达老师序列模型课程第二周的内容辅助学习。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n-Lecture-3 高级词向量表示">
+<meta property="og:url" content="http://yoursite.com/2019/08/14/cs224n-Lecture-3-高级词向量表示/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="由于没有相关基础（GloVe etc），第三讲中的内容听起来有些晦涩，所以这里引入吴恩达老师序列模型课程第二周的内容辅助学习。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrlb6.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPr3VK.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPr8UO.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrG5D.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrYPe.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrt8H.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrN2d.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrUxA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrdKI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrwrt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrDVf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrra8.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPr6Pg.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrcGQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrg2j.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPr2xs.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrWMn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrfrq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrhq0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrbRJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPrOMR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsedf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsmo8.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsuFS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsKJg.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsMWQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsQzj.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsYwV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsaYF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsdW4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsDyR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsrO1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPsyex.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPs6w6.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mPscTK.png">
+<meta property="og:updated_time" content="2019-08-28T07:31:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n-Lecture-3 高级词向量表示">
+<meta name="twitter:description" content="由于没有相关基础（GloVe etc），第三讲中的内容听起来有些晦涩，所以这里引入吴恩达老师序列模型课程第二周的内容辅助学习。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/08/14/mPrlb6.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-Lecture-3-高级词向量表示" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/14/cs224n-Lecture-3-高级词向量表示/" class="article-date">
+  <time datetime="2019-08-13T18:05:54.000Z" itemprop="datePublished">2019-08-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n-Lecture-3 高级词向量表示
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#词汇表征"><span class="toc-number">1.</span> <span class="toc-text">词汇表征</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#词嵌入的特性"><span class="toc-number">2.</span> <span class="toc-text">词嵌入的特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#余弦相似度计算补充"><span class="toc-number">2.1.</span> <span class="toc-text">余弦相似度计算补充</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#嵌入矩阵"><span class="toc-number">3.</span> <span class="toc-text">嵌入矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#学习嵌入矩阵"><span class="toc-number">4.</span> <span class="toc-text">学习嵌入矩阵</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#其他学习词向量的方法"><span class="toc-number">4.1.</span> <span class="toc-text">其他学习词向量的方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Word2Vec"><span class="toc-number">5.</span> <span class="toc-text">Word2Vec</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#模型细节-Skip-gram"><span class="toc-number">5.1.</span> <span class="toc-text">模型细节-Skip-gram</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Skip-gram-模型中存在的问题"><span class="toc-number">5.2.</span> <span class="toc-text">Skip-gram 模型中存在的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Skip-gram-模型计算速度的解决办法"><span class="toc-number">5.3.</span> <span class="toc-text">Skip-gram 模型计算速度的解决办法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何对上下文C进行采样"><span class="toc-number">6.</span> <span class="toc-text">如何对上下文C进行采样</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#负采样"><span class="toc-number">7.</span> <span class="toc-text">负采样</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#如何选择负样本"><span class="toc-number">7.1.</span> <span class="toc-text">如何选择负样本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GloVe模型"><span class="toc-number">8.</span> <span class="toc-text">GloVe模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cs224n-Skip-gram-模型和负采样"><span class="toc-number">9.</span> <span class="toc-text">cs224n:Skip-gram 模型和负采样</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cs224n-Word2Vec-总结"><span class="toc-number">10.</span> <span class="toc-text">cs224n:Word2Vec 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cs224n-基于窗口的共现矩阵"><span class="toc-number">11.</span> <span class="toc-text">cs224n:基于窗口的共现矩阵</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cs224n-如何对非常大的系数矩阵进行降维？"><span class="toc-number">12.</span> <span class="toc-text">cs224n:如何对非常大的系数矩阵进行降维？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对共现矩阵进行Singular-Value-Decomposition（奇异值分解，SVD）"><span class="toc-number">12.1.</span> <span class="toc-text">对共现矩阵进行Singular Value Decomposition（奇异值分解，SVD）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cs224n-GloVe模型"><span class="toc-number">13.</span> <span class="toc-text">cs224n:GloVe模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cs224n-如何评估单词向量"><span class="toc-number">14.</span> <span class="toc-text">cs224n:如何评估单词向量</span></a></li></ol>
+		  </div>
+		
+        <p>由于没有相关基础（GloVe etc），第三讲中的内容听起来有些晦涩，所以这里引入吴恩达老师序列模型课程第二周的内容辅助学习。</p>
+<a id="more"></a>
+<h2 id="词汇表征"><a href="#词汇表征" class="headerlink" title="词汇表征"></a>词汇表征</h2><p>以one-hot向量为例：<br><img src="https://s2.ax1x.com/2019/08/14/mPrlb6.png" alt></p>
+<p>即使我们知道 I want a glass of orange 后面的空格应该填上 juice，但是，如果 orange 换成 apple 之后，由于使用的是 one-hot 编码，算法不知道苹果和橙子之间的关系比橙子与其他词的关系更近（比如 man 和 woman，king 和 queen），所以算法很难从已经知道的橙子果汁是一种很常见的东西来理解苹果果汁也是。这是因为任何两个one-hot向量的内积都是0。<br>因此，这些内积计算并没有什么价值，苹果（apple）和橙子（orange）要比国王（king）和橙子（orange）或者王后（queen）和橙子（orange）要相似很多。</p>
+<p>所以，如果我们不用one-hot表示这些词，而是用特征化的表示来表示每个词。<br>假如以gender作为一个特征，我们需要知道gender和 man ,woman,king,queen,apple,orange这些词的关系，假定man性别为-1，woman则为1，最终，根据经验，king是-0.95，queen是0.97，apple是0.00，orange是0.01，apple和orange没有性别可言。<br>同理，再以Royal（高贵）作为一个特征，royal 和 man 以及 woman 没有太大关系，所以值接近于0，然而 king 和 queen 很 royal，所以相关值就更高。</p>
+<p>完整的表格如下图所示：<br><img src="https://s2.ax1x.com/2019/08/14/mPr3VK.png" alt><br>除了上述列出来的特征之外，还可以有其他更多特征，比如 size，cost，alive等。<br>假如有300个不同的特征，就组成了一个300维的向量来表示man，其他同理。<br>因此，如果用这种方式来表示apple 和 orange，那么二者一定会非常相似。</p>
+<font color="red">注：如果我们可以把一个300维的向量压缩到一个2维空间中，那么我们就可以可视化这些向量所表示的词汇（常用算法：t-SNE）。</font><br><img src="https://s2.ax1x.com/2019/08/14/mPr8UO.png" alt><br><br>(字写得略丑(捂脸))<br>这里需要注意，相似的词，学习到的特征也会很相近，下图粗略的展示了如何把高维向量映射到低维空间。<br><img src="https://s2.ax1x.com/2019/08/14/mPrG5D.png" alt><br><br>## 使用词嵌入<br><br>前面提到了使用特征向量来表示词汇，本次将把词嵌入方法应用到NLP中。<br>以命名体识别（Named Entity Recognition）为例。<br><img src="https://s2.ax1x.com/2019/08/14/mPrYPe.png" alt><br><br>Sally Johnson被识别为一个人名，因为可以知道种橙子的农民一定是一个人。<br><img src="https://s2.ax1x.com/2019/08/14/mPrt8H.png" alt><br><br>同理，如果这里有一个已经学习好的词嵌入集，即使将 orange 换成 durian，farmer 换成 cultivation，模型仍然可以识别出Robert Lin 是一个人。<br><br>词嵌入可以达到这种效果，其中一个原因就是，学习词嵌入的算法会考察非常大的文本集，可以是一亿个单词甚至是一百亿个单词，所以大量的只有无标签的文本的训练集，通过考察大量的无标签文本，可以发现 orange 和 durian 非常相近，farmer 和 cultivation 非常相近。<br>通过学习这种词嵌入把它们聚集在一起，通过读取大量的互联网文本，发现了 orange 和 durian 都是水果，因此，接下来可以将这个词嵌入应用到命名体识别当中。<br><br><font color="##0099ff">总结：如何使用词嵌入做迁移学习？<br>1.先从大量的文本集中学习嵌入一个非常大的文本集（或者可以从网上寻找已经训练好的词嵌入集合）；<br>2.将嵌入模型应用到只有少量标训练集的任务当中，这样做的好处是，可以用更低维度的特征向量代替原来的10000维的 one-hot 向量；<br>3. 可选（Optional）:继续用新数据对单词embeddings进行微调。</font>
+
+<p>在迁移学习中，如果从A迁移到B，只有A中有大量数据，而B中数据量较少时，迁移的过程才有用。</p>
+<h2 id="词嵌入的特性"><a href="#词嵌入的特性" class="headerlink" title="词嵌入的特性"></a>词嵌入的特性</h2><p>词嵌入可以帮助实现类比推理。<br> 下面给定一组词嵌入矩阵：<br><img src="https://s2.ax1x.com/2019/08/14/mPrN2d.png" alt></p>
+<p>从e(man)-e(woman)≈e(king)-e(queen)的结果中可以看出两者几乎是只有性别上的差异。  </p>
+<p>假如给定的空间是300维的向量，e(man)-e(woman)≈e(king)-e(w)，需要求出e(w)<br><img src="https://s2.ax1x.com/2019/08/14/mPrUxA.png" alt></p>
+<p>可以通过计算 e(w) 与 e(king)-e(man)+e(woman)的相似度来得到。<br>下图给出了余弦相似度的计算公式：<br><img src="https://s2.ax1x.com/2019/08/14/mPrdKI.png" alt></p>
+<h3 id="余弦相似度计算补充"><a href="#余弦相似度计算补充" class="headerlink" title="余弦相似度计算补充"></a>余弦相似度计算补充</h3><p>下述资料来源于吴恩达老师序列模型课程第二周对应作业。<br>为了度量两个单词之间的相似程度，我们需要一种方法来度量这两个单词的两个嵌入向量之间的相似程度。给定两个向量u和v,余弦相似度定义如下:<br><img src="https://s2.ax1x.com/2019/08/14/mPrwrt.png" alt></p>
+<p>其中，u和v是两个向量的点积（或者内积），||u||2 是向量u的规范化（或长度），θ是u和v之间的夹角。相似度基于u和v之间的夹角。如果u和v非常相似，它们的cosine值会非常接近1；反之，如果他们不相似，相应的cosine值会越来越小。<br><img src="https://s2.ax1x.com/2019/08/14/mPrDVf.png" alt></p>
+<p>其中，u的标准化（或长度）计算公式如下：<br><img src="https://s2.ax1x.com/2019/08/14/mPrra8.png" alt></p>
+<h2 id="嵌入矩阵"><a href="#嵌入矩阵" class="headerlink" title="嵌入矩阵"></a>嵌入矩阵</h2><p>使用矩阵计算来获取对应词的表示，这里是一个简单的过渡。<br><img src="https://s2.ax1x.com/2019/08/14/mPr6Pg.png" alt></p>
+<h2 id="学习嵌入矩阵"><a href="#学习嵌入矩阵" class="headerlink" title="学习嵌入矩阵"></a>学习嵌入矩阵</h2><p>假如你在训练一个神经网络，输入 I want a glass of orange ___.期望预测空格的结果。<br><img src="https://s2.ax1x.com/2019/08/14/mPrcGQ.png" alt></p>
+<p>每个词下面的标号都是字典中的索引值。<br>建立一个模型是学习词嵌入的好方法。<br><img src="https://s2.ax1x.com/2019/08/14/mPrg2j.png" alt><br>对每个词汇，使用其在词汇表中的one-hot向量和E内积得到e(w)[大小为(1,300)]，再通过神经网络的隐藏层进行计算，最后通过softmax得到计算结果。</p>
+<font color="red">注：所用的E都是相同的。</font>
+
+<h3 id="其他学习词向量的方法"><a href="#其他学习词向量的方法" class="headerlink" title="其他学习词向量的方法"></a>其他学习词向量的方法</h3><p>使用上下文来预测中间词：<br><img src="https://s2.ax1x.com/2019/08/14/mPr2xs.png" alt></p>
+<p>上述使用的是左右各四个词来预测中心词，但如果只给出目标前一个词，比如 orange ，来预测orange下面的词。方法如下：<br>构建一个神经网络，只把目标的前一个词，或者说前一个词的嵌入向量输入神经网络来预测该词的下一个词。还有就是抓取当前词的附近1个词（比如 glass），然后预测这个词是什么。</p>
+<h2 id="Word2Vec"><a href="#Word2Vec" class="headerlink" title="Word2Vec"></a>Word2Vec</h2><p>注：这个在cs224n第二讲的笔记中有写过，但是这里可以通过吴老师讲解的角度再重新理解一遍。</p>
+<p>假如在训练集中给定了这样一个例子：<br><img src="https://s2.ax1x.com/2019/08/14/mPrWMn.png" alt><br>在skip-gram模型中要做的就是抽取上下文和目标词配对来构造一个监督学习问题，所以上下文不一定总是目标单词之前离得最近的四个单词，我们要做的就是随机选一个词作为上下文词，比如orange。然后随机在一定词距内选另一个词，比如在上下文词前后5个词内或者前后10个词内，就在这个范围内选择目标词。<br>如果正好选到了juice，那正好就是第二个词。也有可能选到了前面第二个词，glass，或者选到了my作为目标词。<br>这里就开始构造一个监督学习问题给定上下文词，在这个词距离10个词或者5个词距内，随机选择的某个目标词。</p>
+<h3 id="模型细节-Skip-gram"><a href="#模型细节-Skip-gram" class="headerlink" title="模型细节-Skip-gram"></a>模型细节-Skip-gram</h3><p>这里使用一个10000词的词汇表。<br>需要解决的基本监督学习问题是学习一种映射关系，从上下文C，比如orange，到某个目标单词，记为t（juice,glass or my）；<br>orange 是词汇表中的第6257个单词，juice 是词汇表中的第4834个单词。<br><img src="https://s2.ax1x.com/2019/08/14/mPrfrq.png" alt></p>
+<p>这就是一种映射到输出y的输入x。</p>
+<p>为了表示输入（比如 orange），可以先从一些 one-hot 向量开始（Oc 记作上下文词的 one-hot 向量）。<br><img src="https://s2.ax1x.com/2019/08/14/mPrhq0.png" alt></p>
+<p>将一个 one-hot 向量乘以矩阵 E 得到 e(c)，再通过一个 softmax 得到 y_hat。<br>优化损失函数的参数（θt），就可以得到一个较好的嵌入向量集。</p>
+<font color="#0099ff">模型把一个orange这样的词作为输入，并预测这个输入词，从左数或从右数的某个词预测上下文词的前面一些或者后面一些是什么词。</font>
+
+
+<h3 id="Skip-gram-模型中存在的问题"><a href="#Skip-gram-模型中存在的问题" class="headerlink" title="Skip-gram 模型中存在的问题"></a>Skip-gram 模型中存在的问题</h3><p>最主要的问题是计算速度：<br><img src="https://s2.ax1x.com/2019/08/14/mPrbRJ.png" alt></p>
+<p>尤其是在softmax模型中，每次想要计算这个概率就需要对所有10000个词做求和计算。或许10000个词的情况还不算太差，但如果词汇表的大小为100000或者1000000，那么分母的操作就会非常慢。</p>
+<h3 id="Skip-gram-模型计算速度的解决办法"><a href="#Skip-gram-模型计算速度的解决办法" class="headerlink" title="Skip-gram 模型计算速度的解决办法"></a>Skip-gram 模型计算速度的解决办法</h3><p>使用一个分级的softmax分级器，也就是说不是一下子就确定到底是属于10000类中的哪一类。想象有一个分类器，它能给出目标词是在词汇表的前5000个中或者是在词汇表的后5000个词中。<br><img src="https://s2.ax1x.com/2019/08/14/mPrOMR.png" alt></p>
+<p>树上的每个叶子节点就是一个二分类器（比如 Logistic），所以你不需要再为单次分类，对词汇表中所有的10000个词求和。实际上，使用这样的分类树，计算成本与词汇表大小的对数成正比，而不是词汇表大小的线性函数，这就是分级softmax分类器。<br>在实践中，softmax不会使用一棵完美平衡的分类树，或者说是一棵完美的左边和右边词数相同的对称树，事实上，分级softmax会被构成成一棵常用词在顶部，不常用的词会在树的更深处，因为更常见的词会更频繁，所以可能只需要少量检索就可以获得常用单词像 the 和 of，然而更少见到的词，就更适合在树的较深处，因为不常用到这样的词。</p>
+<h2 id="如何对上下文C进行采样"><a href="#如何对上下文C进行采样" class="headerlink" title="如何对上下文C进行采样"></a>如何对上下文C进行采样</h2><p>一旦你对上下文 c 进行采样，那么目标词 t 就会在上下文 c 的正负10个词距内进行采样，但是要如何选择上下文？<br>对语料库进行均匀且随机地采样，但是这样就存在 the, of ,a, and ,to 这些词会出现得很频繁，反之，那些你需要的词就不会出现得如此频繁，这会导致你花大部分的力气来更新e(c)，这些频繁出现的单词的e(c)，但是你想花时间来更新像durian这些更少出现的词的嵌入。实际上词 p(c) 的分布，并不是单纯在训练集语料库上均匀且随机的采样得到的，而是采用了不同的启发来平衡更常见的词和不那么常见的词。</p>
+<h2 id="负采样"><a href="#负采样" class="headerlink" title="负采样"></a>负采样</h2><p>在这个模型中要做的就是构造一个新的监督算法。<br>Q：给定一对单词（a pair of word），比如 orange 和 juice，我们要去预测这是否是一对上下文词-目标词？<br>所以，在这个例子中，orange 和 juice就是个正样本，标记为1。<br>但是，对于 orange 和 king，就是一个负样本，标记为0。<br>Here，我们的目标就是获取一对 上下文词-目标词。<br><img src="https://s2.ax1x.com/2019/08/14/mPsedf.png" alt></p>
+<p>注意，即使 of 在 orange 前面，这里的标记也依然是 0。<br>总结：生成上面表格的方式是，首先选择一个上下文词，再选一个目标词，标记为1（正样本），这就是表的第一行。然后给定K次用相同的上下文词，再从字典中选取随机的词，标记为0（负样本）（即使选到词在上下文词距中也没有关系）。</p>
+<p>接下来构造一个监督学习问题，其中，学习算法输入 x，输入这对词，要去预测目标的标签y。也就是说，给定一对单词 orange-juice，你觉得他们会一起出现吗？你认为这两个单词是对靠近的两个词采样获得的吗？或者是这两个词是从文本和字典里随机选取的吗？<br>负采样的任务就是为了区分这两种不同的采样方式，这也就是如何生成训练集的方法。</p>
+<font color="#0099ff">如何选择K？<br>小数据集：5-20<br>大数据集：2-5<br>数据集越小，K就越大。</font>
+
+<p>负采样模型示意图：<br><img src="https://s2.ax1x.com/2019/08/14/mPsmo8.png" alt></p>
+<h3 id="如何选择负样本"><a href="#如何选择负样本" class="headerlink" title="如何选择负样本"></a>如何选择负样本</h3><p>在选取了上下文词 orange 之后，如何对这些词进行采样？<br><img src="https://s2.ax1x.com/2019/08/14/mPsuFS.png" alt><br>可以对中间的词进行采样，即候选的目标词，可以根据其在预料中的经验频率进行采样，就是通过词出现的频率对其进行采样，但问题是，这会导致在 like,the,of,and 诸如此类的词上有很高的频率。另一个极端是，用1比词汇表总词数，均匀且随机地抽取负样本。这对于英文单词的分布是非常没有代表性的。<br>论文作者Mikolov等人根据经验发现，既不用经验概率，也不用均匀分布，他们做的是对词频的3/4次方除以整体的值进行比较，f(w_i)是观测到的在语料库中某个英文词的词频，通过 3/4 的计算使其处于完全独立的分布和训练集的观测分布的两个极端之间。</p>
+<p><img src="https://s2.ax1x.com/2019/08/14/mPsKJg.png" alt></p>
+<h2 id="GloVe模型"><a href="#GloVe模型" class="headerlink" title="GloVe模型"></a>GloVe模型</h2><p>前面讲到过一个词对，上下文词-目标词，GloVe的目的就是让他们之间的关系更清晰。<br><img src="https://s2.ax1x.com/2019/08/14/mPsMWQ.png" alt><br>X_ij 表示词语 i 在 j 中出现的次数，i 类似于 t，j 类似于 c。<br>在Glove模型的定义里，可以把目标词和上下文词看作任意两个位置相近的单词，假设是左右各10词的距离，X_ij 可以看作是单词 i 和单词 j 出现位置相近时，或是彼此接近的频率的计数器。</p>
+<p>所以GloVe模型做的就是将他们之间的差距进行最小化处理，</p>
+<p>Glove模型算法如下：<br><img src="https://s2.ax1x.com/2019/08/14/mPsQzj.png" alt></p>
+<h2 id="cs224n-Skip-gram-模型和负采样"><a href="#cs224n-Skip-gram-模型和负采样" class="headerlink" title="cs224n:Skip-gram 模型和负采样"></a>cs224n:Skip-gram 模型和负采样</h2><p><img src="https://s2.ax1x.com/2019/08/14/mPsYwV.png" alt></p>
+<p>t是某个窗口，k是采样个数，p(w)是一个unigram分布（一元分布），根据上次课中提到的，内积可以表示相关性。<br>+号左边部分的式子表示这两个词同时发生概率对数的项，右边部分表示从语料库中随机抽取几个单词，对每一个单词，尽量减少他们共同出现的概率。<br>即， 这个目标函数就是要最大化中央词与上下文的相关概率，最小化与其他词的概率。</p>
+<p>对从语料库中的抽取的随机单词进行重采样，而不是遍历所有不同的单词，然后认为aardvark 没有和 learning 一起出现，等等。要做的是，仅取出五个，十个或者其他数目的随机词，然后最小化他们的概率。</p>
+<p>将为目标函数的第二部分，为每个窗口，取k个负样本，然后最小化这些随机词出现在中心词附近的概率。</p>
+<font color="#0099ff"><br>课堂提问：需要保持随机样本和单词完全不一样吗？<br>A：是的，但是事实证明，对于一个非常大的语料库来说，概率是非常小的，有非常非常小的次数会发生（即使采样次数充分大），其实是某种不相关。<br></font>
+
+<h2 id="cs224n-Word2Vec-总结"><a href="#cs224n-Word2Vec-总结" class="headerlink" title="cs224n:Word2Vec 总结"></a>cs224n:Word2Vec 总结</h2><p>基本上，我们会遍历语料库中的每个单词，观察窗口周围的词，预测周围的词，努力抓取词的共同点，这个词和其他词共同出现的频率是多少，每出现一次进行一次计数。就像看到 deep 和 learning 同时出现，就对这两个向量做次梯度更新。然后再次浏览语料库，可能最终发现 deep 和 learning 又共同出现了，然后对再做一次梯度更新。</p>
+<p><font color="red"><br>注：word2vec通过将相似的单词放在空间附近来改进目标函数。<br></font><br><img src="https://s2.ax1x.com/2019/08/14/mPsaYF.png" alt></p>
+<h2 id="cs224n-基于窗口的共现矩阵"><a href="#cs224n-基于窗口的共现矩阵" class="headerlink" title="cs224n:基于窗口的共现矩阵"></a>cs224n:基于窗口的共现矩阵</h2><p>假设已经有很小的语料库：<br>·窗口长度为1（最多为：5-10）<br>·对称窗口（并不在意在中心词左边或是右边）<br>·语料库如下：<br>I like deep learning.<br>I like NLP.<br>I enjoy flying.<br>根据上面这个语料库可以得到：<br><img src="https://s2.ax1x.com/2019/08/14/mPsdW4.png" alt><br>注释：I 的周围，like出现过2次，enjoy出现过1次，etc。</p>
+<h2 id="cs224n-如何对非常大的系数矩阵进行降维？"><a href="#cs224n-如何对非常大的系数矩阵进行降维？" class="headerlink" title="cs224n:如何对非常大的系数矩阵进行降维？"></a>cs224n:如何对非常大的系数矩阵进行降维？</h2><h3 id="对共现矩阵进行Singular-Value-Decomposition（奇异值分解，SVD）"><a href="#对共现矩阵进行Singular-Value-Decomposition（奇异值分解，SVD）" class="headerlink" title="对共现矩阵进行Singular Value Decomposition（奇异值分解，SVD）"></a>对共现矩阵进行Singular Value Decomposition（奇异值分解，SVD）</h3><p>用25到1000维的低维稠密向量来存储重要信息，如何降维？<br><img src="https://s2.ax1x.com/2019/08/14/mPsDyR.png" alt></p>
+<p>使用Python实现简单得SVD词向量。<br><img src="https://s2.ax1x.com/2019/08/14/mPsrO1.png" alt></p>
+<p>然后取出u的头两列并且画出他们。<br><img src="https://s2.ax1x.com/2019/08/14/mPsyex.png" alt></p>
+<h2 id="cs224n-GloVe模型"><a href="#cs224n-GloVe模型" class="headerlink" title="cs224n:GloVe模型"></a>cs224n:GloVe模型</h2><p>目标函数如下：<br><img src="https://s2.ax1x.com/2019/08/14/mPs6w6.png" alt></p>
+<p>Pij是两个词共同出现的频次，f 是一个max函数：<br><img src="https://s2.ax1x.com/2019/08/14/mPscTK.png" alt></p>
+<h2 id="cs224n-如何评估单词向量"><a href="#cs224n-如何评估单词向量" class="headerlink" title="cs224n:如何评估单词向量"></a>cs224n:如何评估单词向量</h2><p>有两种方法：Intrinsic（内部） vs extrinsic（外部）<br>Intrinsic：专门设计单独的试验，由人工标注词语或句子相似度，与模型结果对比。好处是是计算速度快，但不知道对实际应用有无帮助。有人花了几年时间提高了在某个数据集上的分数，当将其词向量用于真实任务时并没有多少提高效果。<br>Extrinsic：通过对外部实际应用的效果提升来体现。耗时较长，不能排除是否是新的词向量与旧系统的某种契合度产生。需要至少两个 subsystems 同时证明。这类评测中，往往会用 pre-train 的向量在外部任务的语料上 retrain。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/14/cs224n-Lecture-3-高级词向量表示/" data-id="cktfedoy20030f4ukvo7ctfy0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/14/cs224n-Lecture-4-Word-Window分类与神经网络/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          cs224n-Lecture-4 Word Window分类与神经网络
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/14/Logistic-Regression在文本分类中的应用/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Logistic Regression在文本分类中的应用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

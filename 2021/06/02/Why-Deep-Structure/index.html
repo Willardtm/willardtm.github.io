@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Why Deep Structure | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="course link: https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html">
+<meta name="keywords" content="ML">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Why Deep Structure">
+<meta property="og:url" content="http://yoursite.com/2021/06/02/Why-Deep-Structure/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="course link: https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/p1TxufmE6qLvQKj.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/GDOJFnwLl5mRZfe.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/dUAuyBGfDgaY8hM.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/wP3aMZrQcEuV7Kt.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/beWAU2kSBmzEKC1.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/mBnvMVGW3gspEeL.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/B431EJKxUFpWOwZ.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/g4ipYCdrnLQ2RAl.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/SxVJBaw3nEXDRp9.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/AFCaNWHEZm823SQ.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/zuJImrW5nUEX87M.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/fn6oisjZp41hPHW.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/eo4yI7KQqAmb9Vh.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/yed59YoXwS4HGQW.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/tkpNnMRmKVS5TC1.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/SVRXyq2C8Jmvrpc.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/mteiXKRA4Qk7Mqf.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/ZBz8q7KWPjyJ6hC.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/VXDOlFsrvBxSYEQ.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/p9bK5vloiRrDF83.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/YsCqiOAb4BZleSI.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/mlPaZXoRFj1BWAy.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/DpyzHvsekJ3jmOI.png">
+<meta property="og:image" content="https://i.loli.net/2021/06/02/m7WzsUqagkhvtb9.png">
+<meta property="og:updated_time" content="2021-06-02T15:25:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Why Deep Structure">
+<meta name="twitter:description" content="course link: https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html">
+<meta name="twitter:image" content="https://i.loli.net/2021/06/02/p1TxufmE6qLvQKj.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Why-Deep-Structure" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/06/02/Why-Deep-Structure/" class="article-date">
+  <time datetime="2021-06-02T15:14:57.000Z" itemprop="datePublished">2021-06-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Why Deep Structure
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+        <p>course link: <a href="https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html" target="_blank" rel="noopener">https://speech.ee.ntu.edu.tw/~hylee/mlds/2018-spring.html</a></p>
+<a id="more"></a>
+<h2 id="0-引入"><a href="#0-引入" class="headerlink" title="0. 引入"></a>0. 引入</h2><p>在神经网络的拟合过程中，有两种参数用于判断模型大小：</p>
+<ul>
+<li>Number of units</li>
+<li>Number of parameters</li>
+</ul>
+<p>如下图所示，可以看出，更深的网络拟合的效果也就更好.</p>
+<p><img src="https://i.loli.net/2021/06/02/p1TxufmE6qLvQKj.png" style="width:400px;"></p>
+<p>但是，并不一定更深的Network就会有更好的效果。因此，有了以下三个问题：</p>
+<ul>
+<li>Q1: Can Shallow network fit any function?</li>
+<li>Q2: How to use deep to fit functions?</li>
+<li>Q3: Is deep better than shallow?</li>
+</ul>
+<p>问题情境：当有一个需要拟合的target function，shallow network的规模也会不断扩大使其能够满足拟合target function.</p>
+<p><img src="https://i.loli.net/2021/06/02/GDOJFnwLl5mRZfe.png" style="width:400px;"></p>
+<h2 id="1-Universality"><a href="#1-Universality" class="headerlink" title="1. Universality"></a>1. Universality</h2><blockquote>
+<p>shallow network的普适性</p>
+</blockquote>
+<p>假设给定一个 L-Lipschitz function <code>$f^*$</code>,需要多少神经元来拟合<code>$f^*$</code>？</p>
+<p>L-Lipschitz function的定义如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">||f(x_1)-f(x_2)|| ≤ L||x_1-x_2||</span><br></pre></td></tr></table></figure></p>
+<p><code>$L$</code>是一个具体数值，其中<code>$f(x_1)-f(x_2)$</code>的数值会被L限制为<code>$x_1-x_2$</code>的L倍。如下图所示，当输入变化较快时，则不可能是1-Lipschitz；当输入变化比较平缓的时候才可能是1-Lipschitz。即，蓝色线不是，而绿色线可能是。</p>
+<p><img src="https://i.loli.net/2021/06/02/dUAuyBGfDgaY8hM.png" style="width:400px;"></p>
+<p>当给定一个网络，需要判断的是用于训练的function与target function之间的最大差值是否超过<code>$\epsilon$</code>，如果不超过，则是达到了拟合的结果.</p>
+<p><img src="https://i.loli.net/2021/06/02/wP3aMZrQcEuV7Kt.png" style="width:400px;"></p>
+<p>所以，问题就变成，<code>$K$</code>要取多大，才能满足<code>$max_{0≤x≤1}|f(x)-f^*(x)|≤\epsilon$</code>. 这个问题同样也可以转换为积分计算:</p>
+<p><img src="https://i.loli.net/2021/06/02/beWAU2kSBmzEKC1.png" style="width:250px;"></p>
+<p>在<code>$N(K)$</code>中所有的function都是piecewise linear，要通过一个piecewise linear function <code>$f$</code> 来拟合<code>$f*$</code>.</p>
+<p>首先，给定一个<code>$f^*$</code>，在上面取点，连线，观察error与<code>$\epsilon$</code>的情况，如下图所示:</p>
+<p><img src="https://i.loli.net/2021/06/02/mBnvMVGW3gspEeL.png" style="width:300px;"></p>
+<p>其中，<code>$error ≤ l \times L$</code>，<code>$l$</code>表示两点间距离，<code>$L$</code>由L-Lipschitz决定.</p>
+<p>input的变化要满足：<code>$≤l$</code></p>
+<p>output的变化要满足:<code>$≤l\times L$</code></p>
+<p>即最终需要满足：<code>$l \times L ≤ \epsilon$</code>，<code>$l ≤ \epsilon / L$</code>. 因此，区间的宽度可以直接取值为<code>$\epsilon / L$</code>.</p>
+<p><img src="https://i.loli.net/2021/06/02/B431EJKxUFpWOwZ.png" style="width:280px;"></p>
+<p><strong>如何使用一个单层的hidden layer来得到上述的绿色曲线？</strong></p>
+<p>通过relu产生不同的值，如下图所示:</p>
+<p><img src="https://i.loli.net/2021/06/02/g4ipYCdrnLQ2RAl.png" style="width:300px;"></p>
+<p>将这些蓝色的function叠起来，就可以得到绿色的function.</p>
+<p>这个过程可以看作，使用两个神经元，一个产生function 1，一个产生function 2，两个结果相加就可以得到所需的图像，结果如下图所示:</p>
+<p><img src="https://i.loli.net/2021/06/02/SxVJBaw3nEXDRp9.png" style="width:300px;"></p>
+<blockquote>
+<p>注: 图左上部分的2，是3，宏毅老师写错了<em>(:з」∠)</em></p>
+</blockquote>
+<h2 id="2-Why-we-need-deep"><a href="#2-Why-we-need-deep" class="headerlink" title="2. Why we need deep?"></a>2. Why we need deep?</h2><p>shallow&amp;wide 的网络产生的参数数量约等于 deep&amp;narrow 的情况下，shallow network的pieces要比deep的pieces少.</p>
+<p><img src="https://i.loli.net/2021/06/02/AFCaNWHEZm823SQ.png" style="width:400px;"></p>
+<blockquote>
+<p>注: 此处的wide可以理解为在x轴上的取值范围. 大范围取值得到的线段并不如多段小范围线段取值得到的拟合结果.</p>
+</blockquote>
+<p>在shallow network中，每一个neuron只能生成一个linear piece. 其中的有一些部分会无法使用。</p>
+<p>对于两个relu，可以生成一个取绝对值的激活函数.</p>
+<p><img src="https://i.loli.net/2021/06/02/zuJImrW5nUEX87M.png" style="width:400px;"></p>
+<p>每多增加一个relu，线段数就增加2倍:</p>
+<p><img src="https://i.loli.net/2021/06/02/fn6oisjZp41hPHW.png" style="width:360px;"><br><br><br><img src="https://i.loli.net/2021/06/02/eo4yI7KQqAmb9Vh.png" style="width:400px;"></p>
+<p>对于shallow network，每增加一个neuron，就增加一条线段；但是，对于deep network，每增加一个neuron，就增加一次2的倍数的线段.</p>
+<p><img src="https://i.loli.net/2021/06/02/yed59YoXwS4HGQW.png" style="width:400px;"></p>
+<p><br></p>
+<p>假如宽度是<code>$K$</code>，深度是<code>$H$</code>，可以有<code>$K^H$</code>个pieces.</p>
+<h2 id="3-Using-deep-structure-to-fit-functions"><a href="#3-Using-deep-structure-to-fit-functions" class="headerlink" title="3. Using deep structure to fit functions"></a>3. Using deep structure to fit functions</h2><p>Q: 如何使用piecewise function来fit一个<code>$f(x)=x^2$</code>？</p>
+<p>定义<code>$f_m(x)$</code>,大小为<code>$2^m$</code>个pieces. 需要讨论的是，<code>$m$</code>要取到多少才能满足相应的条件？计算结果如图右所示.</p>
+<p><img src="https://i.loli.net/2021/06/02/tkpNnMRmKVS5TC1.png" style="width:400px;"></p>
+<p><code>$f_m$</code>的生成过程即使用初始函数不停的减去各个三角形所表示的函数，使其不断逼近<code>$f(x)$</code>即可. 流程如下图所示:</p>
+<p><img src="https://i.loli.net/2021/06/02/SVRXyq2C8Jmvrpc.png" style="width:400px;"></p>
+<p>在已知如何使用<code>$x \rightarrow x^2$</code>的情况下，基于这个原理，同样可以拟合<code>$y=x_{1}x_{2}$</code>.</p>
+<p><img src="https://i.loli.net/2021/06/02/mteiXKRA4Qk7Mqf.png" style="width:400px;"></p>
+<p>同理，假如需要拟合<code>$y^n$</code>，只需要多次MultiplyNet即可.</p>
+<p><img src="https://i.loli.net/2021/06/02/ZBz8q7KWPjyJ6hC.png" style="width:400px;"></p>
+<p>==<strong>Deep vs Shallow</strong>==</p>
+<p>deep和shallow存在指数上的差距，达到同样的acc，deep需要的参数比shallow少一个指数级.</p>
+<p><img src="https://i.loli.net/2021/06/02/VXDOlFsrvBxSYEQ.png" style="width:400px;"></p>
+<h2 id="4-Is-deep-better-than-shallow"><a href="#4-Is-deep-better-than-shallow" class="headerlink" title="4. Is deep better than shallow?"></a>4. Is deep better than shallow?</h2><ul>
+<li>一个relu网络是一系列的linear function</li>
+<li>使用最少的分段数来拟合target function</li>
+</ul>
+<p>如下图所示，当linear function处于某种假定的梦幻状态时，其error会相较于连续状态时要小，判定函数也从原先的<code>$max_{0≤x≤1}|f(x)-f^*(x)|≤\epsilon$</code>转换为<code>$\sqrt{\int_{0}^{1}|f(x)-f^*(x)|^2dx}≤\epsilon$</code>，满足第二个式子未必满足第一个式子.</p>
+<p><img src="https://i.loli.net/2021/06/02/p9bK5vloiRrDF83.png" style="width:400px;"></p>
+<p>所以，问题由上述转化为一个积分计算式:</p>
+<p><img src="https://i.loli.net/2021/06/02/YsCqiOAb4BZleSI.png" style="width:400px;"></p>
+<p>method: 让两个function之间的距离最小化.</p>
+<p>同理，该问题也可以转化为线段划分问题，即，将<code>$l$</code>划分为多少段可以使得最终的<code>$E^2$</code>最小，答案是平均分配.</p>
+<p><img src="https://i.loli.net/2021/06/02/mlPaZXoRFj1BWAy.png" style="width:400px;"></p>
+<p>==<strong>Q: 为什么取平均分配可以得到最小值？</strong>==</p>
+<p>霍尔德不等式<em>(:з」∠)</em></p>
+<p><img src="https://i.loli.net/2021/06/02/DpyzHvsekJ3jmOI.png" style="width:400px;"></p>
+<p>基Hölder不等式的计算，可以得到再上一张图中的式子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">E^2=\sum_&#123;i=1&#125;^&#123;n&#125;\frac&#123;(1/n)^2&#125;&#123;180&#125;=\frac&#123;1&#125;&#123;180&#125;\frac&#123;1&#125;&#123;n^4&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因此，计算继续，可以得到<code>$E$</code>的值.</p>
+<p><img src="https://i.loli.net/2021/06/02/m7WzsUqagkhvtb9.png" style="width:400px;"></p>
+<p>可以看出，即使是shallow的方法处于<em>梦幻状态</em>，效果仍然不如deep.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2021/06/02/Why-Deep-Structure/" data-id="cktfedoxt002af4ukdvzeikwr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ML/">ML</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/06/03/Basic-Understanding-of-Optimization/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Basic Understanding of Optimization
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/05/23/Model-Compression-基本概念/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">What is Model Compression</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

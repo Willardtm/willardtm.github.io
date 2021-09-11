@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>【论文笔记】Distributed Representations of Sentences and Documents | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这篇笔记是基于Mikolov大神的论文《Distributed Representations of Sentences and Documents》，句子和文档的分布式表示。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【论文笔记】Distributed Representations of Sentences and Documents">
+<meta property="og:url" content="http://yoursite.com/2019/11/21/【论文笔记】Distributed-Representations-of-Sentences-and-Documents/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="这篇笔记是基于Mikolov大神的论文《Distributed Representations of Sentences and Documents》，句子和文档的分布式表示。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/MImuaF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/MIuBut.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/MIKnVf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/22/Mofkon.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/M5Z78I.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/M5eni9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/M5eYIH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/M5eaRI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/MIZg6P.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/M5ydET.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/M5bUSI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/M5zMZt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/MIx4l4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/21/MIS9Sg.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/26/MzRw8O.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/26/Mzg1iT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/26/MzgNLR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/26/MxUquF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/26/MxaS9x.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/26/MxaTIA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/26/MzWWwR.png">
+<meta property="og:updated_time" content="2019-11-26T07:36:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【论文笔记】Distributed Representations of Sentences and Documents">
+<meta name="twitter:description" content="这篇笔记是基于Mikolov大神的论文《Distributed Representations of Sentences and Documents》，句子和文档的分布式表示。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/11/21/MImuaF.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-【论文笔记】Distributed-Representations-of-Sentences-and-Documents" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/21/【论文笔记】Distributed-Representations-of-Sentences-and-Documents/" class="article-date">
+  <time datetime="2019-11-21T01:20:21.000Z" itemprop="datePublished">2019-11-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【论文笔记】Distributed Representations of Sentences and Documents
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#文章主要解决的问题及作用"><span class="toc-number">1.</span> <span class="toc-text">文章主要解决的问题及作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模型算法"><span class="toc-number">2.</span> <span class="toc-text">模型算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#学习单词的向量表示"><span class="toc-number">2.1.</span> <span class="toc-text">学习单词的向量表示</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#基于深度学习模型学习词向量"><span class="toc-number">2.1.1.</span> <span class="toc-text">基于深度学习模型学习词向量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#基于语言模型的词向量训练"><span class="toc-number">2.1.2.</span> <span class="toc-text">基于语言模型的词向量训练</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#论文中的词向量训练方法"><span class="toc-number">2.2.</span> <span class="toc-text">论文中的词向量训练方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#段落向量：一种分布式的记忆模型"><span class="toc-number">2.3.</span> <span class="toc-text">段落向量：一种分布式的记忆模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#无词序的段落向量：分布式词袋"><span class="toc-number">2.4.</span> <span class="toc-text">无词序的段落向量：分布式词袋</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验"><span class="toc-number">3.</span> <span class="toc-text">实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用斯坦福情感树库数据集进行情感分析"><span class="toc-number">3.1.</span> <span class="toc-text">使用斯坦福情感树库数据集进行情感分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#树库情感分析实验设置"><span class="toc-number">3.1.1.</span> <span class="toc-text">树库情感分析实验设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#树库情感分析实验结果"><span class="toc-number">3.1.2.</span> <span class="toc-text">树库情感分析实验结果</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#超越单句：用IMDB数据集进行情感分析"><span class="toc-number">3.2.</span> <span class="toc-text">超越单句：用IMDB数据集进行情感分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#IMDB情感分析实验设置"><span class="toc-number">3.2.1.</span> <span class="toc-text">IMDB情感分析实验设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IMDB情感分析实验结果"><span class="toc-number">3.2.2.</span> <span class="toc-text">IMDB情感分析实验结果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#论文复现"><span class="toc-number">4.</span> <span class="toc-text">论文复现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#数据预处理"><span class="toc-number">4.1.</span> <span class="toc-text">数据预处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#切词"><span class="toc-number">4.2.</span> <span class="toc-text">切词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#统计单词并构建词表"><span class="toc-number">4.3.</span> <span class="toc-text">统计单词并构建词表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编号表示"><span class="toc-number">4.4.</span> <span class="toc-text">编号表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#窗口数据集构建"><span class="toc-number">4.5.</span> <span class="toc-text">窗口数据集构建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码运行后获得的相关数据"><span class="toc-number">4.6.</span> <span class="toc-text">代码运行后获得的相关数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#根据文章构建模型"><span class="toc-number">5.</span> <span class="toc-text">根据文章构建模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化部分模型参数"><span class="toc-number">5.1.</span> <span class="toc-text">初始化部分模型参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建占位符"><span class="toc-number">5.2.</span> <span class="toc-text">创建占位符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构建模型"><span class="toc-number">5.3.</span> <span class="toc-text">构建模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#定义训练参数的区域"><span class="toc-number">5.3.1.</span> <span class="toc-text">定义训练参数的区域</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#定义测试集的参数变量"><span class="toc-number">5.3.2.</span> <span class="toc-text">定义测试集的参数变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#定义需要训练哪个部分"><span class="toc-number">5.3.3.</span> <span class="toc-text">定义需要训练哪个部分</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置情感分类器"><span class="toc-number">5.4.</span> <span class="toc-text">设置情感分类器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#训练情感分类器"><span class="toc-number">5.5.</span> <span class="toc-text">训练情感分类器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#训练模型"><span class="toc-number">6.</span> <span class="toc-text">训练模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行过程"><span class="toc-number">7.</span> <span class="toc-text">运行过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试模型"><span class="toc-number">8.</span> <span class="toc-text">测试模型</span></a></li></ol>
+		  </div>
+		
+        <p>这篇笔记是基于Mikolov大神的论文《Distributed Representations of Sentences and Documents》，句子和文档的分布式表示。<br><a id="more"></a></p>
+<font color="red"><b>注：笔记学习参考深度之眼人工智能Paper训练营NLP方向第三课时课程。</b></font>
+
+<h2 id="文章主要解决的问题及作用"><a href="#文章主要解决的问题及作用" class="headerlink" title="文章主要解决的问题及作用"></a>文章主要解决的问题及作用</h2><p>本文提出了一种从句子、段落和文档等可变长度的文本中学习固定长度特征表示的无监督算法。段落向量算法（Paragraph Vector）用一个密集的向量来表示每个文档，该向量被训练来预测文档中的单词。</p>
+<p>Bag-of-Words模型和Bag-of-n-grams模型对单词的语义或更正式的单词之间的距离几乎没有意义。这意味着，尽管从语义上讲，powerful应该比Paris更接近strong，但strong、strong和Paris这三个词之间的距离是一样的。</p>
+<font color="##0099FF"><br>Bag-of-Words模型的缺点：<br>(1)丢失词序.<br>(2)不包含语义信息.<br><br>Bag-of-n-grams模型的缺点：<br>(1)不包含语义信息；<br>(2)虽然n-gram包含一定词序信息，但是n不会很大，最多是4-gram，所以也只是保留了较少的信息。<br></font>
+
+<p>作者提出的分布式模型可以应用于可变长度的文本，从短语或句子到大型文档的任何内容。</p>
+<p>更确切地说，作者是将段落向量与一个段落中的几个单词向量连接起来，并在给定的上下文中预测以下单词。训练词向量和段落向量,通过随机梯度下降和反向传播(Rumelhart等，1986)。尽管段落中段落向量是唯一的，但是单词向量是共享的。在预测时间，段落向量是通过固定单词向量和训练新的段落向量来推断的，直到收敛为止。</p>
+<h2 id="模型算法"><a href="#模型算法" class="headerlink" title="模型算法"></a>模型算法</h2><h3 id="学习单词的向量表示"><a href="#学习单词的向量表示" class="headerlink" title="学习单词的向量表示"></a>学习单词的向量表示</h3><h4 id="基于深度学习模型学习词向量"><a href="#基于深度学习模型学习词向量" class="headerlink" title="基于深度学习模型学习词向量"></a>基于深度学习模型学习词向量</h4><p>首先构建词表，再使用Word2Vec的方法进行训练来得到词向量，再将句子输入神经网络得到句子的分布式表示。<br><img src="https://s2.ax1x.com/2019/11/21/MImuaF.png" width="300" height="300" div align="center/"><br>这类模型的缺点在于必须使用标注数据进行训练。</p>
+<h4 id="基于语言模型的词向量训练"><a href="#基于语言模型的词向量训练" class="headerlink" title="基于语言模型的词向量训练"></a>基于语言模型的词向量训练</h4><p>语言模型可以给出句子是句子的概率：<br><img src="https://s2.ax1x.com/2019/11/21/MIuBut.png" width="300" height="100" div align="center/"><br>每个词的概率定义为n-gram形式，即每个词出现只与前n-1个词有关：<br><img src="https://s2.ax1x.com/2019/11/21/MIKnVf.png" width="300" height="100" div align="center/"></p>
+<p>模型示意：<br><img src="https://s2.ax1x.com/2019/11/22/Mofkon.png" width="350" height="350" div align="center/"><br>评价语言模型的好坏是指标困惑度。</p>
+<h3 id="论文中的词向量训练方法"><a href="#论文中的词向量训练方法" class="headerlink" title="论文中的词向量训练方法"></a>论文中的词向量训练方法</h3><p>学习词向量分布表示的著名框架如图1所示,其任务是根据上下文中的其他单词来预测一个单词。在此框架中，每个字被映射到由矩阵W中的列表示的唯一矢量。列通过词汇表中的字的位置进行索引。词向量的连接或和被用来作为预测句子中下一个单词的特征。<br><img src="https://s2.ax1x.com/2019/11/21/M5Z78I.png" width="300" height="300" div align="center/"></p>
+<p>给出一系列训练单词，w1,w2,w3…,wt，词向量模型的目标就是最大化平均对数概率。<br><img src="https://s2.ax1x.com/2019/11/21/M5eni9.png" width="400" height="250" div align="center/"></p>
+<p>预测任务通常通过多类分类器(如Softmax)来完成:<br><img src="https://s2.ax1x.com/2019/11/21/M5eYIH.png" width="400" height="250" div align="center/"></p>
+<p>对于每个输出单词i，每个yi都是非标准化的对数概率，计算为：<br><img src="https://s2.ax1x.com/2019/11/21/M5eaRI.png" width="400" height="150" div align="center/"></p>
+<p>其中U、b为Softmax参数。h由从W提取的单词向量的连接或平均值构成。</p>
+<font color="##0099ff"><br>平均值计算补充：<br>对每个句子中包含的单词w1,w2,…,wn对应的词向量v1,v2,…,vn，句子的表示为：<br><img src="https://s2.ax1x.com/2019/11/21/MIZg6P.png" width="300" height="50" div align="center/"><br>这种方法和BOW模型一样，都丢失了词序信息。<br></font>
+
+
+<p>在实际训练中，分层Softmax训练更快。本文中的分层SoftMax的结构是一个二进制霍夫曼树，其中短代码被分配给频繁的字。<br>Mikolov大神在Word2vec一文中也详细地讲过词向量的训练方法了，词向量训练结束之后会将意义相近的单词映射到向量空间中的相似位置。</p>
+<h3 id="段落向量：一种分布式的记忆模型"><a href="#段落向量：一种分布式的记忆模型" class="headerlink" title="段落向量：一种分布式的记忆模型"></a>段落向量：一种分布式的记忆模型</h3><p>段落向量也被要求来从给定的许多段落样本的上下文中来做预测下一个词的任务。</p>
+<p>段落向量的结构图如下图所示，每个段落被映射为一个单独的向量，由矩阵D中的一列表示。同时，每个单词也被映射为一个单独的向量，由矩阵W中的一列表示。词向量和段落向量连接起来或者计算平均后来预测下一个单词。<br><img src="https://s2.ax1x.com/2019/11/21/M5ydET.png" width="300" height="300" div align="center/"></p>
+<p>段落向量模型和词向量模型中唯一的不同就是h来自于W和D。</p>
+<p>段落标记可以看作是另一个词。它作为记忆来记忆当前上下文中缺少的内容–或者段落中的主题。出于这个原因，常称其为建立段落向量的分布式存储模型(Distributed Memory<br>Model of Paragraph Vectors，PV-DM).</p>
+<p>上下文是固定长度的，并从段落上方的滑动窗口中取样.段落向量在同一段落生成的所有上下文中共享，但不跨段落共享。然后词向量矩阵W在段落间是共享的。在随机梯度下降的每一步，都可以从随机段落中抽取固定长度的上下文，从图2中的网络中计算误差梯度，并使用梯度更新模型中的参数。</p>
+<p>在预测时，需要执行一个推断步骤来计算新段落的段落向量。这也是通过梯度下降得到的。在这个步骤中，其余的参数该模型，字向量W和软件最大权值是固定的。</p>
+<p>假设有N个段落需要映射到p维，W个词汇需要映射到q维，模型的参数总数为：N*p+W*q。即使当N很大时，参数的数目也可能很大，但是训练期间的更新通常是稀疏的，因此是有效的。</p>
+<p>总的来说，论文中的算法有两个关键步骤：<br>(1)对已经出现的段落训练来得到词向量W，softmax权重U,b，以及段落向量D；<br>(2)“推断阶段”(inference stage)，通过在D中增加更多的列，并在D上降梯度，同时保持W、U、b不变，从而得到新段落的段落向量D(以前从未见过)。我们用D来做一个关于使用标准分类器的一些特殊标签，例如Logistic回归。</p>
+<p>段落向量的优点：段落向量的一个重要优点是，它们是从未标记的数据中学习的，因此可以在没有足够标记数据的任务中很好地工作。</p>
+<h3 id="无词序的段落向量：分布式词袋"><a href="#无词序的段落向量：分布式词袋" class="headerlink" title="无词序的段落向量：分布式词袋"></a>无词序的段落向量：分布式词袋</h3><p>上述方法考虑段落向量与单词向量的连接，以预测文本窗口中的下一单词。另一种方法是忽略输入中的上下文词，而是强制模型预测输出中段落中随机抽取的单词。实际上，这意味着在随机梯度下降的每次迭代中，先对一个文本窗口采样，然后从文本窗口中随机抽取一个单词，并给定段落向量形成一个分类任务。</p>
+<p>这个过程称作分布式词袋版本的段落向量（Distributed<br>Bag of Words version of Paragraph Vector，PV-DBOW），训练段落向量以预测小窗口中的单词，相当于前面提到的PV-DM，结构如下图所示：<br><img src="https://s2.ax1x.com/2019/11/21/M5bUSI.png" width="300" height="300" div align="center" alt="Figure 3 "></p>
+<p>在作者的实验中，段落向量由以下两部分组成：<br>(1)一种由分布式记忆的标准段落组成；<br>(2)另一种由分布式词袋的段落向量组成。</p>
+<p>PV-DM在大多数任务上具有较好的性能，但是它与PV-DBOW的结合通常在我们尝试的许多任务中更加一致，因此强烈推荐使用它们的结合版。</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>作者进行实验来更好地理解段落向量的行为。为了实现这一点，作者在两个文本理解问题上对段落向量进行了基准测试，这两个问题需要段落的固定长度向量表示:情感分析和信息检索。</p>
+<p>情感分析使用了两种数据集：<br>(1)IMDB电影评论集；<br>(2)斯坦福情感树库数据集。</p>
+<p>同时作者还在信息检索任务上测试模型，目标是确定该算法是否能在给定查询的情况下检索文档。</p>
+<h3 id="使用斯坦福情感树库数据集进行情感分析"><a href="#使用斯坦福情感树库数据集进行情感分析" class="headerlink" title="使用斯坦福情感树库数据集进行情感分析"></a>使用斯坦福情感树库数据集进行情感分析</h3><p>Soher等人提出了两种方法来作为基准线。首先，我们可以考虑一个5路细粒度的分类任务，其中标签是{Very Negative, Negative, Neutral, Positive, Very Positive}，或者是双向粗粒度的分类任务。标签为{Negative, Positive}。另一个变化轴是我们是否应该标记整个句子或句子中的所有短语。在本文中，作者只考虑标注标签完整的句子。</p>
+<h4 id="树库情感分析实验设置"><a href="#树库情感分析实验设置" class="headerlink" title="树库情感分析实验设置"></a>树库情感分析实验设置</h4><p>遵循如(Socher等人，2013b)所述的实验方案。为了利用可用的标记数据，在我们的模型中，每个子短语被视为一个独立的句子，我们学习训练集中所有子短语的表示。</p>
+<p>在学习了训练句子及其子短语的向量表示后，将它们反馈给逻辑回归，以学习电影评分的预测器。</p>
+<p>在测试时，我们冻结每个单词的向量表示，并使用梯度下降学习句子的表示。一旦学习了测试句子的向量表示，我们就通过逻辑回归来预测电影评分。</p>
+<p>在我们的实验中，我们使用验证集交叉验证窗口大小，最佳窗口大小为8。给分类器的向量是两个向量的串联，一个来自PV-DBOW，一个来自PV-DM。在PV-DBOW中，学习向量表示有400维。在PV-DM中，学习向量表示对于单词和段落都有400个维度。为了预测第8个单词，将段落向量和7个单词向量连接起来。其中特殊的符号，比如,!…等被看作是一个常规的单词，如果段落少于9个单词，使用一个特殊的NULL来填补。</p>
+<h4 id="树库情感分析实验结果"><a href="#树库情感分析实验结果" class="headerlink" title="树库情感分析实验结果"></a>树库情感分析实验结果</h4><p>情感分析结果如下表所示，其中NB,SVM,BiNB的表现效果较差，单纯的计算向量的平均值（针对词袋模型）也不会提高结果。这是因为袋的单词模型不考虑每个句子是如何构成的(例如，单词排序)，因此不能识别出许多复杂的语言现象，例如挖苦。<br><img src="https://s2.ax1x.com/2019/11/21/M5zMZt.png" width="400" height="400" div align="center/"></p>
+<h3 id="超越单句：用IMDB数据集进行情感分析"><a href="#超越单句：用IMDB数据集进行情感分析" class="headerlink" title="超越单句：用IMDB数据集进行情感分析"></a>超越单句：用IMDB数据集进行情感分析</h3><p>之前的一些技巧只适用于句子，但不是段落/文件有几个句子。作者提出的方法不需要解析，因此它可以为一个由多个句子组成的长文档生成一个表示。这个优点使他们的方法比其他方法更通用。</p>
+<h4 id="IMDB情感分析实验设置"><a href="#IMDB情感分析实验设置" class="headerlink" title="IMDB情感分析实验设置"></a>IMDB情感分析实验设置</h4><p>作者使用了75,000个训练文档(25,000个标记的和50,000个未标记的实例)来学习向量和段落向量。然后，通过一个有50个隐含层的神经网络和一个逻辑分类器输入25,000个标记实例的段落向量，以学习预测情绪。</p>
+<p>在测试时，给定一个测试句子，再次冻结网络的其余部分，并通过梯度下降法学习用于测试复习的段落向量。一旦学习了向量，我们通过神经网络来预测评论的情绪。<br>固定模型结构示意图，圈起来的部分是固定的，初始化段落向量：<br><img src="https://s2.ax1x.com/2019/11/21/MIx4l4.png" width="400" height="400" div align="center/"></p>
+<p>我们的段落向量模型的超参数的选择方式与以前的任务相同。特别是，我们交叉验证了窗口的大小，最优的窗口大小是10字。T型向分类器提出的矢量是两个向量的级联，一个来自PV-DBOW，另一个来自PV-DM。在PV-DBOW中，学习到的向量表示有400维.在PV-DM中，学习向量表示对于单词和文档都有400个维度。为了预测第10个单词，我们将段落向量和单词向量连接起来。特殊字符，如，!?被视为正常的单词。如果文档少于9个单词，我们使用一个特殊的空单词符号NULL进行预填充。</p>
+<h4 id="IMDB情感分析实验结果"><a href="#IMDB情感分析实验结果" class="headerlink" title="IMDB情感分析实验结果"></a>IMDB情感分析实验结果</h4><p>实验结果如下表所示：<br><img src="https://s2.ax1x.com/2019/11/21/MIS9Sg.png" width="400" height="400" div align="center/"></p>
+<p>论文复现这块一直是个人的弱点，所以本篇论文着重于论文复现上。</p>
+<h2 id="论文复现"><a href="#论文复现" class="headerlink" title="论文复现"></a>论文复现</h2><h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><p>确定使用的数据库是IMDB数据库，数据库中有25000条训练数据，25000条测试数据，还有50000条未标记数据，每条评论单独放在一个.txt文件中。<br>按照我之前的理解，英文的分词使用split(‘ ‘)就可以解决了，实际则不是，英文中包含的连写，比如 I’m 如果单纯的使用空格的来切分则处理得不到位，可以使用NLTK库来处理。<br><img src="https://s2.ax1x.com/2019/11/26/MzRw8O.png" alt><br>前面四个步骤属于NLP语料库预处理的常规操作部分，第五步窗口数据集构建，假如窗口大小为10，也就是需要要前9个单词来预测第10个单词。<br>在本文中，每个样本就相当于用前9个词和一个句向量(Paragraph Vector)来预测第10个词，第10个词也就是所谓的标签(Label)。</p>
+<h3 id="切词"><a href="#切词" class="headerlink" title="切词"></a>切词</h3><p>nltk.word_tokenize处理之后得到的是一个list类型的数据，其中包含切分后的结果。<br><figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">def get_data(self, <span class="built_in">path</span>):</span><br><span class="line">    datas = []</span><br><span class="line">    paths = <span class="built_in">os</span>.listdir(<span class="built_in">path</span>)</span><br><span class="line">    paths = [<span class="built_in">path</span> + filename <span class="keyword">for</span> filename <span class="keyword">in</span> paths]</span><br><span class="line">    <span class="keyword">for</span> i, file <span class="keyword">in</span> enumerate(paths):</span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">1000</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">'当前读取评论条数: '</span>, i, <span class="string">' / '</span>, <span class="built_in">len</span>(paths))</span><br><span class="line">        data = <span class="built_in">open</span>(file, <span class="string">'r'</span>, encoding=<span class="string">'utf-8'</span>).<span class="built_in">read</span>()</span><br><span class="line">        data = data.<span class="built_in">lower</span>()</span><br><span class="line">        data = nltk.word_tokenize(data)</span><br><span class="line">        datas.append(data)</span><br><span class="line">    <span class="keyword">return</span> datas</span><br></pre></td></tr></table></figure></p>
+<h3 id="统计单词并构建词表"><a href="#统计单词并构建词表" class="headerlink" title="统计单词并构建词表"></a>统计单词并构建词表</h3><p>这个属于常规操作，之前在复现Word2Vec的过程中有涉及到。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_all_words</span><span class="params">(self, train_datas, train_unsup)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    从训练集句子和无监督句子中统计所有出现过的词以及它们的频率并取出频率最高的29998个词加上pad和unk</span></span><br><span class="line"><span class="string">    来构建一个大小为30000的词表</span></span><br><span class="line"><span class="string">    :return: 大小为30000的词表及每个词对应的id</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    all_words = []</span><br><span class="line">    <span class="keyword">for</span> sentence <span class="keyword">in</span> train_datas:</span><br><span class="line">        all_words.extend(sentence)</span><br><span class="line">    <span class="keyword">for</span> sentence <span class="keyword">in</span> train_unsup:</span><br><span class="line">        all_words.extend(sentence)</span><br><span class="line">    count = Counter(all_words)</span><br><span class="line">    count = dict(count.most_common(<span class="number">29998</span>))</span><br><span class="line">    word2id = &#123;<span class="string">'&lt;pad&gt;'</span>: <span class="number">0</span>, <span class="string">'&lt;unk&gt;'</span>: <span class="number">1</span>&#125;</span><br><span class="line">    <span class="keyword">for</span> word <span class="keyword">in</span> count:</span><br><span class="line">        word2id[word] = len(word2id)</span><br><span class="line">    <span class="keyword">return</span> word2id</span><br></pre></td></tr></table></figure></p>
+<h3 id="编号表示"><a href="#编号表示" class="headerlink" title="编号表示"></a>编号表示</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_data_word_to_id</span><span class="params">(self, word2id, datas)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    :param word2id: 包含30000词的词表及其编号</span></span><br><span class="line"><span class="string">    :param datas: 需要转化为序号表示的句子</span></span><br><span class="line"><span class="string">    :return:转化完成后的句子集合</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    <span class="keyword">for</span> i, sentence <span class="keyword">in</span> enumerate(datas):</span><br><span class="line">        <span class="keyword">for</span> j, word <span class="keyword">in</span> enumerate(sentence):</span><br><span class="line">            datas[i][j] = word2id.get(word, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> datas</span><br></pre></td></tr></table></figure>
+<p>这个循环的作用就是得到每个词的编号。</p>
+<p>第一重循环datas里包含的是所有postive，negtive以及未标注的句子分词后的list集合，类似于[[‘manu’,’and’],[‘thomas’,’play’,’pai’]]，第一重循环取出来的就是句子及其编号。</p>
+<p>第二重循环就是取出句子中的每个单词及编号。实际上datas就是一个二维数组，datas[i][j]就是把所有的单词根据词表转换为编号。<br><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">word2id.<span class="keyword">get</span>(<span class="built_in">word</span>,<span class="number">1</span>)</span><br></pre></td></tr></table></figure></p>
+<p>这行代码的意思也就是获取对应单词在词表中的编号，如果没有，就返回1,也就对应一开始就预设值好的’unk’。</p>
+<h3 id="窗口数据集构建"><a href="#窗口数据集构建" class="headerlink" title="窗口数据集构建"></a>窗口数据集构建</h3><p>这里直接看代码：<br><figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">def convert_data_to_new<span class="type">_data</span>(self, datas):<span class="type"></span></span><br><span class="line"><span class="type">    </span>'<span class="string">''</span></span><br><span class="line">    根据句子生成窗口大小为<span class="number">10</span>的语言模型训练集，当句子长度不够<span class="number">10</span>时需要在前面补pad。</span><br><span class="line">    :<span class="type">param datas</span>: 句子，可以只使用训练句子，也可以使用训练句子+无监督句子，后续需要训练更久。</span><br><span class="line">    :<span class="type">return</span>: 返回窗口大小为<span class="number">10</span>的训练集，句子id和词标签。</span><br><span class="line">    <span class="string">''</span><span class="string">'</span></span><br><span class="line"><span class="string">    # 训练集是9个单词+一个句向量构成</span></span><br><span class="line"><span class="string">    # 单词向量</span></span><br><span class="line"><span class="string">    new_word_datas = []</span></span><br><span class="line"><span class="string">    # 句向量</span></span><br><span class="line"><span class="string">    new_papr_datas = []</span></span><br><span class="line"><span class="string">    new_labels = []</span></span><br><span class="line"><span class="string">    for i, data in enumerate(datas):</span></span><br><span class="line"><span class="string">        # 输出当前数据条数</span></span><br><span class="line"><span class="string">        if i % 1000 == 0:</span></span><br><span class="line"><span class="string">            print(i, len(datas))</span></span><br><span class="line"><span class="string">        for j in range(len(data)):</span></span><br><span class="line"><span class="string">            if len(data) &lt; 10:  # 如果句子长度不够10，开始pad</span></span><br><span class="line"><span class="string">                tmp_words = [0] * (10 - len(data)) + data[0:-1]</span></span><br><span class="line"><span class="string">                if set(tmp_words) == &#123;1&#125;:  # 同样，连续9个词都是unk就舍去</span></span><br><span class="line"><span class="string">                    break</span></span><br><span class="line"><span class="string">                new_word_datas.append(tmp_words)</span></span><br><span class="line"><span class="string">                new_papr_datas.append(i)</span></span><br><span class="line"><span class="string">                new_labels.append(data[-1])</span></span><br><span class="line"><span class="string">                break</span></span><br><span class="line"><span class="string">            tmp_words = data[j:j + 9]</span></span><br><span class="line"><span class="string">            if set(tmp_words) == &#123;1&#125;:  # 开始发现存在连续出现unk的句子，这种句子没有意义，所以连续9个词都是unk，那么就舍去</span></span><br><span class="line"><span class="string">                continue</span></span><br><span class="line"><span class="string">            new_papr_datas.append(i)</span></span><br><span class="line"><span class="string">            new_word_datas.append(tmp_words)</span></span><br><span class="line"><span class="string">            new_labels.append(data[j + 9])</span></span><br><span class="line"><span class="string">            if j + 9 + 1 == len(data):  # 到最后10个单词break</span></span><br><span class="line"><span class="string">                break</span></span><br><span class="line"><span class="string">    new_word_datas = np.array(new_word_datas)</span></span><br><span class="line"><span class="string">    new_papr_datas = np.array(new_papr_datas)</span></span><br><span class="line"><span class="string">    new_labels = np.array(new_labels)</span></span><br><span class="line"><span class="string">    print(new_word_datas.shape)</span></span><br><span class="line"><span class="string">    print(new_papr_datas.shape)</span></span><br><span class="line"><span class="string">    print(new_labels.shape)</span></span><br><span class="line"><span class="string">    return new_word_datas, new_papr_datas, new_labels</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="代码运行后获得的相关数据"><a href="#代码运行后获得的相关数据" class="headerlink" title="代码运行后获得的相关数据"></a>代码运行后获得的相关数据</h3><p><img src="https://s2.ax1x.com/2019/11/26/Mzg1iT.png" width="500" height="300/"><br><img src="https://s2.ax1x.com/2019/11/26/MzgNLR.png" width="500" height="300/"></p>
+<h2 id="根据文章构建模型"><a href="#根据文章构建模型" class="headerlink" title="根据文章构建模型"></a>根据文章构建模型</h2><p>对于我本人来说，这个步骤比之前的预处理或者是读懂论文这些都要相对重要一些，因为在研究的路上我本人最缺乏的就是复现代码的代码，所以，对于这篇论文，我打算认真弄清楚其对应论文的每一个细节。<br><br>使用tensorflow构建模型</p>
+<h3 id="初始化部分模型参数"><a href="#初始化部分模型参数" class="headerlink" title="初始化部分模型参数"></a>初始化部分模型参数</h3><p>初始化的参数包括窗口大小，句子总数等<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(<span class="keyword">self</span>,train_first,train_second)</span></span><span class="symbol">:</span></span><br><span class="line">    <span class="keyword">self</span>.window=<span class="number">10</span> <span class="comment"># 使用连续的9个词预测下一个词</span></span><br><span class="line">    <span class="keyword">self</span>.para_num=<span class="number">25000</span></span><br><span class="line">    <span class="keyword">self</span>.create_placeholder()</span><br><span class="line">    <span class="keyword">self</span>.model(train_first,train_second)</span><br></pre></td></tr></table></figure></p>
+<h3 id="创建占位符"><a href="#创建占位符" class="headerlink" title="创建占位符"></a>创建占位符</h3><p>构建模型第一步，设置输入和标签大小，word_label表示预测下一个词是什么的标签，label则是情感分析的标签（negtive or postive）。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_placeholder</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    创建图输入的placeholder</span></span><br><span class="line"><span class="string">    self.word_input: n-gram前n-1个词的输入</span></span><br><span class="line"><span class="string">    self.para_input: 篇章id的输入</span></span><br><span class="line"><span class="string">    self.word_label: 语言模型预测下一个词的词标签</span></span><br><span class="line"><span class="string">    self.label: 这句话属于正类还是负类的类别标签</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    self.word_input = tf.placeholder(dtype=tf.int32, shape=[<span class="literal">None</span>, self.window - <span class="number">1</span>])</span><br><span class="line">    self.para_input = tf.placeholder(dtype=tf.int32, shape=[<span class="literal">None</span>, <span class="number">1</span>])</span><br><span class="line">    self.word_label = tf.placeholder(dtype=tf.int32, shape=[<span class="literal">None</span>])</span><br><span class="line">    self.label = tf.placeholder(dtype=tf.int32, shape=[<span class="literal">None</span>])</span><br></pre></td></tr></table></figure></p>
+<h3 id="构建模型"><a href="#构建模型" class="headerlink" title="构建模型"></a>构建模型</h3><p>在构建模型之前首先重新打开原文，可以看到其中包含了如下结构的模型：<br>(1)使用句子和词向量的连接来预测下一个词:<br><img src="https://s2.ax1x.com/2019/11/26/MxUquF.png" width="300" height="200" div align="center"><br><br>(2)使用段落向量来预测一个小窗口中的词:<br><img src="https://s2.ax1x.com/2019/11/26/MxaS9x.png" width="300" height="200" div align="center"></p>
+<h4 id="定义训练参数的区域"><a href="#定义训练参数的区域" class="headerlink" title="定义训练参数的区域"></a>定义训练参数的区域</h4><p>文章中在IMDB数据集上测试情感分类的时候固定了除句向量以外的参数，定义参数区域就是为了方便取出需要训练的参数，<font color="red"><b>后期在复现论文的过程中需要留意有没有需要固定参数的部分，若存在需要固定参数的部分则必须定义参数区域。</b></font></p>
+<p>(1)定义训练集的参数区域<br><br>para_num表示的是包含的句子数,400是文章中设置的训练维度(在斯坦福数据集实验中提及)。词嵌入中设置的3000指的则是最常出现的30000个单词，这个数量由人为设置。<br><br>参数说明:<br><br>-trainable:参数是可训练的.<br><br>-name:命名空间的名字.<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">with tf.variable_scope(<span class="string">"train_paramaters"</span>):</span><br><span class="line">    self.train_para_embedding = tf.Variable(<span class="attribute">initial_value</span>=tf.truncated_normal(</span><br><span class="line">        shape=[self.para_num, 400]), <span class="attribute">trainable</span>=<span class="literal">True</span>, <span class="attribute">name</span>=<span class="string">'train_para_embedding'</span>)</span><br><span class="line">    self.word_embedding = tf.Variable(<span class="attribute">initial_value</span>=tf.truncated_normal(</span><br><span class="line">        shape=[30000, 400]), <span class="attribute">trainable</span>=<span class="literal">True</span>, <span class="attribute">name</span>=<span class="string">'word_embedding'</span>)</span><br></pre></td></tr></table></figure></p>
+<h4 id="定义测试集的参数变量"><a href="#定义测试集的参数变量" class="headerlink" title="定义测试集的参数变量"></a>定义测试集的参数变量</h4><p>测试集中包含了12500条pos数据和25000条neg数据，训练的维度是400维，所以大小是25000x400。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">with tf.variable_scope(<span class="string">"test_parameters"</span>):</span><br><span class="line">    self.test_para_embedding = tf.Variable(<span class="attribute">initial_value</span>=tf.truncated_normal(shape=[25000, 400]), <span class="attribute">trainable</span>=<span class="literal">True</span>,</span><br><span class="line">                                           <span class="attribute">name</span>=<span class="string">"test_para_embedding"</span>)</span><br></pre></td></tr></table></figure></p>
+<h4 id="定义需要训练哪个部分"><a href="#定义需要训练哪个部分" class="headerlink" title="定义需要训练哪个部分"></a>定义需要训练哪个部分</h4><p>-train_first: train_first为True时，表示训练训练集的词向量和句向量.<br><br>-train_second: train_second为True时，表示固定词向量和句向量,开始训练单隐层神经网络分类器用于情感分类。</p>
+<p>只要需要训练，就把相应的段落嵌入和段落输入取出来作为一个矩阵。反之，如果不需要训练任何东西，那么则是在测试阶段，将测试集中的东西根据输入取出作为矩阵。<br><figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">if train_first or train_second:</span></span><br><span class="line">    par<span class="built_in">a_input</span> = tf.nn.embedding_lookup(self.train_par<span class="built_in">a_embedding</span>, self.par<span class="built_in">a_input</span>)  # batch_size*<span class="number">1</span>*<span class="number">400</span></span><br><span class="line"><span class="title">else:</span></span><br><span class="line">    par<span class="built_in">a_input</span> = tf.nn.embedding_lookup(self.test_par<span class="built_in">a_embedding</span>, self.par<span class="built_in">a_input</span>)</span><br></pre></td></tr></table></figure></p>
+<font color="##0099FF"><b><br>注：这里说一下关于tf.nn.embedding_lookup<br><br>第一个参数是需要从中取值的矩阵<br><br>第二个参数是取值的行数，下面代码示意。<br></b></font><br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"><span class="attribute">m</span>=np.random.rand(5,5)</span><br><span class="line"><span class="builtin-name">print</span>(m)</span><br><span class="line"><span class="attribute">n</span>=np.array([1,3])</span><br><span class="line">n.reshape((2,1))</span><br><span class="line"></span><br><span class="line"><span class="attribute">t</span>=tf.nn.embedding_lookup(m,n)</span><br><span class="line"><span class="comment">#print(t)</span></span><br><span class="line"><span class="attribute">sess</span>=tf.Session()</span><br><span class="line"><span class="builtin-name">print</span>(sess.<span class="builtin-name">run</span>(t))</span><br><span class="line">sess.close()</span><br></pre></td></tr></table></figure><br><br>输出的结果如下图所示,其中n设定的1和3也就相当于需要取出的句子编号。<br><img src="https://s2.ax1x.com/2019/11/26/MxaTIA.png" alt><br><br><br><br><br>#### 通过one-hot向量来设置词的标签<br><br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">labels</span>=tf.<span class="literal">on</span>e_hot(self.word_label,<span class="number">30000</span>)</span><br></pre></td></tr></table></figure><br><br>#### 分别取出训练和测试的参数<br><br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">train_var</span>=tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES,<span class="string">"train_parameters"</span>)</span><br><span class="line"><span class="attr">test_var</span>=tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES,<span class="string">"test_parameters"</span>)</span><br></pre></td></tr></table></figure><br><br>#### 设置正则<br><br>这个正则存在的意义我个人是这样思考的，在测试阶段仅仅训练句向量，但是参数会报错，所以加入正则避免报错。<br><br>可能当前的理解不是很到位，后续复现其他论文的时候会对这个小东西进行测试。<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reg=tf<span class="selector-class">.contrib</span><span class="selector-class">.layers</span>.apply_regularization(tf<span class="selector-class">.contrib</span><span class="selector-class">.layers</span>.l2_regularizer(<span class="number">1</span>e-<span class="number">10</span>),tf.trainable_variables())</span><br></pre></td></tr></table></figure><br><br>### 设置损失函数<br><br>设置完损失函数之后要设置其在训练时以及测试时的优化，因为这篇论文比较特殊，即使在测试时也需要对句向量进行训练。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">self.loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(<span class="attribute">labels</span>=labels, <span class="attribute">logits</span>=output)) + reg</span><br><span class="line"></span><br><span class="line">self.train_op = tf.train.AdamOptimizer(<span class="attribute">learning_rate</span>=0.0001).minimize(self.loss_op, <span class="attribute">var_list</span>=train_var)</span><br><span class="line">self.test_op = tf.train.AdamOptimizer(<span class="attribute">learning_rate</span>=0.0001).minimize(self.loss_op, <span class="attribute">var_list</span>=test_var)</span><br></pre></td></tr></table></figure><br><br><font color="##0099ff">关于这个tf.reduce_mean函数，我发现在设置损失时一直会用到，把用法链接放在这里好了：<a href="https://blog.csdn.net/dcrmg/article/details/79797826" target="_blank" rel="noopener">https://blog.csdn.net/dcrmg/article/details/79797826</a></font>
+
+<h3 id="设置情感分类器"><a href="#设置情感分类器" class="headerlink" title="设置情感分类器"></a>设置情感分类器</h3><p>这篇论文中一共包含两个任务:<br><br>(1)通过句子和词汇预测下一个词.<br><br>(2)情感分类问题.</p>
+<p>所以，下面需要对分类器进行设置。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分类器训练</span></span><br><span class="line"><span class="comment"># 原先的para_input的大小是batch_size*1*400</span></span><br><span class="line">mlp_input=tf.reshape(para_input,[-1,400])</span><br><span class="line"><span class="keyword">with</span> tf.variable_scope(<span class="string">'classification_parameters'</span>):</span><br><span class="line">    h1=tf.layers.dense(mlp_input,units=<span class="number">50</span>,activation=<span class="string">'relu'</span>,trainable=<span class="literal">True</span>,<span class="keyword">name</span>=<span class="string">'h1'</span>)</span><br><span class="line">    <span class="comment"># 情感分类的结果是二分类结果</span></span><br><span class="line">    mlp_output=tf.layers.dense(h1,<span class="number">2</span>,trainable=<span class="literal">True</span>,<span class="keyword">name</span>=<span class="string">'mlp_output'</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="训练情感分类器"><a href="#训练情感分类器" class="headerlink" title="训练情感分类器"></a>训练情感分类器</h3><p>首先设置label，损失函数，分类器参数，优化损失函数，最后通过tf.argmax得出结果。<br><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mlp_labels</span> = tf.one_hot(self.label, <span class="number">2</span>)</span><br><span class="line">self.<span class="attr">mlp_loss_op</span> = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2</span><br><span class="line">                                  (<span class="attr">labels=mlp_labels,</span> <span class="attr">logits=mlp_output))</span></span><br><span class="line"><span class="attr">classification_var</span> = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, <span class="string">"classification_parameters"</span>)</span><br><span class="line">self.<span class="attr">mlp_train_op</span> = tf.train.AdamOptimizer(<span class="attr">learning_rate=0.02).</span> \</span><br><span class="line">    minimize(self.mlp_loss_op, <span class="attr">var_list=classification_var)</span></span><br><span class="line"></span><br><span class="line">self.<span class="attr">predict_op</span> = tf.argmax(mlp_output, <span class="attr">axis=1)</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="训练模型"><a href="#训练模型" class="headerlink" title="训练模型"></a>训练模型</h2><p>训练的过程包含了训练句向量以及训练分类两部分，根据需要进行训练即可。<br>注：其中batch_size可调。</p>
+<h2 id="运行过程"><a href="#运行过程" class="headerlink" title="运行过程"></a>运行过程</h2><p><img src="https://s2.ax1x.com/2019/11/26/MzWWwR.png" alt><br>注：这里训练模型的部分可以在原来的基础上进行训练这点需要弄清楚。</p>
+<h2 id="测试模型"><a href="#测试模型" class="headerlink" title="测试模型"></a>测试模型</h2><p>这里测试的是情感分类过程，也就是将句子根据batch_size放入模型中进行训练，将预测的结果单独保存下来，再通过skit-learn 的 accuracy_score函数计算出准确率。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/21/【论文笔记】Distributed-Representations-of-Sentences-and-Documents/" data-id="cktfedoyl004wf4uk0c4of1q5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/25/【论文笔记】Skip-Thought-Vectors/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          【论文笔记】Skip-Thought Vectors
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/05/从零实现基于医疗知识图谱的问答系统目录及总结/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">从零实现基于医疗知识图谱的问答系统目录及总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

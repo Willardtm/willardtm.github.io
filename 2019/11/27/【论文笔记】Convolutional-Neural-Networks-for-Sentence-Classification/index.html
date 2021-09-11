@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>【论文笔记】Convolutional Neural Networks for Sentence Classification | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这篇笔记是基于Yoon Kim大神的论文《Convolutional Neural Networks for Sentence Classification》，TextCNN。本文为使用神经网络进行文本分类的开山之作。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【论文笔记】Convolutional Neural Networks for Sentence Classification">
+<meta property="og:url" content="http://yoursite.com/2019/11/27/【论文笔记】Convolutional-Neural-Networks-for-Sentence-Classification/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="这篇笔记是基于Yoon Kim大神的论文《Convolutional Neural Networks for Sentence Classification》，TextCNN。本文为使用神经网络进行文本分类的开山之作。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/27/Qpu7NT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/27/QpuOgJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/27/QpuvuR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/27/QpuxD1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/27/QpKC4O.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/27/QpKkgH.png">
+<meta property="og:image" content="http://deeplearning.stanford.edu/wiki/images/6/6c/Convolution_schematic.gif">
+<meta property="og:image" content="https://s2.ax1x.com/2019/11/27/QpKZDI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q3dSQe.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q3wyEn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q3BAF1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q3DYNR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q3yyE4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q3y7UH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q36KIJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q3ofxg.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q8DpR0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/05/Q8sha4.png">
+<meta property="og:updated_time" content="2019-12-05T12:03:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【论文笔记】Convolutional Neural Networks for Sentence Classification">
+<meta name="twitter:description" content="这篇笔记是基于Yoon Kim大神的论文《Convolutional Neural Networks for Sentence Classification》，TextCNN。本文为使用神经网络进行文本分类的开山之作。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/11/27/Qpu7NT.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-【论文笔记】Convolutional-Neural-Networks-for-Sentence-Classification" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/27/【论文笔记】Convolutional-Neural-Networks-for-Sentence-Classification/" class="article-date">
+  <time datetime="2019-11-26T18:27:39.000Z" itemprop="datePublished">2019-11-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【论文笔记】Convolutional Neural Networks for Sentence Classification
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前期知识补充"><span class="toc-number">1.</span> <span class="toc-text">前期知识补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文本分类"><span class="toc-number">1.1.</span> <span class="toc-text">文本分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文本表示"><span class="toc-number">1.2.</span> <span class="toc-text">文本表示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于规则的文本分类"><span class="toc-number">1.3.</span> <span class="toc-text">基于规则的文本分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于特征的文本分类"><span class="toc-number">1.4.</span> <span class="toc-text">基于特征的文本分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基于神经网络的文本分类"><span class="toc-number">1.5.</span> <span class="toc-text">基于神经网络的文本分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#卷积神经网络之卷积"><span class="toc-number">1.6.</span> <span class="toc-text">卷积神经网络之卷积</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#卷积神经网络之池化"><span class="toc-number">1.7.</span> <span class="toc-text">卷积神经网络之池化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#论文主要内容"><span class="toc-number">2.</span> <span class="toc-text">论文主要内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#模型"><span class="toc-number">2.1.</span> <span class="toc-text">模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验"><span class="toc-number">2.2.</span> <span class="toc-text">实验</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据集使用"><span class="toc-number">2.2.1.</span> <span class="toc-text">数据集使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#超参数和训练"><span class="toc-number">2.2.2.</span> <span class="toc-text">超参数和训练</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#预训练词向量"><span class="toc-number">2.2.3.</span> <span class="toc-text">预训练词向量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#模型变化"><span class="toc-number">2.2.4.</span> <span class="toc-text">模型变化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结果和讨论"><span class="toc-number">2.3.</span> <span class="toc-text">结果和讨论</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#多通道模型-vs-单通道模型"><span class="toc-number">2.3.1.</span> <span class="toc-text">多通道模型 vs 单通道模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#静态-vs-非静态表示"><span class="toc-number">2.3.2.</span> <span class="toc-text">静态 vs 非静态表示</span></a></li></ol></li></ol></li></ol>
+		  </div>
+		
+        <p>这篇笔记是基于Yoon Kim大神的论文《Convolutional Neural Networks for Sentence Classification》，TextCNN。<br>本文为使用神经网络进行文本分类的开山之作。<br><a id="more"></a></p>
+<p><font color="red"><b>注：笔记学习参考深度之眼人工智能Paper训练营NLP方向第八课时课程。</b></font><br>-w-这篇文章简直可以算是我接触神经网络在NLP上应用的第一篇论文了，记忆深刻，这次学习是重新温习一遍文中的细节并且完成论文的复现。<br>第一次我看这篇论文的阅读笔记时来自这篇笔记<a href="http://www.wildml.com/2015/12/implementing-a-cnn-for-text-classification-in-tensorflow/" target="_blank" rel="noopener">Implementing a CNN for Text Classification in TensorFlow</a>.</p>
+<h2 id="前期知识补充"><a href="#前期知识补充" class="headerlink" title="前期知识补充"></a>前期知识补充</h2><h3 id="文本分类"><a href="#文本分类" class="headerlink" title="文本分类"></a>文本分类</h3><p>文本分类即给定分类体系，将文本分类到某个或者某几个类。情感分析也就是文本分类下面一个细节。<br>文本分类涵盖了二分类，多分类，多标签分类等，其中多标签分类指的是一个文本可能属于多个标签类别。<br><img src="https://s2.ax1x.com/2019/11/27/Qpu7NT.png" alt></p>
+<h3 id="文本表示"><a href="#文本表示" class="headerlink" title="文本表示"></a>文本表示</h3><p>文本表示即通过某种编码方式将文本处理为计算机可以处理的形式（向量），在前面的笔记中已经提到过以下几种编码方式：<br>(1)One-Hot.<br>(2)Word2Vec.</p>
+<h3 id="基于规则的文本分类"><a href="#基于规则的文本分类" class="headerlink" title="基于规则的文本分类"></a>基于规则的文本分类</h3><p>基于规则的文本分类流程如下:<br><img src="https://s2.ax1x.com/2019/11/27/QpuOgJ.png" alt></p>
+<p>规则的设定包括特定的词语，短语或者模式，当句子符合这些规则时就将其判断为对应的类别。</p>
+<h3 id="基于特征的文本分类"><a href="#基于特征的文本分类" class="headerlink" title="基于特征的文本分类"></a>基于特征的文本分类</h3><p>通过人工设计和提取特征（词法特征，句法特征）等，使用机器学习模型来捕获句子中的关键信息，从而减少噪声词对最终结果的影响。<br><img src="https://s2.ax1x.com/2019/11/27/QpuvuR.png" alt></p>
+<h3 id="基于神经网络的文本分类"><a href="#基于神经网络的文本分类" class="headerlink" title="基于神经网络的文本分类"></a>基于神经网络的文本分类</h3><p>流程如下：<br><img src="https://s2.ax1x.com/2019/11/27/QpuxD1.png" alt></p>
+<h3 id="卷积神经网络之卷积"><a href="#卷积神经网络之卷积" class="headerlink" title="卷积神经网络之卷积"></a>卷积神经网络之卷积</h3><p>关于CNN还是首先推荐这位大神的博客:<a href="http://www.wildml.com/2015/11/understanding-convolutional-neural-networks-for-nlp/" target="_blank" rel="noopener">卷积神经网络在NLP的应用</a>。<br>OK，回到课程笔记。<br>卷积神经网络：多层感知机是一种全连接的结构，但是全连接的网络会存在一定程度的冗余，卷积神经网络通过局部连接和权重共享的方法来实现对多层感知机的共享。<br><img src="https://s2.ax1x.com/2019/11/27/QpKC4O.png" alt></p>
+<p>卷积的操作就是把当前感受野内的所有输入与滤波器对应位置的权重相乘后求和，在每一个时刻滤波器都会按照一定的步长向前移动。<br><img src="https://s2.ax1x.com/2019/11/27/QpKkgH.png" alt></p>
+<p>图像示意：<br><img src="http://deeplearning.stanford.edu/wiki/images/6/6c/Convolution_schematic.gif" alt></p>
+<h3 id="卷积神经网络之池化"><a href="#卷积神经网络之池化" class="headerlink" title="卷积神经网络之池化"></a>卷积神经网络之池化</h3><p>池化操作的意义就是降低特征维度并保留有效信息。<br><img src="https://s2.ax1x.com/2019/11/27/QpKZDI.png" width="500" height="300"><br>在NLP中，池化操作可以将任意长度的输入转化为固定长度的输入。</p>
+<h2 id="论文主要内容"><a href="#论文主要内容" class="headerlink" title="论文主要内容"></a>论文主要内容</h2><h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><p>文章中用于句子分类的模型是基于卷积神经网络的微调：<br><img src="https://s2.ax1x.com/2019/12/05/Q3dSQe.png" width="800" height="350"><br>上述模型是一个双通道的模型，但是在某种意义也相当于单通道的体系结构。</p>
+<p>其中每个 xi 的输入相当于句子中的第 i 个单词，每个单词的维度是 k 维，一个包含 n 个单词的句子表示出来就是 n 个单词的链接。<br><img src="https://s2.ax1x.com/2019/12/05/Q3wyEn.png" width="300" height="100"></p>
+<p>一个滤波器(filter)的窗口通过 h 个单词来生成一个新的特征：<br><img src="https://s2.ax1x.com/2019/12/05/Q3BAF1.png" width="300" height="100"></p>
+<p>用一系列窗口单词{x1:h,x2:h+1,…,xn-h+1:n}来生成一个特征映射：<br><img src="https://s2.ax1x.com/2019/12/05/Q3DYNR.png" width="300" height="100"></p>
+<p>通过特征映射取特征的最大值max{c}作为与滤波器对应的特征。这些特征形成倒数第二层，并传递给一个完全连接的softmax层，其输出是标签上的概率分布。<br>在模型中作者使用了两个通道的词向量：<br>(1)一个是在训练时保持静止；<br>(2)另一个是在训练时通过反向传播进行微调。</p>
+<p>为了规范化，作者在倒数第二层上采用了关于权重向量的L2-范数的约束。<br>dropout通过在向前反向传播期间随机丢失隐藏单元的比例p（即设置为零）来防止隐藏单元的过拟合。</p>
+<p>所以倒数第二层 z 即：<br><img src="https://s2.ax1x.com/2019/12/05/Q3yyE4.png" width="300" height="100"><br>而不是使用：<br><img src="https://s2.ax1x.com/2019/12/05/Q3y7UH.png" width="300" height="100"></p>
+<p>输出单元y在前向传播中，dropout使用的是：<br><img src="https://s2.ax1x.com/2019/12/05/Q36KIJ.png" width="300" height="100"><br>其中◦是按元素方向的乘法算子，r∈RM是一个概率p为1的伯努利随机变量的“掩蔽”向量。梯度仅通过未屏蔽的单元反向传播。在测试时，学习到的权重向量用p进行缩放，使wˆ=PW，wˆ(无dropout)来为看不见的句子打分。<br>作者还使用l2范式来约束权重向量w时候有||w||2=s，使其在梯度下降后的任何情况下都会有||w||2&gt;s。</p>
+<h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><h4 id="数据集使用"><a href="#数据集使用" class="headerlink" title="数据集使用"></a>数据集使用</h4><p>实验一共使用了7个数据集：<br>(1)MR:电影评论，每篇评论一句。分类包括检测正面/负面评论。<br>(2)SST-1:斯坦福情感树库–扩展了MR，但有训练/验证/测试拆分为细粒度的标签（very positive, positive, neutral, negative, very negative），由Socher等人重新标记。<br>(3)SST-2:与SST-1相同，但是去掉了中立的评论和二分类标签。<br>(4)Subj:主观性数据集，其中的任务是将句子归类为主观或客观。<br>(5)TREC:TREC数据集将问题分为六种类型（问题包括person,location,数字信息等)。<br>(6)CR:顾客关于大量产品的评论，任务是预测 postive 或者 negtive评论。<br>(7)MPQA:MPQA数据集的意见极性检测子任务。</p>
+<p>训练集的设置：<br><img src="https://s2.ax1x.com/2019/12/05/Q3ofxg.png" width="800" height="500"></p>
+<h4 id="超参数和训练"><a href="#超参数和训练" class="headerlink" title="超参数和训练"></a>超参数和训练</h4><p>对于作者使用的所有数据集：校正线性单元，过滤窗口(h)为3，4，5，每个特征映射100个，dropout rate(P)为0.5，L2约束(S)为3，mini-batch大小为50。通过在SST-2DEV集合上的网格搜索来选择这些值。<br>除早期停止开发集之外，我们不执行任何DataSetSpecificTuning（任何数据特定调整）。对于没有标准开发集的数据集，我们随机选择10%的培训数据作为开发集。列车通过随机梯度下降与Adelta更新规则进行混洗迷你批次的随机梯度下降。</p>
+<h4 id="预训练词向量"><a href="#预训练词向量" class="headerlink" title="预训练词向量"></a>预训练词向量</h4><p>作者使用的是Mikolov大神的word2vc中的cbow模型训练好的词向量，维度是300维。在预先训练的单词集合中不存在的单词被随机地初始化。</p>
+<h4 id="模型变化"><a href="#模型变化" class="headerlink" title="模型变化"></a>模型变化</h4><p>作者使用了不同的CNN的模型：<br>(1)<b>CNN-rand</b>：作者使用的基准模型，所有的词都是随机初始化的，当作在训练中需要优化的参数。<br>(2)<b>CNN-static</b>:这个模型使用了通过word2vec预训练的词向量。所有的单词包括未知的单词都是随机初始化的并且保持静止并且只学习模型的其他参数。<br>(3)<b>CNN-non-static</b>:与上面相同，但预先训练的向量对每个任务都进行了微调。<br>(4)<b>CNN-multichannel</b>：一个模型有两种设置的词向量。每种设置的向量被当作一个通道（channel），每一个滤波器被应用在两个通道中，但是反向传播的梯度仅通过一个通道。因此这个模型可以微调一部分向量并保持其他部分静止。两个通过都通过word2vec初始化。</p>
+<p>为了区分上述变量对其他随机因素的影响，作者通过在每个数据集中保持它们的一致性来消除其他随机因素的来源——cv -fold赋值、未知字向量的初始化、CNN参数的初始化。</p>
+<h3 id="结果和讨论"><a href="#结果和讨论" class="headerlink" title="结果和讨论"></a>结果和讨论</h3><p>CNN的分类结果和其他模型对比如下：<br><img src="https://s2.ax1x.com/2019/12/05/Q8DpR0.png" width="800" height="500"></p>
+<p>使用随机初始化的向量分类结果不理想，但是使用预训练的词向量之后得到的结果让人感到惊喜。即使是一个简单的模型CNN-static也表现得非常好。</p>
+<h4 id="多通道模型-vs-单通道模型"><a href="#多通道模型-vs-单通道模型" class="headerlink" title="多通道模型 vs 单通道模型"></a>多通道模型 vs 单通道模型</h4><p>作者最初希望多通道的结构能防止过拟合（通过确定学习的向量不会偏离初值太远）并且因此比单通道的模型表现更好，尤其是在小型数据集上。<br>然而，结果参差不齐，因此有必要进一步研究微调过程的正规化.例如，代替使用非静态部分的附加通道，可以维持单个通道，但是采用允许在训练期间修改的额外维度。</p>
+<h4 id="静态-vs-非静态表示"><a href="#静态-vs-非静态表示" class="headerlink" title="静态 vs 非静态表示"></a>静态 vs 非静态表示</h4><p>与单通道非静态模型的情况一样，多通道模型能够微调非静态通道，使其更适合于手头的任务。举个栗子，在word2vec中good和bad更接近，大概是因为它们(几乎)在语法上是等价的。但是在SST-2上微调非静态通道就不是这样的情况了，相似地，good在表达情感上更接近与nice而不是great，这确实反映在学习的向量中。</p>
+<p>下图是在SST-2数据集AF上的多通道模型的静态通道（左）和非静态通道（右）中的矢量中，基于余弦相似性的前4个相邻字（基于余弦相似性）训练。<br><img src="https://s2.ax1x.com/2019/12/05/Q8sha4.png" width="350" height="800"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/11/27/【论文笔记】Convolutional-Neural-Networks-for-Sentence-Classification/" data-id="cktfedoyi004hf4uk5ja43zjf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/05/【论文笔记】Character-level-Convolutional-Networks-for-Text-Classification/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          【论文笔记】Character-level Convolutional Networks for Text Classification
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/25/【论文笔记】Skip-Thought-Vectors/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">【论文笔记】Skip-Thought Vectors</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

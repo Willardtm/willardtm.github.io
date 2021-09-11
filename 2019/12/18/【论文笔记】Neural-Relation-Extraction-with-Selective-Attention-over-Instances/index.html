@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>【论文笔记】Neural Relation Extraction with Selective Attention over Instances | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本篇论文是基于《Neural Relation Extraction with Selective Attention over Instances》，作者是我特别特别特别敬仰的刘知远老师。">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【论文笔记】Neural Relation Extraction with Selective Attention over Instances">
+<meta property="og:url" content="http://yoursite.com/2019/12/18/【论文笔记】Neural-Relation-Extraction-with-Selective-Attention-over-Instances/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="本篇论文是基于《Neural Relation Extraction with Selective Attention over Instances》，作者是我特别特别特别敬仰的刘知远老师。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/18/QHTk1P.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/18/QH77xx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/18/QHHRSI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/18/QHb7DK.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXpCIs.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXksln.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXkRTU.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXAncn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXZVhD.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXZMnI.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXeQxJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXezLR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXmeOA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXuuPf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QX1PuF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXK8SO.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXKbnJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXMMuQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXMfDH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXQJZd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXQDsg.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXQjSK.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QXl8pV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/12/20/QX1pcT.png">
+<meta property="og:updated_time" content="2019-12-20T12:22:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【论文笔记】Neural Relation Extraction with Selective Attention over Instances">
+<meta name="twitter:description" content="本篇论文是基于《Neural Relation Extraction with Selective Attention over Instances》，作者是我特别特别特别敬仰的刘知远老师。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/12/18/QHTk1P.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-【论文笔记】Neural-Relation-Extraction-with-Selective-Attention-over-Instances" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/18/【论文笔记】Neural-Relation-Extraction-with-Selective-Attention-over-Instances/" class="article-date">
+  <time datetime="2019-12-18T14:49:58.000Z" itemprop="datePublished">2019-12-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【论文笔记】Neural Relation Extraction with Selective Attention over Instances
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前期知识补充"><span class="toc-number">1.</span> <span class="toc-text">前期知识补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关系抽取简介"><span class="toc-number">1.1.</span> <span class="toc-text">关系抽取简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#有监督关系抽取"><span class="toc-number">1.2.</span> <span class="toc-text">有监督关系抽取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#无监督关系抽取"><span class="toc-number">1.3.</span> <span class="toc-text">无监督关系抽取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弱监督关系抽取"><span class="toc-number">1.4.</span> <span class="toc-text">弱监督关系抽取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关系抽取的发展历史"><span class="toc-number">1.5.</span> <span class="toc-text">关系抽取的发展历史</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多示例学习"><span class="toc-number">1.6.</span> <span class="toc-text">多示例学习</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#远程监督关系抽取的流程"><span class="toc-number">1.7.</span> <span class="toc-text">远程监督关系抽取的流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#传统经典模型"><span class="toc-number">2.</span> <span class="toc-text">传统经典模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#分段卷积网络-PCNN"><span class="toc-number">2.0.1.</span> <span class="toc-text">分段卷积网络-PCNN</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#论文主要内容"><span class="toc-number">3.</span> <span class="toc-text">论文主要内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基于句子层次注意力的CNN"><span class="toc-number">3.1.</span> <span class="toc-text">基于句子层次注意力的CNN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注意力层"><span class="toc-number">3.2.</span> <span class="toc-text">注意力层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择注意力层"><span class="toc-number">3.3.</span> <span class="toc-text">选择注意力层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输出层"><span class="toc-number">3.4.</span> <span class="toc-text">输出层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#神经网络参数"><span class="toc-number">3.5.</span> <span class="toc-text">神经网络参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验和数据集设置"><span class="toc-number">3.6.</span> <span class="toc-text">实验和数据集设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验结果"><span class="toc-number">3.7.</span> <span class="toc-text">实验结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#论文的主要贡献"><span class="toc-number">3.8.</span> <span class="toc-text">论文的主要贡献</span></a></li></ol></li></ol>
+		  </div>
+		
+        <p>本篇论文是基于《Neural Relation Extraction with Selective Attention over Instances》，作者是我特别特别特别敬仰的刘知远老师。<br><a id="more"></a></p>
+<font color="red"><b>注：笔记学习参考深度之眼人工智能Paper训练营NLP方向第十三课时课程。</b></font>
+
+<h2 id="前期知识补充"><a href="#前期知识补充" class="headerlink" title="前期知识补充"></a>前期知识补充</h2><h3 id="关系抽取简介"><a href="#关系抽取简介" class="headerlink" title="关系抽取简介"></a>关系抽取简介</h3><p>关系抽取是从文本中自动获取实体间关系事实的代表性任务。该任务的目标是，给定一个包含两个实体的句子，从中抽取出这两个实体之间的关系。<br>关系抽取是信息抽取的任务之一，在知识图谱的自动化构建和补全方面发挥着十分重要的作用。</p>
+<h3 id="有监督关系抽取"><a href="#有监督关系抽取" class="headerlink" title="有监督关系抽取"></a>有监督关系抽取</h3><p><img src="https://s2.ax1x.com/2019/12/18/QHTk1P.png" width="600" height="200"></p>
+<h3 id="无监督关系抽取"><a href="#无监督关系抽取" class="headerlink" title="无监督关系抽取"></a>无监督关系抽取</h3><p>无监督关系抽取方法主要基于分布假设理论，分布假设的核心思想是：如果两个词的用法相似即出现在相同的上下文中，那么这两个词就意思相近。相应的，在实体关系抽取中，如果两个实体对具有相似的语境，那么这两个实体对倾向于具有相同的语义关系。基于此理论，无监督关系抽取将两个实体的上下文作为表征语义关系的特征。</p>
+<p>无监督关系抽取方法可以发现新的关系，但是它发现的新关系往往是相似模板的聚类，其缺点是得到的关系不具有语义信息，难以规则化，很难被用来构建知识库，研究相对较少。</p>
+<h3 id="弱监督关系抽取"><a href="#弱监督关系抽取" class="headerlink" title="弱监督关系抽取"></a>弱监督关系抽取</h3><p>弱监督学习是有监督学习和无监督学习的折中，训练数据只有部分标注或者标注有噪声。弱监督关系抽取主要有两种框架：<br>1.使用半监督学习和主动学习等技术以尽可能少的代价提升抽取效果；<br>2.使用远程监督回标的思想，利用现有知识库中的关系三元组，自动回标三元组中实体所在的文本作为训练数据，由于其训练数据产生过程不需要人工标注，近年来在信息抽取领域得到广泛的应用，同时也是关系抽取的研究热点。</p>
+<h3 id="关系抽取的发展历史"><a href="#关系抽取的发展历史" class="headerlink" title="关系抽取的发展历史"></a>关系抽取的发展历史</h3><p>rt<br><img src="https://s2.ax1x.com/2019/12/18/QH77xx.png" width="800" height="300"></p>
+<h3 id="多示例学习"><a href="#多示例学习" class="headerlink" title="多示例学习"></a>多示例学习</h3><p>把训练数据集中每一个数据看作一个包（bag），每个包由多个示例（instance）构成，每个包由一个可见的标签，而包中的示例如果没有可见的标签。如果包中至少包含一个标签为正（postive）的示例，则包的标签为正；如果包中所有示例的标签都是负（negtive）的，则包的标签为负。多示例学习的过程就是通过模型对包及其包含的示例进行分析预测得出包的标签。<br><img src="https://s2.ax1x.com/2019/12/18/QHHRSI.png" width="500" height="300"><br>关系抽取的目标是获得两个实体之间的联系，而不是狭义地对句子分类。<br>将远程监督关系抽取看作是一个多示例问题，这样一来，就只需要要求在回标出来的所有句子中，至少有一个句子能表示两个实体间的关系。也就是将一个实体对对应的所有句子看作一个包，其中每一个句子就是包中的一个示例，从而解决回标噪声的问题。</p>
+<h3 id="远程监督关系抽取的流程"><a href="#远程监督关系抽取的流程" class="headerlink" title="远程监督关系抽取的流程"></a>远程监督关系抽取的流程</h3><p>rt,多示例学习指导下的远程监督关系抽取的核心假设：至少一句表达真实关系。<br><img src="https://s2.ax1x.com/2019/12/18/QHb7DK.png" width="700" height="300"></p>
+<h2 id="传统经典模型"><a href="#传统经典模型" class="headerlink" title="传统经典模型"></a>传统经典模型</h2><h4 id="分段卷积网络-PCNN"><a href="#分段卷积网络-PCNN" class="headerlink" title="分段卷积网络-PCNN"></a>分段卷积网络-PCNN</h4><p>PCNN的全称是Piecewise Convolutional Neural Network，其模型结构如下：<br><img src="https://s2.ax1x.com/2019/12/20/QXpCIs.png" width="800" height="500"></p>
+<p><b>输入层</b><br>关系抽取的任务是给两个实体确定语义关系，位置特征对这一任务特别重要，因此在向量化表示时，对句子中每个词相对于实体对的位置进行建模。当实体由多个词组成时，设定整个实体只占据一个位置。<br><img src="https://s2.ax1x.com/2019/12/20/QXksln.png" width="180" height="90"><br><img src="https://s2.ax1x.com/2019/12/20/QXkRTU.png" alt></p>
+<p><b>卷积层</b><br>为了捕获不同的特征，卷积运算时一般使用多个滤波器。假设使用n个滤波器：<br><img src="https://s2.ax1x.com/2019/12/20/QXAncn.png" width="300" height="160"></p>
+<p>卷机操作如下，其中j是输入的长度：<br><img src="https://s2.ax1x.com/2019/12/20/QXZVhD.png" width="300" height="160"></p>
+<p>结果如下：<br><img src="https://s2.ax1x.com/2019/12/20/QXZMnI.png" width="300" height="160"></p>
+<p><b>分段最大池化</b><br>对于关系抽取，最大池化丢失太多信息，而一个句子天然地被给定的两个实体分成了三段，包括两个实体之间的特征以及实体前后的特征，分段池化可以在一定程度上保留句子中的结构化信息。<br>每个滤波器得到的结果分成三段:{ci1,ci2,ci3}.<br><img src="https://s2.ax1x.com/2019/12/20/QXeQxJ.png" width="300" height="160"><br>pi={pi1,pi2,pi3}</p>
+<p><b>输出层</b></p>
+<p>输出层表示如下：<br><img src="https://s2.ax1x.com/2019/12/20/QXezLR.png" width="150" height="100"><br>使用dropout来防止过拟合：<br><img src="https://s2.ax1x.com/2019/12/20/QXmeOA.png" alt></p>
+<h2 id="论文主要内容"><a href="#论文主要内容" class="headerlink" title="论文主要内容"></a>论文主要内容</h2><h3 id="基于句子层次注意力的CNN"><a href="#基于句子层次注意力的CNN" class="headerlink" title="基于句子层次注意力的CNN"></a>基于句子层次注意力的CNN</h3><p>模型结构如下所示：<br><img src="https://s2.ax1x.com/2019/12/20/QXuuPf.png" width="400" height="400"><br>其中mi是最初实体对的句子，αi是句子级注意力机制的权重，r表示这个实体对所对应的句子集合（包）的向量表示。<br>完整的模型结构如下图所示：<br><img src="https://s2.ax1x.com/2019/12/20/QX1PuF.png" width="400" height="800"></p>
+<h3 id="注意力层"><a href="#注意力层" class="headerlink" title="注意力层"></a>注意力层</h3><p>在预测两个实体之间是否存在关系r时，为了充分利用所有句子的信息，模型将集合s表示为所有句向量与注意力权重相乘的和：<br><img src="https://s2.ax1x.com/2019/12/20/QXK8SO.png" width="150" height="150"><br>接着，一个很直接的想法就是通过句子向量xi的加权平衡计算来得到s的向量表示：<br><img src="https://s2.ax1x.com/2019/12/20/QXKbnJ.png" width="120" height="120"></p>
+<h3 id="选择注意力层"><a href="#选择注意力层" class="headerlink" title="选择注意力层"></a>选择注意力层</h3><p>将集合s表示成一个统一的特征向量来进行预测：<br><img src="https://s2.ax1x.com/2019/12/20/QXMMuQ.png" width="180" height="180"><br>ei是一个能量函数，通过这个函数，可以描述句子xi和想要预测的关系类型r在多大程度上是匹配的。ei越高表示句子xi越能够表述关系r的语义。这里模型选择了双线性函数来计算：<br><img src="https://s2.ax1x.com/2019/12/20/QXMfDH.png" width="180" height="180"><br>通过计算，就能得到xi和r的匹配程度。</p>
+<h3 id="输出层"><a href="#输出层" class="headerlink" title="输出层"></a>输出层</h3><p>全连接层+dropout<br><img src="https://s2.ax1x.com/2019/12/20/QXQJZd.png" width="180" height="180"><br>计算概率：<br><img src="https://s2.ax1x.com/2019/12/20/QXQDsg.png" width="250" height="250"><br>其中nr是关系的种类数，o是神经网络的输出。</p>
+<h3 id="神经网络参数"><a href="#神经网络参数" class="headerlink" title="神经网络参数"></a>神经网络参数</h3><p><img src="https://s2.ax1x.com/2019/12/20/QXQjSK.png" width="300" height="300"></p>
+<h3 id="实验和数据集设置"><a href="#实验和数据集设置" class="headerlink" title="实验和数据集设置"></a>实验和数据集设置</h3><p>评价指标 精度-召回率曲线（P-R Curve）和最高置信度预测精度（P@N）。<br>为了证明语句级别选择注意力机制的有效性，文章选择CNN及其变种模型PCNN作为句子编码器。将两种不同类型的卷积神经网络与句子级别注意力机制（ATT），其基线版本（AVE）以及多示例学习（ONE）方法的表现进行比较。<br><img src="https://s2.ax1x.com/2019/12/20/QXl8pV.png" alt></p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p><img src="https://s2.ax1x.com/2019/12/20/QX1pcT.png" width="400" height="800"></p>
+<h3 id="论文的主要贡献"><a href="#论文的主要贡献" class="headerlink" title="论文的主要贡献"></a>论文的主要贡献</h3><p>(1) 与现有的神经关系抽取模型相比，本文模型可以充分利用每对实体之间的所有有效信息；<br>(2) 为了解决远程监督中的标签错误问题，文章提出了选择注意力机制来实现句子级别的去噪；<br>(3) 在实验中验证了选择注意力有助于提升两种CNN模型在关系抽取任务中的效果。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/12/18/【论文笔记】Neural-Relation-Extraction-with-Selective-Attention-over-Instances/" data-id="cktfedoyo0053f4uknvmab9ey" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/12/21/【论文笔记】Convolutional-Sequence-to-Sequence-Learning/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          【论文笔记】Convolutional Sequence to Sequence Learning
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/12/14/【论文笔记】Hierarchical-Attention-Networks-for-Document-Classification/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">【论文笔记】Hierarchical Attention Networks for Document Classification</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

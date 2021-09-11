@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>FastDFS Ngnix在Ubuntu下的配置 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="今天时间基本浪费在这个配置上了，踩了不少坑，留个记录，以便后续查阅。">
+<meta name="keywords" content="开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FastDFS Ngnix在Ubuntu下的配置">
+<meta property="og:url" content="http://yoursite.com/2020/03/08/FastDFS Ngnix在Ubuntu下的配置/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="今天时间基本浪费在这个配置上了，踩了不少坑，留个记录，以便后续查阅。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3z4uHx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zoOZn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/08/3zTMsH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2020/03/09/8Sifdx.md.png">
+<meta property="og:updated_time" content="2020-03-08T17:44:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FastDFS Ngnix在Ubuntu下的配置">
+<meta name="twitter:description" content="今天时间基本浪费在这个配置上了，踩了不少坑，留个记录，以便后续查阅。">
+<meta name="twitter:image" content="https://s2.ax1x.com/2020/03/08/3z4uHx.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-FastDFS Ngnix在Ubuntu下的配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/08/FastDFS Ngnix在Ubuntu下的配置/" class="article-date">
+  <time datetime="2020-03-08T08:17:13.000Z" itemprop="datePublished">2020-03-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/开发/">开发</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      FastDFS Ngnix在Ubuntu下的配置
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#FastDFS安装"><span class="toc-number">1.</span> <span class="toc-text">FastDFS安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装Ngix-和-fastdfs-nginx-module-web服务器"><span class="toc-number">2.</span> <span class="toc-text">安装Ngix 和 fastdfs-nginx-module web服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Python客户端上传测试"><span class="toc-number">3.</span> <span class="toc-text">使用Python客户端上传测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看上传文件"><span class="toc-number">4.</span> <span class="toc-text">查看上传文件</span></a></li></ol>
+		  </div>
+		
+        <p>今天时间基本浪费在这个配置上了，踩了不少坑，留个记录，以便后续查阅。<br><a id="more"></a></p>
+<p>首先说下今天遇到的第一个问题，我最初是使用Windows环境进行配置，fdfs的源文件中对于获取地址和端口的配置项存在问题，所以在配置过程中修改了不少原文件，无奈到了最后上传一步始终直困于无法连接本机的问题,故不再叙述安装过程。<br>下面阐述使用Ubuntu来搭建这个环境。</p>
+<p>Ubuntu 版本：18.04</p>
+<p>这里提供所有我用到安装文件：<br>链接：<a href="https://pan.baidu.com/s/1GLsNURrgR8jneLte_Bw61A" target="_blank" rel="noopener">https://pan.baidu.com/s/1GLsNURrgR8jneLte_Bw61A</a><br>提取码：e9am</p>
+<h2 id="FastDFS安装"><a href="#FastDFS安装" class="headerlink" title="FastDFS安装"></a>FastDFS安装</h2><ol>
+<li>安装FastDFS依赖包<br>解压缩libfastcommon-master.zip并进入到该目录，执行<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./<span class="keyword">make</span>.<span class="keyword">sh</span></span><br><span class="line">sudo ./<span class="keyword">make</span>.<span class="keyword">sh</span> install</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>2.安装fastdfs<br>解压缩fastdfs-master.zip并进入到该目录，执行<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./<span class="keyword">make</span>.<span class="keyword">sh</span></span><br><span class="line">sudo ./<span class="keyword">make</span>.<span class="keyword">sh</span> install</span><br></pre></td></tr></table></figure></p>
+<p>3.配置跟踪服务器<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/etc/</span>fdfs<span class="regexp">/tracker.conf.sample /</span>etc<span class="regexp">/fdfs/</span>tracker.conf</span><br></pre></td></tr></table></figure></p>
+<p>在/home/python/目录中创建目录 fastdfs/tracker<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p /<span class="built_in">home</span>/python/fastdfs/tracker</span><br></pre></td></tr></table></figure></p>
+<p>编辑/etc/fdfs/tracker.conf配置文件<br><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim <span class="meta-keyword">/etc/</span>fdfs/tracker.conf</span><br><span class="line">修改 base_path=<span class="meta-keyword">/home/</span>python<span class="meta-keyword">/fastdfs/</span>tracker</span><br></pre></td></tr></table></figure></p>
+<p>4.配置存储服务器<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/etc/</span>fdfs<span class="regexp">/storage.conf.sample /</span>etc<span class="regexp">/fdfs/</span>storage.conf</span><br></pre></td></tr></table></figure></p>
+<p>在/home/python/fastdfs/ 目录中创建目录 storage<br><figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> –p /<span class="built_in">home</span>/python/fastdfs/storage</span><br></pre></td></tr></table></figure></p>
+<p>编辑/etc/fdfs/storage.conf配置文件<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo vim <span class="regexp">/etc/</span>fdfs/storage.conf</span><br><span class="line">修改:</span><br><span class="line">base_path=<span class="regexp">/home/</span>python<span class="regexp">/fastdfs/</span>storage</span><br><span class="line">store_path0=<span class="regexp">/home/</span>python<span class="regexp">/fastdfs/</span>storage</span><br><span class="line">tracker_server=自己虚拟机<span class="string">ip:</span><span class="number">22122</span></span><br></pre></td></tr></table></figure></p>
+<p>5.启动tracker和storage<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo<span class="built_in"> service </span>fdfs_trackerd start</span><br><span class="line">sudo<span class="built_in"> service </span>fdfs_storaged start</span><br></pre></td></tr></table></figure></p>
+<p>没有返回消息即成功.</p>
+<p>6.测试是否安装成功<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/etc/</span>fdfs<span class="regexp">/client.conf.sample /</span>etc<span class="regexp">/fdfs/</span>client.conf</span><br></pre></td></tr></table></figure></p>
+<p>编辑/etc/fdfs/client.conf配置文件<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo vim <span class="regexp">/etc/</span>fdfs/client.conf</span><br><span class="line">修改内容：</span><br><span class="line">base_path=<span class="regexp">/home/</span>python<span class="regexp">/fastdfs/</span>tracker</span><br><span class="line">tracker_server=自己ubuntu虚拟机<span class="string">ip:</span><span class="number">22122</span></span><br></pre></td></tr></table></figure></p>
+<p>上传文件测试：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fdfs_upload_file <span class="regexp">/etc/</span>fdfs<span class="regexp">/client.conf 上传文件路径（比如 /</span>home<span class="regexp">/ubuntu/</span>Desktop<span class="regexp">/test.jpg）</span></span><br></pre></td></tr></table></figure></p>
+<p>如果返回结果 group1/M00/00 这样的信息就表示文件上传成功。<br><img src="https://s2.ax1x.com/2020/03/08/3z4uHx.png" alt></p>
+<h2 id="安装Ngix-和-fastdfs-nginx-module-web服务器"><a href="#安装Ngix-和-fastdfs-nginx-module-web服务器" class="headerlink" title="安装Ngix 和 fastdfs-nginx-module web服务器"></a>安装Ngix 和 fastdfs-nginx-module web服务器</h2><p>1.解压缩 nginx-1.8.1.tar.gz 并进入到对应目录，执行<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ./configure --prefix=<span class="regexp">/usr/local</span><span class="regexp">/nginx/</span> --add-<span class="keyword">module</span>=<span class="regexp">/home/willard</span><span class="regexp">/Fast-DFS/fastdfs</span>-nginx-<span class="keyword">module</span>-master/src</span><br></pre></td></tr></table></figure></p>
+<p>注意：这里的 –add-module 要用自己fastdfs-nginx-module-master的解压路径。</p>
+<p>这里接下来需要执行<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo ./<span class="built_in">make</span></span><br><span class="line">sudo ./<span class="built_in">make</span> install</span><br></pre></td></tr></table></figure></p>
+<p>然而这样会报错，执行不下去，这里需要先安装几个包：<br><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> install libpcre3 libpcre3-<span class="built_in">dev</span> </span><br><span class="line">sudo apt-<span class="built_in">get</span> install zlib1g-<span class="built_in">dev</span></span><br></pre></td></tr></table></figure></p>
+<p>再执行<br><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./configure</span></span><br></pre></td></tr></table></figure></p>
+<p>再打开 objs/Makefile文件<br>第三行有个 -Werror ，这里vim打开删掉即可。</p>
+<p>执行完之后再执行：<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo ./<span class="built_in">make</span></span><br><span class="line">sudo ./<span class="built_in">make</span> install</span><br></pre></td></tr></table></figure></p>
+<p>这里配置完之后，在objs/Makefile 里需要看到这条记录，否则 Ngix启动不起来<br><img src="https://s2.ax1x.com/2020/03/08/3zoOZn.png" alt></p>
+<ol start="2">
+<li>配置 mod_fastdfs.conf<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/home/</span>willard<span class="regexp">/Ngix/</span>fastdfs-nginx-module-master<span class="regexp">/src/m</span>od_fastdfs.conf  <span class="regexp">/etc/</span>fdfs<span class="regexp">/mod_fastdfs.conf</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>注意：前面的参数还是需要用自己本机解压缩的位置。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/fdfs/mod_fastdfs.conf</span><br><span class="line">修改内容：</span><br><span class="line"><span class="attribute">connect_timeout</span>=10</span><br><span class="line"><span class="attribute">tracker_server</span>=自己ubuntu的ip:22122</span><br><span class="line"><span class="attribute">url_have_group_name</span>=<span class="literal">true</span></span><br><span class="line"><span class="attribute">store_path0</span>=/home/python/fastdfs/storage</span><br></pre></td></tr></table></figure></p>
+<p>3.配置http.conf<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/home/</span>willard<span class="regexp">/Fast-DFS/</span>fastdfs-master<span class="regexp">/conf/</span>http.conf  <span class="regexp">/etc/</span>fdfs<span class="regexp">/http.conf</span></span><br></pre></td></tr></table></figure></p>
+<p>注意：前面的参数也需要用自己本机解压缩的位置。</p>
+<p>4.配置mime.types<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/home/</span>willard<span class="regexp">/Fast-DFS/</span>fastdfs-master<span class="regexp">/conf/mim</span>e.types <span class="regexp">/etc/</span>fdfs<span class="regexp">/mime.types</span></span><br></pre></td></tr></table></figure></p>
+<p>5.配置 ngix.conf<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/<span class="keyword">local</span>/nginx/<span class="keyword">conf</span>/nginx.<span class="keyword">conf</span></span><br></pre></td></tr></table></figure></p>
+<p>在http部分添加如下配置：<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">            <span class="section">listen</span>       <span class="number">8888</span>;</span><br><span class="line">            server_name  虚拟机ip;</span><br><span class="line">            location ~/group[<span class="number">0</span><span class="number">-9</span>] &#123;</span><br><span class="line">                ngx_fastdfs_module;</span><br><span class="line">            &#125;</span><br><span class="line">            error_page   <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span>  /<span class="number">50</span>x.html;</span><br><span class="line">            location = /<span class="number">50</span>x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></p>
+<p>6.启动 nginx<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="regexp">/usr/</span>local<span class="regexp">/nginx/</span>sbin<span class="regexp">/nginx</span></span><br></pre></td></tr></table></figure></p>
+<p>还是那句话，没有信息就是安装成功了。</p>
+<h2 id="使用Python客户端上传测试"><a href="#使用Python客户端上传测试" class="headerlink" title="使用Python客户端上传测试"></a>使用Python客户端上传测试</h2><p>进入虚拟环境<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">workon</span> dj01</span><br></pre></td></tr></table></figure></p>
+<p>进入fdfs_client-py-master.zip所在目录：<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="keyword">install</span> fdfs_client-py-master.zip</span><br></pre></td></tr></table></figure></p>
+<p>测试代码<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="keyword">from</span> fdfs_client.client import Fdfs_client</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">&gt;&gt;&gt;<span class="built_in"> client </span>= Fdfs_client(<span class="string">'/etc/fdfs/client.conf'</span>)</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">&gt;&gt;&gt; ret = client.upload_by_filename(<span class="string">'/home/willard/Desktop/lewy.jpg'</span>)</span><br></pre></td></tr></table></figure></p>
+<p>结果如下即为成功:<br><img src="https://s2.ax1x.com/2020/03/08/3zTMsH.png" alt></p>
+<h2 id="查看上传文件"><a href="#查看上传文件" class="headerlink" title="查看上传文件"></a>查看上传文件</h2><p>这里又是一个天坑，已经上传成功但是访问文件404.好了不废话了，这里直接给一个我测试过可以用的nginx.conf。<br>(1)添加了user root;<br>(2)删除了多余的location;<br>(3)添加了M00目录<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#user  nobody;</span></span><br><span class="line"><span class="string">user</span> <span class="string">root;</span></span><br><span class="line"><span class="string">worker_processes</span>  <span class="number">1</span><span class="string">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#error_log  logs/error.log;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  notice;</span></span><br><span class="line"><span class="comment">#error_log  logs/error.log  info;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#pid        logs/nginx.pid;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">events</span> <span class="string">&#123;</span></span><br><span class="line">    <span class="string">worker_connections</span>  <span class="number">1024</span><span class="string">;</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">http</span> <span class="string">&#123;</span></span><br><span class="line">    <span class="string">include</span>       <span class="string">mime.types;</span></span><br><span class="line">    <span class="string">default_type</span>  <span class="string">application/octet-stream;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '</span></span><br><span class="line">    <span class="comment">#                  '$status $body_bytes_sent "$http_referer" '</span></span><br><span class="line">    <span class="comment">#                  '"$http_user_agent" "$http_x_forwarded_for"';</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#access_log  logs/access.log  main;</span></span><br><span class="line"></span><br><span class="line">    <span class="string">sendfile</span>        <span class="string">on;</span></span><br><span class="line">    <span class="comment">#tcp_nopush     on;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#keepalive_timeout  0;</span></span><br><span class="line">    <span class="string">keepalive_timeout</span>  <span class="number">65</span><span class="string">;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#gzip  on;</span></span><br><span class="line"></span><br><span class="line">  <span class="string">server</span> <span class="string">&#123;</span></span><br><span class="line">            <span class="string">listen</span>       <span class="number">8888</span><span class="string">;</span></span><br><span class="line">            <span class="string">server_name</span>  <span class="number">192.168</span><span class="number">.126</span><span class="number">.130</span><span class="string">;</span></span><br><span class="line">            <span class="string">location</span> <span class="string">~/group[0-9]/M00</span> <span class="string">&#123;</span></span><br><span class="line">		<span class="string">root</span> <span class="string">/etc/fdfs/storage/data;</span></span><br><span class="line">                <span class="string">ngx_fastdfs_module;</span></span><br><span class="line">            <span class="string">&#125;</span></span><br><span class="line">            <span class="string">error_page</span>   <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span>  <span class="string">/50x.html;</span></span><br><span class="line">            <span class="string">location</span> <span class="string">=</span> <span class="string">/50x.html</span> <span class="string">&#123;</span></span><br><span class="line">            <span class="string">root</span>   <span class="string">html;</span></span><br><span class="line">            <span class="string">&#125;</span></span><br><span class="line">        <span class="string">&#125;</span></span><br><span class="line">        <span class="comment">#error_page  404              /404.html;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># redirect server error pages to the static page /50x.html</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        <span class="string">error_page</span>   <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span>  <span class="string">/50x.html;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># proxy the PHP scripts to Apache listening on 127.0.0.1:80</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        <span class="comment">#location ~ \.php$ &#123;</span></span><br><span class="line">        <span class="comment">#    proxy_pass   http://127.0.0.1;</span></span><br><span class="line">        <span class="comment">#&#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        <span class="comment">#location ~ \.php$ &#123;</span></span><br><span class="line">        <span class="comment">#    root           html;</span></span><br><span class="line">        <span class="comment">#    fastcgi_pass   127.0.0.1:9000;</span></span><br><span class="line">        <span class="comment">#    fastcgi_index  index.php;</span></span><br><span class="line">        <span class="comment">#    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;</span></span><br><span class="line">        <span class="comment">#    include        fastcgi_params;</span></span><br><span class="line">        <span class="comment">#&#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># deny access to .htaccess files, if Apache's document root</span></span><br><span class="line">        <span class="comment"># concurs with nginx's one</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        <span class="comment">#location ~ /\.ht &#123;</span></span><br><span class="line">        <span class="comment">#    deny  all;</span></span><br><span class="line">        <span class="comment">#&#125;</span></span><br><span class="line">    <span class="string">&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># another virtual host using mix of IP-, name-, and port-based configuration</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="comment">#server &#123;</span></span><br><span class="line">    <span class="comment">#    listen       8000;</span></span><br><span class="line">    <span class="comment">#    listen       somename:8080;</span></span><br><span class="line">    <span class="comment">#    server_name  somename  alias  another.alias;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#    location / &#123;</span></span><br><span class="line">    <span class="comment">#        root   html;</span></span><br><span class="line">    <span class="comment">#        index  index.html index.htm;</span></span><br><span class="line">    <span class="comment">#    &#125;</span></span><br><span class="line">    <span class="comment">#&#125;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># HTTPS server</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="comment">#server &#123;</span></span><br><span class="line">    <span class="comment">#    listen       443 ssl;</span></span><br><span class="line">    <span class="comment">#    server_name  localhost;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#    ssl_certificate      cert.pem;</span></span><br><span class="line">    <span class="comment">#    ssl_certificate_key  cert.key;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#    ssl_session_cache    shared:SSL:1m;</span></span><br><span class="line">    <span class="comment">#    ssl_session_timeout  5m;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#    ssl_ciphers  HIGH:!aNULL:!MD5;</span></span><br><span class="line">    <span class="comment">#    ssl_prefer_server_ciphers  on;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#    location / &#123;</span></span><br><span class="line">    <span class="comment">#        root   html;</span></span><br><span class="line">    <span class="comment">#        index  index.html index.htm;</span></span><br><span class="line">    <span class="comment">#    &#125;</span></span><br><span class="line">    <span class="comment">#&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>修改完以后，进入nginx目录<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd <span class="regexp">/usr/</span>local<span class="regexp">/nginx/</span>sbin</span><br><span class="line">./nginx -s stop</span><br><span class="line"><span class="regexp">/usr/</span>local<span class="regexp">/nginx/</span>sbin<span class="regexp">/nginx -c /</span>usr<span class="regexp">/local/</span>nginx<span class="regexp">/conf/</span>nginx.conf</span><br><span class="line">./nginx -s reload</span><br></pre></td></tr></table></figure></p>
+<p>再次访问：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">126.130</span>:<span class="number">8888</span><span class="regexp">/group1/</span>M00<span class="regexp">/00/</span><span class="number">00</span><span class="regexp">/wKh-gl5lIt2AIdwxAA1R9JjVfKU654.jpg</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="https://s2.ax1x.com/2020/03/09/8Sifdx.md.png" alt></p>
+<p>关于问题排查，这里还有一份写得很清晰的博客：<a href="https://blog.csdn.net/qq_37495786/article/details/84330699?depth_1-utm_source=distribute.pc_relevant.none-task&amp;utm_source=distribute.pc_relevant.none-task" target="_blank" rel="noopener">FastDFS 文件上传成功，访问404</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/03/08/FastDFS Ngnix在Ubuntu下的配置/" data-id="cktfedox3000ef4ukl41ez7zw" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/05/【论文笔记】Convolutional-Hierarchical-Attention-Network-for-Query-Focused-Video/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          【论文笔记】Convolutional Hierarchical Attention Network for Query-Focused Video Summmarization
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/02/29/基于知识图谱的问答系统构建流程/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">基于知识图谱的问答系统构建流程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

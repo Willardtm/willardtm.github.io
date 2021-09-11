@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>cs224n-Lecture-4 Word Window分类与神经网络 | Klaus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="第四讲也是各种各样的数学知识，看来时候买本李航老师的统计学习来学一遍了！">
+<meta name="keywords" content="NLP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cs224n-Lecture-4 Word Window分类与神经网络">
+<meta property="og:url" content="http://yoursite.com/2019/08/14/cs224n-Lecture-4-Word-Window分类与神经网络/index.html">
+<meta property="og:site_name" content="Klaus&#39;s Blog">
+<meta property="og:description" content="第四讲也是各种各样的数学知识，看来时候买本李航老师的统计学习来学一遍了！">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkbMBq.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkb1EV.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkbJCF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkbRKA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkbI58.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkbH2Q.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkbbvj.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkquGD.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqGZt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqUJS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqDLn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqRWF.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqhQJ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqTdx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqXSe.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqjQH.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkqvyd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLpwt.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkL9TP.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLElQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLmmn.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLlfU.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLG6J.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLtmR.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLUTx.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLDpD.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLyXd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLWAP.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkL59S.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLTXj.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLq7q.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkLjhT.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOCu9.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOE4K.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOmge.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOMDA.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkO84f.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkONvQ.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkODU0.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOc2F.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOgv4.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkO4V1.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOI56.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOOrd.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkOxat.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkXpPf.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkXCRS.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/08/14/mkXVZn.png">
+<meta property="og:updated_time" content="2019-08-14T14:28:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cs224n-Lecture-4 Word Window分类与神经网络">
+<meta name="twitter:description" content="第四讲也是各种各样的数学知识，看来时候买本李航老师的统计学习来学一遍了！">
+<meta name="twitter:image" content="https://s2.ax1x.com/2019/08/14/mkbMBq.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Klaus&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Klaus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">MIA SAN MIA</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cs224n-Lecture-4-Word-Window分类与神经网络" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/14/cs224n-Lecture-4-Word-Window分类与神经网络/" class="article-date">
+  <time datetime="2019-08-14T13:51:21.000Z" itemprop="datePublished">2019-08-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/NLP/">NLP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      cs224n-Lecture-4 Word Window分类与神经网络
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+	  <!-- Table of Contents -->
+		
+		  <div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Softmaxt的细节"><span class="toc-number">1.</span> <span class="toc-text">Softmaxt的细节</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Softmax和交叉熵误差（Cross-Entropy-Error）来训练"><span class="toc-number">2.</span> <span class="toc-text">使用Softmax和交叉熵误差（Cross-Entropy Error）来训练</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#背景知识：为什么叫交叉熵误差？"><span class="toc-number">3.</span> <span class="toc-text">背景知识：为什么叫交叉熵误差？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对一个完整的数据集进行分类"><span class="toc-number">4.</span> <span class="toc-text">对一个完整的数据集进行分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分类正则化"><span class="toc-number">5.</span> <span class="toc-text">分类正则化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常规机器学习优化细节"><span class="toc-number">6.</span> <span class="toc-text">常规机器学习优化细节</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分类与词向量的区别"><span class="toc-number">7.</span> <span class="toc-text">分类与词向量的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过re-training让词向量失去泛化-generalization"><span class="toc-number">8.</span> <span class="toc-text">通过re-training让词向量失去泛化(generalization)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Window-Classification-词窗口分类"><span class="toc-number">9.</span> <span class="toc-text">Window Classification-词窗口分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#矩阵实现说明"><span class="toc-number">10.</span> <span class="toc-text">矩阵实现说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#只有Softmax-Logistic-Regression-还不够强大"><span class="toc-number">11.</span> <span class="toc-text">只有Softmax(=Logistic Regression)还不够强大</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从逻辑回归到神经网络"><span class="toc-number">12.</span> <span class="toc-text">从逻辑回归到神经网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么需要非线性模型"><span class="toc-number">13.</span> <span class="toc-text">为什么需要非线性模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单层简单神经网络"><span class="toc-number">14.</span> <span class="toc-text">单层简单神经网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前向神经网络"><span class="toc-number">15.</span> <span class="toc-text">前向神经网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最大间距损失函数"><span class="toc-number">16.</span> <span class="toc-text">最大间距损失函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用反向传播进行训练"><span class="toc-number">17.</span> <span class="toc-text">使用反向传播进行训练</span></a></li></ol>
+		  </div>
+		
+        <p>第四讲也是各种各样的数学知识，看来时候买本李航老师的统计学习来学一遍了！<br><a id="more"></a></p>
+<h2 id="Softmaxt的细节"><a href="#Softmaxt的细节" class="headerlink" title="Softmaxt的细节"></a>Softmaxt的细节</h2><p>softmax的公式：<br><img src="https://s2.ax1x.com/2019/08/14/mkbMBq.png" alt></p>
+<p>这个公式可以分两步计算：<br>1.取出W的第y行与向量x相乘；<br><img src="https://s2.ax1x.com/2019/08/14/mkb1EV.png" alt><br>从1开始，对所有的c个类别都做这样的乘法。<br>2.使用softmax来计算归一化的概率：<br><img src="https://s2.ax1x.com/2019/08/14/mkbJCF.png" alt></p>
+<font color="#0099ff">注:归一化后所有的结果之和等于1.</font>
+
+<h2 id="使用Softmax和交叉熵误差（Cross-Entropy-Error）来训练"><a href="#使用Softmax和交叉熵误差（Cross-Entropy-Error）来训练" class="headerlink" title="使用Softmax和交叉熵误差（Cross-Entropy Error）来训练"></a>使用Softmax和交叉熵误差（Cross-Entropy Error）来训练</h2><p>输入x，希望预测y。<br>通常我们希望模型可以最大化正确类别的概率，希望通过 argmax 输出，最终可以输出正确的类别。而且最大化概率和最大化对数概率是一样的，最小化对数概率的负数也是一样的。对数概率的负数通常就是需要的目标函数。</p>
+<p><img src="https://s2.ax1x.com/2019/08/14/mkbRKA.png" alt></p>
+<h2 id="背景知识：为什么叫交叉熵误差？"><a href="#背景知识：为什么叫交叉熵误差？" class="headerlink" title="背景知识：为什么叫交叉熵误差？"></a>背景知识：为什么叫交叉熵误差？</h2><p>假设我们有正确标注（or gold or target）的概率分布，假设正确类别的概率是1，其余的概率是0，举个栗子，假设共有5个类别且正确类别是中间的第三个类别，那么第三个类别的概率为1，其余的全部为0。<br>假如把理想的概率定义为p，softmax计算得到的概率记为q，交叉熵的定义就是对所有的类别求和，公式如下：<br><img src="https://s2.ax1x.com/2019/08/14/mkbI58.png" alt></p>
+<p>在例子中，p是一个one-hot向量，只有在一处的值为1，其余的全部为0.所以非正确类别的求和项的值全部为0.所以最后交叉熵的结果是log(q)，这正是softmax的计算结果。<br>从统计学上来说，可以将交叉熵理解为尽可能地最小化两个分布之间的KL散度。</p>
+<h2 id="对一个完整的数据集进行分类"><a href="#对一个完整的数据集进行分类" class="headerlink" title="对一个完整的数据集进行分类"></a>对一个完整的数据集进行分类</h2><p>总体目标函数，通常记为J，基于所有的参数θ，对所有正确类别的概率的负对数求和，正确类别的标号记为yi，希望最小化整个求和项J，也就是说想尽可能地最小化交叉熵。<br><img src="https://s2.ax1x.com/2019/08/14/mkbH2Q.png" alt></p>
+<p>注：f 也是输入X的函数</p>
+<p><img src="https://s2.ax1x.com/2019/08/14/mkbbvj.png" alt></p>
+<p>可以将fy重写为Wy行向量乘以x，然后写出整个求和公式。<br> ·通常用 f 来表示举着运算，f=Wx 表示矩阵与向量的乘法。  </p>
+<h2 id="分类正则化"><a href="#分类正则化" class="headerlink" title="分类正则化"></a>分类正则化</h2><p> 几乎所有在数据集上的损失函数都包含正则化参数θ作为总体目标函数的一部分：<br> <img src="https://s2.ax1x.com/2019/08/14/mkquGD.png" alt></p>
+<p> 大多数时候，这里的θ是标准逻辑回归中的矩阵W，实际上目标函数假如这个正则项的目的是为了鼓励模型中的所有权值尽可能的小，尽可能接近0.<br>当有很多特征值时，正则化可以避免过拟合（或者在一个非常的deep的模型中）。<br>x轴：模型有多强大，有多少层，多少参数，或者每个词向量有多少维度，或者你训练的耗时，可以看到x轴对不同的变量有相同的模式。<br>y轴：表示误差，或者是你的目标函数，想尽可能地优化和最小化。<br>蓝线：训练误差。<br>红线：测试误差。<br><img src="https://s2.ax1x.com/2019/08/14/mkqGZt.png" alt></p>
+<p>通常可以观测到，模型越强大，降低训练误差的效果会越好，也就是说能更好地拟合xi和yi。但是在某种情况下会开始过拟合，你的测试误差或者验证误差，或者开发集误差，将会增加。</p>
+<h2 id="常规机器学习优化细节"><a href="#常规机器学习优化细节" class="headerlink" title="常规机器学习优化细节"></a>常规机器学习优化细节</h2><p>通常在机器学习中，只优化这里的 W，也就是softmax分类器的参数。<br><img src="https://s2.ax1x.com/2019/08/14/mkqUJS.png" alt></p>
+<p>因此更新和梯度将会特别小。所以在很多情况下，只有少量的类别，而且词向量的维度是上百而已。假如有3个类别和100维的词向量，只有300个参数。</p>
+<h2 id="分类与词向量的区别"><a href="#分类与词向量的区别" class="headerlink" title="分类与词向量的区别"></a>分类与词向量的区别</h2><p>在深度学习中有很多的词汇量，实际上我们<font color="#0099FF">不仅想学习Softmax分类器，而且还有词向量</font>。可以反向传播到词向量，但问题是何时更新词向量。考虑到这个问题的时候必须意识到词向量非常大，现在突然有个非常大的参数集，假设你的词向量的维度是300，你的词典中有1w个词，突然有如此巨大的参数集，在这种情况下，很有可能会过拟合。<br><img src="https://s2.ax1x.com/2019/08/14/mkqDLn.png" alt></p>
+<h2 id="通过re-training让词向量失去泛化-generalization"><a href="#通过re-training让词向量失去泛化-generalization" class="headerlink" title="通过re-training让词向量失去泛化(generalization)"></a>通过re-training让词向量失去泛化(generalization)</h2><p>假设想要将单个词分类为积极或消极，假设训练测试集包含了单词TV和telly，同时，假设也知道这是电影评论，你说这部电影很适合TV，则这不是一个很积极的说法。<br>实际上，telly 和 TV 在向量空间实际上很接近，使用word2vec或者是GloVe学习，在非常大的语料库上训练这些词向量，学习到这三个单词（TV,telly,television）经常出现在相似的上下文中，所以它们在向量空间中很接近。<br><img src="https://s2.ax1x.com/2019/08/14/mkqRWF.png" alt></p>
+<p>但由于情感分析语料中，训练集只含有 TV 和 telly，导致 re-training 之后两者移动到向量空间的其他位置：<br><img src="https://s2.ax1x.com/2019/08/14/mkqhQJ.png" alt></p>
+<p>而television仍然在它最开始的位置。现在想测试它，我们实际上将会把这个词错误分类，因为它从未改变过位置，这就意味着：</p>
+<font color="#0099ff"><br>·如果训练数据集很小，不必训练词向量；<br>·如果数据集很大，训练词向量之后在任务中的效果会更好。<br></font>
+
+<h2 id="Window-Classification-词窗口分类"><a href="#Window-Classification-词窗口分类" class="headerlink" title="Window Classification-词窗口分类"></a>Window Classification-词窗口分类</h2><p>这种分类方法是根据上下文对单词进行分类，害，直接看这页PPT就OK了。<br><img src="https://s2.ax1x.com/2019/08/14/mkqTdx.png" alt></p>
+<p>这里使用四分类命名实体识别作为第一个例子，我们想识别人名，地点，组织以及其他，对大语料库中的每个单词存在着许多不同的可能性。<br>2008年Collobert和Weston第一次提出，是当时第一个有用且最先进的文本分类和词的上下文分类。要做的就是训练一个softmax分类器，给中心词分配一个标签然后用一个窗口把它前后的单词连接起来。</p>
+<p>此处从一个长句中截取的短句举个栗子，想对中心词Paris分类，在这个窗口的上下文中，我们定义窗口长度为2，以我们想分类的当前中心词而言，重新定义新的输入x为整个窗口连接成的5个词向量。所以这里定义X为一个5D维的列向量，我们有D维的词向量并且有5个这样的词向量，把它们排成一列。<br><img src="https://s2.ax1x.com/2019/08/14/mkqXSe.png" alt></p>
+<p>我们能想到的最简单的单词分类器，就是将这个5个词向量的拼接放入softmax分类器。这里定义了输入x，x是整个窗口拼接的x，然后上面有softmax分类器：<br><img src="https://s2.ax1x.com/2019/08/14/mkqjQH.png" alt></p>
+<p>此处引入y_hat来表示当前的正确类别。 </p>
+<p>下面需要更新词向量：<br>(short answer)处理办法：求导。<br>(long answer)处理办法：step by step。<br><img src="https://s2.ax1x.com/2019/08/14/mkqvyd.png" alt></p>
+<p>y_hat：softmax概率向量（即归一化之后的得分或概率）。<br>t：目标分布概率，type：one -hot vector.<br>f：f(x)是矩阵乘法。f 将是一个C维向量，大写字母C是类别的数量。<br><img src="https://s2.ax1x.com/2019/08/14/mkLpwt.png" alt></p>
+<p>如果想对整个softmax求解关于x的导数，那么必须对包含x的所有类别求和，fy 不仅有下标y(即第y个类别)而且也是x的函数，这里也乘了右边这一项。<br>对左边的x求导要注意两种情况：<br>1.c等于正确类别y这种情况；<br>2.c等于所有非正确类别的情况。<br>最后求导得到的结果是：<br><img src="https://s2.ax1x.com/2019/08/14/mkL9TP.png" alt></p>
+<p>这里对分类正确的类别-1，其他的什么都不用做。<br><img src="https://s2.ax1x.com/2019/08/14/mkLElQ.png" alt></p>
+<p>y_hat -t 相当于 one-hot 中正确的部分-1。</p>
+<p>在使用链式法则的过程中可以得到：<br><img src="https://s2.ax1x.com/2019/08/14/mkLmmn.png" alt></p>
+<p>简化之后，我们得到了总体代价函数的导数训练集中的一个元素关于x的导数，但x是一个window，窗口有5个词，而且每个词是d维的，那么这个梯度或导数的维度应该是什么？<br>注：δ是从softmax中得到的一个误差信号，我们用softmax的权值W的转置与δ相乘。<br><img src="https://s2.ax1x.com/2019/08/14/mkLlfU.png" alt></p>
+<p>A：这个梯度或导数的维度应该是5d。<br><img src="https://s2.ax1x.com/2019/08/14/mkLG6J.png" alt></p>
+<p>现在的问题是你想更新词向量，而不是整个窗口，窗口只是一个中间步骤，所以实际上要做的是更新计算关于词向量的每个元素的导数。<br>只需要拆分误差δ，即整个窗口的总体梯度，它基本上只是所有不同词向量的拼接。<br><img src="https://s2.ax1x.com/2019/08/14/mkLtmR.png" alt></p>
+<h2 id="矩阵实现说明"><a href="#矩阵实现说明" class="headerlink" title="矩阵实现说明"></a>矩阵实现说明</h2><p>softmax有两个非常消耗计算的操作，矩阵乘法和指数运算。<br>使用矩阵乘法要比loop节省时间（吴恩达老师课程中有提及）。假设有500个窗口需要分类，同时假设每个窗口的维度为300，假设softmax中有五个类别，在计算过程中的某个时刻，我们有两个选项，W是softmax的权值，W有C行和d列，这里为每个窗口拼接得到的词向量或者也可以是一个很大的矩阵，矩阵维度是d*n。d是每个窗口的维度，n是窗口的数目。<br>我们有500个窗口，所以one_matrix矩阵有500列，可以将W分别与每个向量相乘，或者我们也可以做这样一次矩阵乘法。<br><img src="https://s2.ax1x.com/2019/08/14/mkLUTx.png" alt></p>
+<h2 id="只有Softmax-Logistic-Regression-还不够强大"><a href="#只有Softmax-Logistic-Regression-还不够强大" class="headerlink" title="只有Softmax(=Logistic Regression)还不够强大"></a>只有Softmax(=Logistic Regression)还不够强大</h2><p>softmax只能得到线性决策边界，当数据集很大的时候softmax的分类效果往往就不尽人意。<br><img src="https://s2.ax1x.com/2019/08/14/mkLDpD.png" alt></p>
+<p>在使用神经网络之后，分类的结果就不那么糟心了，因为它可以提供非线性的决策边界。<br><img src="https://s2.ax1x.com/2019/08/14/mkLyXd.png" alt></p>
+<h2 id="从逻辑回归到神经网络"><a href="#从逻辑回归到神经网络" class="headerlink" title="从逻辑回归到神经网络"></a>从逻辑回归到神经网络</h2><p>神经元本质上是一个二元逻辑回归单元，进入神经元内部，有一组值用来和输入进行相乘，所以我们有这个神经元的输入wx，再加上一个偏置项。<br><img src="https://s2.ax1x.com/2019/08/14/mkLWAP.png" alt></p>
+<p>这一项定义了神经元激活的可能性，激活的意思是有一个接近于1的非常高的概率，这里的f其实就是sigmoid函数，将乘法加上偏置项的求和映射到0和1之间。<br><img src="https://s2.ax1x.com/2019/08/14/mkL59S.png" alt></p>
+<font color="#0099ff">一个神经网络其实就是同时运行多个逻辑回归，但不需要提前制定其具体预测什么。</font>
+
+<p><img src="https://s2.ax1x.com/2019/08/14/mkLTXj.png" alt></p>
+<p>Softmax与标准机器学习和深度学习的主要区别是：我们实际上不强制它直接给出输出结果，他，它们自己也会是另一个神经元的输入，预测结果是基于这个神经元的损失函数，比如交叉熵，用来控制这些中间隐藏的神经元，或隐藏层中它们想要达到的目标。</p>
+<p><img src="https://s2.ax1x.com/2019/08/14/mkLq7q.png" alt></p>
+<p>模型可以决定它自己应该代表什么，它如何将隐藏单元的输入转换，为了让我们在最后的输出中有更小的误差，它实际上只是这些隐藏神经元的连接。<br>这些小的二元逻辑回归单元可以帮助构建非常深的神经网络架构。<br><img src="https://s2.ax1x.com/2019/08/14/mkLjhT.png" alt></p>
+<h2 id="为什么需要非线性模型"><a href="#为什么需要非线性模型" class="headerlink" title="为什么需要非线性模型"></a>为什么需要非线性模型</h2><p>因为非线性模型可以捕捉更复杂的数据，不像线性模型，所有的层等效与一层。</p>
+<p><img src="https://s2.ax1x.com/2019/08/14/mkOCu9.png" alt></p>
+<h2 id="单层简单神经网络"><a href="#单层简单神经网络" class="headerlink" title="单层简单神经网络"></a>单层简单神经网络</h2><p>一个单层神经网络是一个线性层和一个非线性层组成的：<br><img src="https://s2.ax1x.com/2019/08/14/mkOE4K.png" alt><br>神经激活函数a能用来计算一些输出，接着，通过softmax计算可能性：<br><img src="https://s2.ax1x.com/2019/08/14/mkOmge.png" alt></p>
+<h2 id="前向神经网络"><a href="#前向神经网络" class="headerlink" title="前向神经网络"></a>前向神经网络</h2><p>使用一个三层的神经网络来计算一个窗口的得分，s=score：<br><img src="https://s2.ax1x.com/2019/08/14/mkOMDA.png" alt></p>
+<p>这里的窗口x是所有词向量的拼接，这里提出一个问题，计算所有参数的维度？<br>这里的每一个词向量是四维的，有5个单词，所以x是20维向量，再次将它定义为列向量。<br>假设第一个隐藏层，有8个隐藏单元，所以需要一层又8个神经元的隐藏层。<br>然后最后得分只是一个简单得数值，那么现在W的维度是多少？<br><img src="https://s2.ax1x.com/2019/08/14/mkO84f.png" alt></p>
+<p> well，这个可以通过这个矩阵来理解一下：<br> <img src="https://s2.ax1x.com/2019/08/14/mkONvQ.png" alt><br> 额外一层的作用，对于NLP来说，它将允许学习这些不同的输入词之间的非线性相互作用，以前我们只能说如果单词 in 出现在这个位置，总会增加下一个词是地点的概率。现在可以学习这样的模式，即如果单词 in 在第二个位置会提高这个是地点的可能性，只有在单词 meseum 也是第一个词的情况下，所以可以学习这些不同的输入之间的相互作用。</p>
+<h2 id="最大间距损失函数"><a href="#最大间距损失函数" class="headerlink" title="最大间距损失函数"></a>最大间距损失函数</h2><p>训练目标函数的思想是：假如想让中心词是一个点点的窗口得分高或者是想让不正确的窗口得分低，不正确窗口的中心词不是一个命名实体位置。<br>s=score(museums in Paris are amazing)[正确样本]<br>sc=score(Not all museums in Paris)[错误样本]<br><img src="https://s2.ax1x.com/2019/08/14/mkODU0.png" alt></p>
+<p>最大间距的训练目标本质上是为了让正确的窗口得分，比错误窗口的得分更大，让错误窗口的得分更低，直到他们足够好为止。<br>把足够好定义为差值为1，这里的1是一个边界，经常看到它作为一个超参数，把它赋值给m并尝试不同的值，但在多数情况下数值1的效果很好。<br>因为它是连续的，所以可以使用随机梯度下降函数。  </p>
+<h2 id="使用反向传播进行训练"><a href="#使用反向传播进行训练" class="headerlink" title="使用反向传播进行训练"></a>使用反向传播进行训练</h2><p><img src="https://s2.ax1x.com/2019/08/14/mkOc2F.png" alt><br>一般从顶层开始向下求导数，因为会重复使用不同的元素将导数简单地组合，重复使用变量的导数会把我们引导到反向传播。<br>对单个权重进行求导（Wij）<br><img src="https://s2.ax1x.com/2019/08/14/mkOgv4.png" alt></p>
+<p>Wij实际上只出现在隐藏层的第i个激活层，比如W23是被用来计算a2。<br><img src="https://s2.ax1x.com/2019/08/14/mkO4V1.png" alt></p>
+<p>对Wij进行求导：<br><img src="https://s2.ax1x.com/2019/08/14/mkOI56.png" alt></p>
+<p>求导过程如下：<br><img src="https://s2.ax1x.com/2019/08/14/mkOOrd.png" alt></p>
+<p>简化以后：<br><img src="https://s2.ax1x.com/2019/08/14/mkOxat.png" alt></p>
+<p>对于偏置项 b：<br><img src="https://s2.ax1x.com/2019/08/14/mkXpPf.png" alt></p>
+<p>对两个激活函数进行求导：<br><img src="https://s2.ax1x.com/2019/08/14/mkXCRS.png" alt></p>
+<p>对U求梯度：<br><img src="https://s2.ax1x.com/2019/08/14/mkXVZn.png" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/14/cs224n-Lecture-4-Word-Window分类与神经网络/" data-id="cktfedoy20033f4ukmzevnhzu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/">NLP</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/15/cs224n-Lecture-5-反向传播和项目建议/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          cs224n-Lecture-5 反向传播和项目建议
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/14/cs224n-Lecture-3-高级词向量表示/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">cs224n-Lecture-3 高级词向量表示</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">联系方式</h3>
+    <div class="widget">
+	  <li><a>klausvon@163.com</a></li>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">目录</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithm/">Algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/HTML/">HTML</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP/">NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/NLP-知识图谱/">NLP,知识图谱</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/VQA/">VQA</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/XSS漏洞学习/">XSS漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/代码审计/">代码审计</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发/">开发</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学学习/">数学学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/漏洞学习/">漏洞学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/环境配置/">环境配置</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTF-Web/">CTF_Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/HTML/">HTML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ML/">ML</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PHP/">PHP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL-injection/">SQL_injection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/VQA/">VQA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/XXE/">XXE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/凸包算法/">凸包算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大数据/">大数据</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数学学习/">数学学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据挖掘/">数据挖掘</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/环境配置/">环境配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/知识图谱/">知识图谱</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/神经网络/">神经网络</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 14.29px;">Algorithm</a> <a href="/tags/C/" style="font-size: 10px;">C++</a> <a href="/tags/CTF-Web/" style="font-size: 18.57px;">CTF_Web</a> <a href="/tags/HTML/" style="font-size: 10px;">HTML</a> <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/ML/" style="font-size: 11.43px;">ML</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/NLP/" style="font-size: 20px;">NLP</a> <a href="/tags/PHP/" style="font-size: 10px;">PHP</a> <a href="/tags/Python/" style="font-size: 11.43px;">Python</a> <a href="/tags/SQL-injection/" style="font-size: 12.86px;">SQL_injection</a> <a href="/tags/VQA/" style="font-size: 10px;">VQA</a> <a href="/tags/XXE/" style="font-size: 10px;">XXE</a> <a href="/tags/凸包算法/" style="font-size: 10px;">凸包算法</a> <a href="/tags/大数据/" style="font-size: 10px;">大数据</a> <a href="/tags/开发/" style="font-size: 18.57px;">开发</a> <a href="/tags/数学学习/" style="font-size: 11.43px;">数学学习</a> <a href="/tags/数据挖掘/" style="font-size: 11.43px;">数据挖掘</a> <a href="/tags/环境配置/" style="font-size: 10px;">环境配置</a> <a href="/tags/知识图谱/" style="font-size: 17.14px;">知识图谱</a> <a href="/tags/神经网络/" style="font-size: 15.71px;">神经网络</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/07/31/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/03/Basic-Understanding-of-Optimization/">Basic Understanding of Optimization</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/02/Why-Deep-Structure/">Why Deep Structure</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/23/Model-Compression-基本概念/">What is Model Compression</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/21/CSS在开发中的基本操作小结/">CSS在开发中的基本操作小结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+	 <a class="theme-link"  href="https://mteacher.top/"> martini's blog </a><span>&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 Klaus<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
